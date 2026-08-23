@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             x:Class="GestaoFrota.App.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#0B1D3A">
+
+    <Grid RowDefinitions="*, Auto, *" Padding="32">
+
+        <VerticalStackLayout Grid.Row="1" Spacing="24" VerticalOptions="Center">
+
+            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                <Label Text="Gestão de Frota"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center" />
+                <Label Text="Gestão financeira e controle de frota"
+                       FontSize="14"
+                       TextColor="#9FB3D1"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <Button Text="Entrar com Google"
+                    Command="{Binding EntrarComGoogleCommand}"
+                    BackgroundColor="White"
+                    TextColor="#0B1D3A"
+                    FontAttributes="Bold"
+                    CornerRadius="24"
+                    HeightRequest="52"
+                    IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding Carregando}"
+                                IsVisible="{Binding Carregando}"
+                                Color="White" />
+
+            <Label Text="{Binding MensagemErro}"
+                   TextColor="#FF8A80"
+                   HorizontalOptions="Center"
+                   IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+        </VerticalStackLayout>
+
+    </Grid>
+
+</ContentPage>
