@@ -1,6 +1,46 @@
 @GestaoFrota.API_HostAddress = http://localhost:5137
 
-GET {{GestaoFrota.API_HostAddress}}/weatherforecast/
+### Health check
+GET {{GestaoFrota.API_HostAddress}}/api/status
 Accept: application/json
 
-###
+### Login via Google (id_token obtido no app mobile via Google Sign-In)
+POST {{GestaoFrota.API_HostAddress}}/api/auth/google
+Content-Type: application/json
+
+{
+  "idToken": "COLE_AQUI_O_ID_TOKEN_DO_GOOGLE"
+}
+
+### Dados do usuário autenticado
+GET {{GestaoFrota.API_HostAddress}}/api/auth/me
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Listar categorias
+GET {{GestaoFrota.API_HostAddress}}/api/categorias
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Criar categoria (Administrador ou Financeiro)
+POST {{GestaoFrota.API_HostAddress}}/api/categorias
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "nome": "Combustível",
+  "tipo": "Despesa",
+  "ativo": true
+}
+
+### Listar formas de pagamento
+GET {{GestaoFrota.API_HostAddress}}/api/formaspagamento
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Criar forma de pagamento (Administrador ou Financeiro)
+POST {{GestaoFrota.API_HostAddress}}/api/formaspagamento
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "nome": "Pix",
+  "ativo": true
+}

@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="GestaoFrota.Domain/GestaoFrota.Domain.csproj" />
+  <Project Path="GestaoFrota.Infrastructure/GestaoFrota.Infrastructure.csproj" />
   <Project Path="GestaoFrota.API/GestaoFrota.API.csproj" />
 </Solution>
