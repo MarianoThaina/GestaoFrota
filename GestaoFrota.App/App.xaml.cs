@@ -31,9 +31,12 @@ public partial class App : Application
         await localDb.InicializarAsync();
 
         var authService = _serviceProvider.GetRequiredService<IAuthService>();
-        var autenticado = await authService.EstaAutenticadoAsync();
 
-        if (autenticado)
+        // Documentação Técnica, seção 8, item 7: GET /api/auth/me valida a
+        // sessão salva (token + usuário ainda ativo) sem exigir novo login.
+        var sessaoValida = await authService.ValidarSessaoAsync();
+
+        if (sessaoValida)
         {
             window.Page = new AppShell();
         }

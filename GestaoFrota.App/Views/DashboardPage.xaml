@@ -1,19 +1,42 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
              x:Class="GestaoFrota.App.Views.DashboardPage"
+             x:DataType="vm:DashboardViewModel"
              Title="Início">
 
     <VerticalStackLayout Padding="24" Spacing="12" VerticalOptions="Center">
-        <Label Text="Bem-vindo(a) 👋"
+        <Label Text="{Binding Usuario.Nome, StringFormat='Bem-vindo(a), {0} 👋'}"
                FontSize="24"
                FontAttributes="Bold"
                HorizontalOptions="Center" />
+
+        <Label Text="{Binding Usuario.Email}"
+               FontSize="14"
+               TextColor="Gray"
+               HorizontalOptions="Center" />
+
+        <Label Text="{Binding Usuario.Perfil, StringFormat='Perfil: {0}'}"
+               FontSize="14"
+               TextColor="Gray"
+               HorizontalOptions="Center" />
+
         <Label Text="Os dashboards financeiros e operacionais (KPIs, gráficos de fluxo de caixa e rankings) serão implementados na Sprint 7."
                FontSize="14"
                TextColor="Gray"
                HorizontalOptions="Center"
                HorizontalTextAlignment="Center" />
+
+        <Button Text="Sair"
+                Command="{Binding SairCommand}"
+                BackgroundColor="#0B1D3A"
+                TextColor="White"
+                CornerRadius="24"
+                HeightRequest="48"
+                WidthRequest="160"
+                HorizontalOptions="Center"
+                IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
     </VerticalStackLayout>
 
 </ContentPage>

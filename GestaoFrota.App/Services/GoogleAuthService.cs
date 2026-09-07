@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Web;
 using GestaoFrota.App.Models;
@@ -9,6 +11,16 @@ public interface IAuthService
     Task<UsuarioLogado> LoginComGoogleAsync();
     Task<UsuarioLogado?> ObterUsuarioLogadoAsync();
     Task<bool> EstaAutenticadoAsync();
+
+    /// <summary>
+    /// Valida a sessão salva chamando GET /api/auth/me (Documentação Técnica,
+    /// seção 8, item 7) — confirma no backend que o token ainda é válido e
+    /// que o usuário continua ativo, sem exigir novo login. Se a API estiver
+    /// inacessível (offline), mantém a sessão local (comportamento
+    /// offline-first já adotado no restante do app).
+    /// </summary>
+    Task<bool> ValidarSessaoAsync();
+
     Task LogoutAsync();
 }
 
@@ -73,6 +85,40 @@ public class GoogleAuthService : IAuthService
     {
         var token = await _tokenStore.ObterTokenAsync();
         return !string.IsNullOrWhiteSpace(token);
+    }
+
+    public async Task<bool> ValidarSessaoAsync()
+    {
+        var token = await _tokenStore.ObterTokenAsync();
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, "auth/me");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _httpClient.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                // Token expirado ou usuário desativado no backend:
+                // encerra a sessão local para forçar novo login.
+                await _tokenStore.LimparSessaoAsync();
+                return false;
+            }
+
+            response.EnsureSuccessStatusCode();
+            return true;
+        }
+        catch (HttpRequestException)
+        {
+            // API inacessível (ex.: sem conexão no primeiro uso do dia):
+            // mantém a sessão local salva em SecureStorage/Preferences.
+            return true;
+        }
     }
 
     public Task LogoutAsync() => _tokenStore.LimparSessaoAsync();
