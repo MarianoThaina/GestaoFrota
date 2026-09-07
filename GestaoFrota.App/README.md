@@ -49,6 +49,97 @@ dava para gerar/validar o projeto aqui.
    dotnet build -t:Run -f net10.0-android
    ```
 
+## Revisão do fluxo de login + sessão (item 5 do checklist / seção 8 da Documentação Técnica)
+
+Esta revisão fechou as lacunas de código que impediam o fluxo descrito na
+seção 8 de funcionar de ponta a ponta:
+
+1. **Bug corrigido em `LoginViewModel`**: após o login, o código trocava
+   `Application.Current.MainPage`, que **não tem efeito** no modelo
+   multi-window do MAUI usado em `App.xaml.cs` (que cria e controla a
+   `Window` diretamente). A troca de tela agora é feita em
+   `Application.Current.Windows[0].Page`, que é a `Window` real exibida.
+   Sem esse ajuste, o botão "Entrar com Google" completava a autenticação
+   (token salvo), mas a tela continuava presa no Login — exatamente o tipo
+   de falha que só aparece ao rodar no emulador.
+2. **Item 7 da seção 8 implementado** (`GET /api/auth/me`): antes, o app só
+   checava se havia *algum* token salvo (`EstaAutenticadoAsync`) para pular
+   a tela de login. Agora `IAuthService.ValidarSessaoAsync()` chama
+   `GET /api/auth/me` de fato — confirma no backend que o token não expirou
+   e que o usuário continua ativo — e só então libera o `AppShell`. Se a API
+   responder 401, a sessão local é limpa e o usuário volta ao login. Se a
+   API estiver inacessível (offline), a sessão local é mantida, seguindo o
+   padrão offline-first já usado no restante do app.
+3. **Logout de ponta a ponta**: `DashboardPage` agora mostra o usuário
+   logado (nome, e-mail, perfil) via `DashboardViewModel` e tem um botão
+   "Sair" que chama `LogoutAsync()` e volta para o `LoginPage`. Isso fecha o
+   card "Testar logout" do Trello e dá uma evidência visual fácil de
+   gravar (login → dashboard com dados do usuário → sair → volta ao login).
+
+### O que ainda depende do scaffold oficial (`dotnet new maui`)
+
+Como não há SDK do .NET neste ambiente, os itens abaixo só podem ser feitos
+depois do passo 1 do "Passo a passo" acima, direto nos arquivos gerados:
+
+- **Callback do OAuth no Android** — crie
+  `Platforms/Android/WebAuthenticationCallbackActivity.cs`:
+
+  ```csharp
+  using Android.App;
+  using Android.Content.PM;
+  using Microsoft.Maui.Authentication;
+
+  namespace GestaoFrota.App.Platforms.Android;
+
+  [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
+  [IntentFilter(new[] { global::Android.Content.Intent.ActionView },
+      Categories = new[] { global::Android.Content.Intent.CategoryDefault, global::Android.Content.Intent.CategoryBrowsable },
+      DataScheme = "com.suaempresa.gestaofrota")]
+  public class WebAuthenticationCallbackActivity : WebAuthenticatorCallbackActivity
+  {
+  }
+  ```
+
+- **Callback do OAuth no iOS/MacCatalyst** — em `Platforms/iOS/AppDelegate.cs`
+  (e no `MacCatalyst/AppDelegate.cs`):
+
+  ```csharp
+  public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+      => Microsoft.Maui.Authentication.WebAuthenticator.CallbackActivity is null
+          ? base.OpenUrl(app, url, options)
+          : Platform.OpenUrl(app, url, options);
+  ```
+
+  E em `Platforms/iOS/Info.plist` (e MacCatalyst):
+
+  ```xml
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>com.suaempresa.gestaofrota</string>
+      </array>
+    </dict>
+  </array>
+  ```
+
+- **Credenciais reais**: substituir `SEU_GOOGLE_CLIENT_ID.apps.googleusercontent.com`
+  em `Services/AppConfig.cs` e `Authentication:Google:ClientId` em
+  `GestaoFrota.API/appsettings.json` pelo Client ID real criado no Google
+  Cloud Console, e `Jwt:Key` em `appsettings.json` por uma chave forte
+  (mínimo 32 caracteres) — os valores atuais são placeholders de
+  desenvolvimento e o login real não funciona sem eles.
+
+### Para fechar o item 5 do checklist definitivamente
+
+Depois dos passos acima, rode `dotnet build -t:Run -f net10.0-android` com
+o emulador aberto e grave: tela de login → toque em "Entrar com Google" →
+tela de consentimento do Google → volta ao app já no Dashboard mostrando
+nome/e-mail/perfil → feche e reabra o app (sessão deve persistir sem pedir
+login de novo) → toque em "Sair" (deve voltar ao Login). Esse vídeo/prints é
+a evidência que os dois documentos citam como pendente.
+
 ## O que já está implementado (Sprints 1 e 2)
 
 - **Arquitetura**: MVVM com `CommunityToolkit.Mvvm`, separação em
