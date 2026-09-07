@@ -1,0 +1,1392 @@
+/* =========================================================================
+   PROTÓTIPO — Gestão Financeira e Controle de Frota
+   Folha de estilo única.
+
+   Está organizada em blocos, nesta ordem:
+     1. Variáveis de cor e espaçamento (o "guia de estilos" do projeto)
+     2. Reset básico
+     3. A página que segura o protótipo (fundo, barra do topo, celular)
+     4. Componentes do aplicativo (barra, menu, cards, listas, botões...)
+     5. Estilos específicos de cada tela
+     6. Ajuste para telas pequenas
+
+   Para mudar a cara do app inteiro, mexa só no bloco 1.
+   ========================================================================= */
+
+
+/* =========================================================================
+   1. VARIÁVEIS — o guia de estilos do projeto
+   ------------------------------------------------------------------------
+   O requisito não funcional exige "adoção de um guia de estilos consolidado
+   (como Material Design) para garantir padronização de botões, margens,
+   tipografia e espaçamentos". As variáveis abaixo SÃO esse guia: nenhuma
+   regra mais adiante escreve uma cor ou uma margem solta.
+   ========================================================================= */
+
+:root {
+  /* --- Cores principais (paleta Material Design 3) --- */
+  --cor-primaria: #0B5FA5;
+  --cor-primaria-texto: #FFFFFF;
+  --cor-primaria-clara: #D3E4FF;
+  --cor-primaria-escura: #001C38;
+
+  --cor-secundaria: #535F70;
+  --cor-secundaria-clara: #D7E3F8;
+  --cor-secundaria-escura: #101C2B;
+
+  /* --- Cores de significado financeiro ---
+     A US11 pede "indicativos visuais discretos: verde para positivo,
+     vermelho para negativo". Discreto = colorir o número, nunca o card todo. */
+  --cor-positiva: #2E7D32;
+  --cor-positiva-fundo: #C8E6C9;
+  --cor-negativa: #C62828;
+  --cor-negativa-fundo: #FFCDD2;
+  --cor-alerta: #EF6C00;
+  --cor-alerta-fundo: #FFE0B2;
+
+  /* --- Superfícies e textos --- */
+  --cor-fundo: #FBFCFF;
+  --cor-superficie: #FFFFFF;
+  --cor-superficie-variante: #EEF1F6;
+  --cor-texto: #1A1C1E;
+  --cor-texto-suave: #5A6068;
+  --cor-borda: #DDE2EA;
+
+  /* --- Espaçamentos ---
+     Todos são múltiplos de 8, que é a grade do Material Design.
+     Usar sempre estes valores é o que dá o "respiro" pedido no requisito. */
+  --espaco-xs: 4px;
+  --espaco-sm: 8px;
+  --espaco-md: 16px;
+  --espaco-lg: 24px;
+  --espaco-xl: 32px;
+
+  /* --- Cantos arredondados --- */
+  --raio-sm: 8px;
+  --raio-md: 12px;
+  --raio-lg: 16px;
+  --raio-pilula: 999px;
+
+  /* --- Sombras suaves (elevação do Material Design) --- */
+  --sombra-1: 0 1px 2px rgba(16, 28, 43, .08), 0 1px 3px rgba(16, 28, 43, .06);
+  --sombra-2: 0 2px 6px rgba(16, 28, 43, .10), 0 1px 2px rgba(16, 28, 43, .06);
+
+  /* --- Tipografia --- */
+  --fonte: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+
+/* =========================================================================
+   2. RESET BÁSICO
+   ========================================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fonte);
+  color: var(--cor-texto);
+  background-color: #E7EBF2;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Os ícones são desenhos SVG guardados no topo do HTML e reaproveitados.
+   Assim o protótipo funciona sem internet — importante no dia da banca. */
+.icone {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icone-pequeno {
+  width: 18px;
+  height: 18px;
+}
+
+
+/* =========================================================================
+   3. A PÁGINA QUE SEGURA O PROTÓTIPO
+   ------------------------------------------------------------------------
+   Tudo aqui é a "moldura" da apresentação: a barra do topo, o painel de
+   controle e o desenho do celular. Nada disso faz parte do aplicativo.
+   ========================================================================= */
+
+.barra-topo {
+  background-color: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+  padding: var(--espaco-md) var(--espaco-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-md);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.barra-topo h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.barra-topo p {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.controles {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  flex-wrap: wrap;
+}
+
+.controles label {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  margin-right: var(--espaco-xs);
+}
+
+.controles select {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-superficie);
+  color: var(--cor-texto);
+  cursor: pointer;
+}
+
+.botao-modo {
+  font-size: 14px;
+  padding: 8px 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-superficie);
+  transition: background-color .15s;
+}
+
+.botao-modo:hover {
+  background-color: var(--cor-superficie-variante);
+}
+
+.botao-modo.ativo {
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+}
+
+/* --- Área central --- */
+
+.palco {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--espaco-xl);
+  padding: var(--espaco-xl) var(--espaco-lg);
+  flex-wrap: wrap;
+}
+
+/* --- O desenho do celular --- */
+
+.celular {
+  width: 380px;
+  /* Encolhe se a janela for baixa, para o celular sempre caber inteiro na
+     tela durante a apresentação, sem precisar rolar a página. */
+  height: clamp(600px, calc(100vh - 150px), 780px);
+  background-color: #14181F;
+  border-radius: 44px;
+  padding: 12px;
+  box-shadow: 0 24px 60px rgba(16, 28, 43, .28);
+  flex-shrink: 0;
+}
+
+.celular-tela {
+  width: 100%;
+  height: 100%;
+  background-color: var(--cor-fundo);
+  border-radius: 34px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Barra de status falsa, só para o desenho parecer um celular de verdade */
+.status-celular {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px var(--espaco-lg) 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-texto);
+  flex-shrink: 0;
+}
+
+.status-icones {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* --- Legenda ao lado do celular --- */
+
+.legenda {
+  width: 320px;
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
+  padding: var(--espaco-lg);
+  box-shadow: var(--sombra-1);
+}
+
+.legenda h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: var(--espaco-xs);
+}
+
+.legenda .us {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-primaria);
+  background-color: var(--cor-primaria-clara);
+  padding: 2px 10px;
+  border-radius: var(--raio-pilula);
+  margin-bottom: var(--espaco-md);
+}
+
+.legenda p {
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-md);
+}
+
+.legenda h3 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-sm);
+}
+
+.legenda ul li {
+  font-size: 14px;
+  color: var(--cor-texto);
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: var(--espaco-sm);
+}
+
+.legenda ul li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria);
+}
+
+/* --- Modo "todas as telas" --- */
+
+.galeria {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--espaco-xl);
+  padding: var(--espaco-xl) var(--espaco-lg);
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+body.modo-galeria .galeria { display: grid; }
+body.modo-galeria .palco   { display: none; }
+
+.galeria-item h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.galeria-item p {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-md);
+}
+
+/* Cada tela da galeria é o mesmo celular, só que reduzido.
+   Usamos "zoom" em vez de diminuir a largura: assim o celular encolhe
+   inteiro, sem espremer os textos e cortar palavras. */
+.galeria .celular {
+  width: 380px;
+  height: 780px;
+  zoom: .78;
+}
+
+
+/* =========================================================================
+   4. COMPONENTES DO APLICATIVO
+   ------------------------------------------------------------------------
+   Daqui para baixo é o app de verdade.
+   ========================================================================= */
+
+/* --- Troca de telas ---
+   Todas as telas existem no HTML; só a que tem a classe "ativa" aparece. */
+
+.tela {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tela.ativa {
+  display: flex;
+}
+
+/* Na galeria todas aparecem ao mesmo tempo, cada uma no seu celular */
+.galeria .tela { display: flex; }
+
+/* --- Barra superior do app --- */
+
+.app-barra {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  padding: var(--espaco-sm) var(--espaco-md);
+  flex-shrink: 0;
+}
+
+.app-barra h2 {
+  font-size: 20px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.app-barra button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--cor-texto);
+}
+
+.app-barra button:hover {
+  background-color: var(--cor-superficie-variante);
+}
+
+/* --- Corpo rolável --- */
+
+.corpo {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--espaco-md) var(--espaco-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-md);
+}
+
+/* Sem isto, o navegador espreme os cartões quando o conteúdo passa da
+   altura da tela, em vez de deixar rolar. */
+.corpo > * { flex-shrink: 0; }
+
+/* Quando a tela tem botão flutuante, sobra espaço no fim da rolagem para
+   ele não cobrir o último item da lista. */
+.tela:has(.botao-flutuante) .corpo { padding-bottom: 104px; }
+
+.corpo::-webkit-scrollbar { width: 4px; }
+.corpo::-webkit-scrollbar-thumb {
+  background-color: var(--cor-borda);
+  border-radius: 2px;
+}
+
+/* --- Menu inferior (a navegação por perfil da US17) --- */
+
+.menu-inferior {
+  display: flex;
+  background-color: var(--cor-superficie);
+  border-top: 1px solid var(--cor-borda);
+  padding: var(--espaco-sm) var(--espaco-xs);
+  flex-shrink: 0;
+}
+
+.menu-inferior button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 0;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+/* A "pílula" atrás do ícone ativo é a marca visual do Material Design 3 */
+.menu-inferior .marcador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 30px;
+  border-radius: var(--raio-pilula);
+  transition: background-color .15s;
+}
+
+.menu-inferior button.ativo { color: var(--cor-primaria); }
+.menu-inferior button.ativo .marcador {
+  background-color: var(--cor-primaria-clara);
+}
+
+/* --- Cartão (a base de quase tudo) --- */
+
+.cartao {
+  background-color: var(--cor-superficie);
+  border-radius: var(--raio-lg);
+  padding: var(--espaco-md);
+  box-shadow: var(--sombra-1);
+}
+
+/* --- Cartão de indicador (US11) --- */
+
+.grade-kpi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-md);
+}
+
+.kpi .kpi-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--raio-sm);
+  margin-bottom: var(--espaco-sm);
+}
+
+.kpi .kpi-rotulo {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.kpi .kpi-valor {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 2px 0;
+}
+
+.kpi .kpi-nota {
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+/* Variações de cor por significado */
+.tom-positivo .kpi-icone { background-color: var(--cor-positiva-fundo); color: var(--cor-positiva); }
+.tom-positivo .kpi-valor { color: var(--cor-positiva); }
+
+.tom-negativo .kpi-icone { background-color: var(--cor-negativa-fundo); color: var(--cor-negativa); }
+.tom-negativo .kpi-valor { color: var(--cor-negativa); }
+
+.tom-alerta   .kpi-icone { background-color: var(--cor-alerta-fundo);   color: var(--cor-alerta); }
+.tom-alerta   .kpi-valor { color: var(--cor-alerta); }
+
+.tom-neutro   .kpi-icone { background-color: var(--cor-secundaria-clara); color: var(--cor-secundaria); }
+.tom-neutro   .kpi-valor { color: var(--cor-texto); }
+
+/* --- Etiquetas (chips) --- */
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-superficie-variante);
+  color: var(--cor-texto-suave);
+  white-space: nowrap;
+}
+
+.etiqueta-positiva { background-color: var(--cor-positiva-fundo); color: var(--cor-positiva); }
+.etiqueta-negativa { background-color: var(--cor-negativa-fundo); color: var(--cor-negativa); }
+.etiqueta-alerta   { background-color: var(--cor-alerta-fundo);   color: var(--cor-alerta); }
+.etiqueta-primaria { background-color: var(--cor-primaria-clara); color: var(--cor-primaria); }
+
+/* --- Filtro em segmentos (o seletor de período da US11) --- */
+
+.segmentos {
+  display: flex;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  overflow: hidden;
+  background-color: var(--cor-superficie);
+}
+
+.segmentos button {
+  flex: 1;
+  padding: 8px 4px;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  border-right: 1px solid var(--cor-borda);
+  transition: background-color .15s;
+}
+
+.segmentos button:last-child { border-right: none; }
+.segmentos button:hover { background-color: var(--cor-superficie-variante); }
+
+.segmentos button.ativo {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  font-weight: 500;
+}
+
+/* --- Botões --- */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-sm);
+  padding: 12px var(--espaco-lg);
+  border-radius: var(--raio-pilula);
+  font-size: 15px;
+  font-weight: 500;
+  transition: filter .15s, background-color .15s;
+}
+
+.botao-cheio {
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  box-shadow: var(--sombra-1);
+}
+
+.botao-cheio:hover { filter: brightness(1.08); }
+
+.botao-suave {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+}
+
+.botao-suave:hover { filter: brightness(.97); }
+
+.botao-contorno {
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-primaria);
+  background-color: var(--cor-superficie);
+}
+
+.botao-contorno:hover { background-color: var(--cor-superficie-variante); }
+
+.botao-perigo {
+  border: 1px solid var(--cor-negativa);
+  color: var(--cor-negativa);
+  background-color: var(--cor-superficie);
+}
+
+.botao-texto {
+  color: var(--cor-primaria);
+  font-size: 14px;
+  font-weight: 500;
+  padding: var(--espaco-sm);
+}
+
+.botao-largo { width: 100%; }
+
+/* Botão flutuante de ação (o "+" do Material Design) */
+.botao-flutuante {
+  position: absolute;
+  right: var(--espaco-md);
+  bottom: 88px;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-md) var(--espaco-lg);
+  border-radius: var(--raio-lg);
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--sombra-2);
+}
+
+/* --- Listas --- */
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--cor-superficie);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-1);
+  overflow: hidden;
+}
+
+.lista-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  padding: var(--espaco-md);
+  border-bottom: 1px solid var(--cor-borda);
+  text-align: left;
+  width: 100%;
+}
+
+.lista-item:last-child { border-bottom: none; }
+.lista-item:hover { background-color: var(--cor-superficie-variante); }
+
+.lista-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--cor-superficie-variante);
+  color: var(--cor-secundaria);
+  flex-shrink: 0;
+}
+
+.lista-texto { flex: 1; min-width: 0; display: block; }
+
+.lista-titulo {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista-descricao {
+  display: block;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista-valor {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.valor-positivo { color: var(--cor-positiva); }
+.valor-negativo { color: var(--cor-negativa); }
+
+/* Item desativado (soft delete): continua visível, mas apagado.
+   Nunca some da lista -- é o que diferencia desativar de excluir. */
+.lista-item.inativo { opacity: .5; }
+
+/* --- Atalhos para os cadastros de apoio --- */
+
+.atalhos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-md);
+}
+
+.atalho {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+}
+
+.atalho-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  margin-bottom: var(--espaco-sm);
+}
+
+.atalho-titulo {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.atalho-nota {
+  display: block;
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+/* --- Linha com interruptor dentro de um cartão --- */
+
+.linha-interruptor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-md);
+}
+
+/* --- Campos de formulário ---
+   Estilo "outlined" do Material Design: borda fina e rótulo em cima. */
+
+.campo { margin-bottom: var(--espaco-md); }
+
+.campo label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+  margin-bottom: 6px;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--cor-texto);
+  padding: 12px var(--espaco-md);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-superficie);
+  outline: none;
+  transition: border-color .15s;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  border-color: var(--cor-primaria);
+  border-width: 2px;
+  padding: 11px 15px;
+}
+
+.campo .ajuda {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+  margin-top: 4px;
+}
+
+/* Estado de erro: é o que mostra a validação dos critérios de aceite */
+.campo.com-erro input { border-color: var(--cor-negativa); border-width: 2px; padding: 11px 15px; }
+.campo.com-erro .ajuda { color: var(--cor-negativa); font-weight: 500; }
+
+.linha-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-md);
+}
+
+/* --- Aviso em faixa (Snackbar / feedback visual) --- */
+
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-md);
+  border-radius: var(--raio-md);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.aviso-info    { background-color: var(--cor-primaria-clara); color: var(--cor-primaria-escura); }
+.aviso-alerta  { background-color: var(--cor-alerta-fundo);   color: #7A3E00; }
+.aviso-erro    { background-color: var(--cor-negativa-fundo); color: #6E1010; }
+.aviso-sucesso { background-color: var(--cor-positiva-fundo); color: #1B4620; }
+
+/* --- Título de seção --- */
+
+.titulo-secao {
+  font-size: 15px;
+  font-weight: 600;
+  padding: var(--espaco-sm) var(--espaco-xs) 0;
+}
+
+.linha-secao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--espaco-sm) var(--espaco-xs) 0;
+}
+
+.linha-secao h3 { font-size: 15px; font-weight: 600; }
+
+
+/* =========================================================================
+   5. ESTILOS ESPECÍFICOS DE CADA TELA
+   ========================================================================= */
+
+/* --- Login (US15) --- */
+
+.tela-login {
+  justify-content: center;
+  padding: var(--espaco-xl) var(--espaco-lg);
+  text-align: center;
+  overflow-y: auto;
+}
+
+.login-marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto var(--espaco-lg);
+  border-radius: 28px;
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+}
+
+.login-marca .icone { width: 44px; height: 44px; }
+
+.tela-login h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: var(--espaco-sm);
+}
+
+.tela-login .subtitulo {
+  font-size: 15px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-xl);
+}
+
+.tela-login .aviso-privacidade {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+  margin-top: var(--espaco-md);
+  padding: 0 var(--espaco-sm);
+}
+
+.separador {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  margin: var(--espaco-xl) 0 var(--espaco-md);
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.separador::before,
+.separador::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--cor-borda);
+}
+
+/* --- Saudação da tela inicial --- */
+
+.saudacao {
+  padding: 0 var(--espaco-xs);
+}
+
+.saudacao .ola {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.saudacao h2 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* --- Previsão de caixa (US05) --- */
+
+.previsao .previsao-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--espaco-sm);
+}
+
+.previsao .previsao-rotulo {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+}
+
+.previsao .previsao-valor {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--cor-positiva);
+  line-height: 1.15;
+}
+
+.previsao .previsao-nota {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+  margin-top: var(--espaco-xs);
+}
+
+/* --- Barras de despesa por categoria (US12) --- */
+
+.barras { display: flex; flex-direction: column; gap: var(--espaco-md); }
+
+.barra-item .barra-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.barra-item .barra-valor { font-weight: 600; }
+
+.barra-trilha {
+  height: 8px;
+  background-color: var(--cor-superficie-variante);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barra-preenchida {
+  height: 100%;
+  border-radius: 4px;
+  background-color: var(--cor-primaria);
+}
+
+/* --- Gráfico de colunas entradas x saídas (US12) --- */
+
+.grafico-colunas {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espaco-sm);
+  height: 170px;
+  padding-top: var(--espaco-md);
+}
+
+.coluna-mes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-sm);
+  height: 100%;
+}
+
+.coluna-par {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+}
+
+.coluna {
+  width: 11px;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+}
+
+.coluna-entrada { background-color: var(--cor-positiva); }
+.coluna-saida   { background-color: var(--cor-negativa); }
+
+.coluna-mes span {
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+.legenda-grafico {
+  display: flex;
+  justify-content: center;
+  gap: var(--espaco-lg);
+  margin-top: var(--espaco-md);
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.legenda-grafico span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ponto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.ponto-entrada { background-color: var(--cor-positiva); }
+.ponto-saida   { background-color: var(--cor-negativa); }
+
+/* --- Gráfico de rosca (US12) ---
+   Feito com conic-gradient: uma função de CSS puro, sem biblioteca. */
+
+.rosca-area {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-lg);
+}
+
+.rosca {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: conic-gradient(
+    #0B5FA5   0deg 133deg,
+    #4C8FD1 133deg 220deg,
+    #7FB2E4 220deg 286deg,
+    #B3D3F2 286deg 331deg,
+    #D9E7F8 331deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* O furo do meio da rosca */
+.rosca::after {
+  content: '';
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background-color: var(--cor-superficie);
+}
+
+.rosca-legenda {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-sm);
+  font-size: 13px;
+}
+
+.rosca-legenda li {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+}
+
+.rosca-legenda .quadrado {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.rosca-legenda .percentual {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+/* --- Pódio do ranking (US13) --- */
+
+.ranking { display: flex; flex-direction: column; gap: var(--espaco-sm); }
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  padding: var(--espaco-sm) 0;
+}
+
+.ranking-posicao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ranking-item:first-child .ranking-posicao {
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+}
+
+.ranking-texto { flex: 1; min-width: 0; }
+.ranking-texto strong { font-size: 14px; font-weight: 500; display: block; }
+.ranking-texto small { font-size: 12px; color: var(--cor-texto-suave); }
+
+/* --- Cartão de viagem (US08) --- */
+
+.viagem-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--espaco-sm);
+}
+
+.viagem-data { font-size: 12px; color: var(--cor-texto-suave); }
+
+.viagem-rota { font-size: 16px; font-weight: 600; margin-bottom: var(--espaco-sm); }
+
+.viagem-info {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-xs);
+}
+
+.hodometros {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--cor-borda);
+  padding-top: var(--espaco-md);
+  margin-top: var(--espaco-md);
+}
+
+.hodometro small {
+  display: block;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+.hodometro strong { font-size: 14px; font-weight: 600; }
+.hodometro.rodado strong { color: var(--cor-primaria); }
+
+/* --- Cartão de veículo (US06) --- */
+
+.veiculo-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espaco-sm);
+  margin-bottom: var(--espaco-sm);
+}
+
+.placa {
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  padding: 4px 10px;
+  border: 2px solid var(--cor-texto);
+  border-radius: 5px;
+  background-color: #FFFFFF;
+}
+
+.veiculo-nome { font-size: 15px; font-weight: 600; margin-top: var(--espaco-sm); }
+.veiculo-detalhe { font-size: 13px; color: var(--cor-texto-suave); }
+
+.veiculo-numeros {
+  display: flex;
+  gap: var(--espaco-lg);
+  border-top: 1px solid var(--cor-borda);
+  padding-top: var(--espaco-md);
+  margin-top: var(--espaco-md);
+}
+
+.veiculo-numeros small {
+  display: block;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+.veiculo-numeros strong { font-size: 14px; }
+
+/* --- Perfil nas configurações --- */
+
+.perfil-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  font-size: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.perfil-dados { flex: 1; min-width: 0; }
+.perfil-dados strong { font-size: 16px; font-weight: 600; display: block; }
+.perfil-dados small { font-size: 13px; color: var(--cor-texto-suave); }
+
+/* --- Interruptor (switch) --- */
+
+.interruptor {
+  width: 48px;
+  height: 28px;
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-superficie-variante);
+  border: 2px solid var(--cor-borda);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.interruptor::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--cor-texto-suave);
+  transition: transform .15s;
+}
+
+.interruptor.ligado {
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+}
+
+.interruptor.ligado::after {
+  background-color: #FFFFFF;
+  transform: translateX(20px);
+}
+
+/* --- Diálogo (US08, confirmação de encerramento) --- */
+
+.cobertura {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(16, 28, 43, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-lg);
+  z-index: 5;
+}
+
+.dialogo {
+  background-color: var(--cor-superficie);
+  border-radius: 28px;
+  padding: var(--espaco-lg);
+  width: 100%;
+  box-shadow: var(--sombra-2);
+}
+
+.dialogo h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: var(--espaco-md);
+}
+
+.dialogo p {
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-md);
+}
+
+.dialogo-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--espaco-sm);
+  margin-top: var(--espaco-lg);
+}
+
+
+/* =========================================================================
+   6. AJUSTE PARA TELAS PEQUENAS
+   ------------------------------------------------------------------------
+   Os critérios de aceite pedem design responsivo. Aqui é a página da
+   apresentação que se adapta; o app já é desenhado em tamanho de celular.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .palco { padding: var(--espaco-md); gap: var(--espaco-lg); }
+  .legenda { width: 100%; max-width: 380px; }
+}
+
+@media (max-width: 440px) {
+  .celular {
+    width: 100%;
+    max-width: 380px;
+    height: 700px;
+    border-radius: 32px;
+    padding: 8px;
+  }
+  .celular-tela { border-radius: 26px; }
+  .barra-topo { padding: var(--espaco-md); }
+}
+
+
+/* =========================================================================
+   7. MODO EXPORTAÇÃO
+   ------------------------------------------------------------------------
+   Ligado pelo endereço, com ?exportar=nome-da-tela. Esconde tudo que é
+   moldura de apresentação e deixa só a tela do aplicativo ocupando a
+   janela inteira -- é assim que geramos as imagens para os slides.
+   ========================================================================= */
+
+body.modo-exportar .barra-topo,
+body.modo-exportar .faixa-wireframe,
+body.modo-exportar .legenda,
+body.modo-exportar .galeria { display: none !important; }
+
+body.modo-exportar .palco {
+  padding: 0;
+  gap: 0;
+  display: block;
+}
+
+/* Tamanho fixo e encostado no canto superior esquerdo: assim a região a
+   recortar é sempre a mesma, e a imagem sai exatamente do tamanho de uma
+   tela de celular. */
+body.modo-exportar .celular {
+  width: 390px;
+  height: 720px;
+  max-width: none;
+  border: 1px solid #C8C8C8;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  background-color: var(--cor-fundo);
+  margin: 0;
+}
+
+body.modo-exportar .celular-tela {
+  border: none;
+  border-radius: 0;
+}

@@ -1,0 +1,325 @@
+/* =========================================================================
+   MODO SISTEMA WEB (desktop)
+
+   Entra DEPOIS do estilo.css (e do wireframe.css, quando houver) e
+   reorganiza o mesmo HTML para tela grande:
+
+     - o menu sai de baixo e vira uma barra lateral fixa à esquerda
+     - a moldura de celular vira a janela do sistema, ocupando a tela
+     - os cartões de indicador passam de 2 para 4 colunas
+     - os formulários passam a usar duas colunas
+     - os gráficos ficam lado a lado
+
+   Nenhuma tela foi reescrita: o que muda é só o arranjo.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   1. A JANELA DO SISTEMA
+   ------------------------------------------------------------------------- */
+
+.palco {
+  align-items: stretch;
+  padding: var(--espaco-md);
+  gap: var(--espaco-md);
+  flex-wrap: nowrap;
+}
+
+.celular {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  height: calc(100vh - 100px);
+  border-radius: var(--raio-md);
+  padding: 0;
+  box-shadow: var(--sombra-2);
+}
+
+/* Quando existe a faixa de aviso do wireframe, desconta a altura dela. */
+body:has(.faixa-wireframe) .celular { height: calc(100vh - 145px); }
+
+.celular-tela {
+  border-radius: var(--raio-md);
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  grid-template-rows: 1fr;
+}
+
+/* A barra de status falsa do celular não faz sentido num sistema web. */
+.status-celular { display: none; }
+
+/* -------------------------------------------------------------------------
+   2. O MENU VIRA BARRA LATERAL
+   ------------------------------------------------------------------------- */
+
+.menu-inferior {
+  grid-column: 1;
+  grid-row: 1;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  height: 100%;
+  padding: var(--espaco-md) var(--espaco-sm);
+  border-top: none;
+  border-right: 1px solid var(--cor-borda);
+  background-color: var(--cor-superficie-variante);
+  overflow-y: auto;
+}
+
+.menu-inferior button {
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--espaco-md);
+  padding: 10px var(--espaco-md);
+  border-radius: var(--raio-sm);
+  font-size: 14px;
+  text-align: left;
+}
+
+.menu-inferior button:hover { background-color: rgba(0, 0, 0, .05); }
+
+/* A pílula do Material dá lugar à linha inteira destacada. */
+.menu-inferior .marcador {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.menu-inferior button.ativo {
+  background-color: var(--cor-primaria-clara);
+  font-weight: 600;
+}
+
+/* Marca do sistema no topo da barra lateral */
+.marca-lateral {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-sm) var(--espaco-md) var(--espaco-lg);
+}
+
+.marca-lateral .marca-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  flex-shrink: 0;
+}
+
+.marca-lateral strong {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.marca-lateral small {
+  display: block;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+/* Rodapé da barra lateral com o usuário conectado */
+.usuario-lateral {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-md);
+  border-top: 1px solid var(--cor-borda);
+  font-size: 13px;
+}
+
+.usuario-lateral .usuario-inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.usuario-lateral small {
+  display: block;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+/* -------------------------------------------------------------------------
+   3. A ÁREA DE CONTEÚDO
+   ------------------------------------------------------------------------- */
+
+.tela.ativa {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+
+/* O login ocupa a janela inteira, porque nele não existe menu. */
+.tela-login.ativa {
+  grid-column: 1 / -1;
+  align-items: center;
+}
+
+.tela-login .login-marca,
+.tela-login h1,
+.tela-login .subtitulo,
+.tela-login .acoes,
+.tela-login .separador,
+.tela-login .lista,
+.tela-login > .botao,
+.tela-login > p,
+.tela-login > div {
+  max-width: 420px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.app-barra {
+  padding: var(--espaco-md) var(--espaco-lg);
+  border-bottom: 1px solid var(--cor-borda);
+  background-color: var(--cor-superficie);
+}
+
+.app-barra h2 { font-size: 22px; }
+
+.corpo {
+  padding: var(--espaco-lg);
+  gap: var(--espaco-lg);
+}
+
+/* -------------------------------------------------------------------------
+   4. O CONTEÚDO SE ESPALHA NA LARGURA
+   ------------------------------------------------------------------------- */
+
+/* Quatro indicadores numa linha só, em vez de duas linhas de dois. */
+.grade-kpi {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espaco-lg);
+}
+
+.kpi .kpi-valor { font-size: 26px; }
+
+.atalhos {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espaco-lg);
+}
+
+/* Formulários em duas colunas. O último campo, quando ímpar, ocupa a linha. */
+.tela[data-tela="nova-movimentacao"] .cartao,
+.tela[data-tela="editar-categoria"] .cartao:first-child {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--espaco-lg);
+  align-items: start;
+}
+
+.linha-campos { grid-column: 1 / -1; }
+
+/* Listas com mais respiro nas laterais */
+.lista-item { padding: var(--espaco-md) var(--espaco-lg); }
+.lista-valor { min-width: 130px; }
+
+/* Gráficos e rankings lado a lado */
+.tela[data-tela="relatorios"] .corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.tela[data-tela="relatorios"] .corpo > .segmentos,
+.tela[data-tela="relatorios"] .corpo > .botao {
+  grid-column: 1 / -1;
+  max-width: 340px;
+}
+
+.grafico-colunas { height: 220px; }
+.coluna { width: 18px; }
+
+/* Cartões de veículo e viagem em duas colunas */
+.tela[data-tela="frota"] .corpo,
+.tela[data-tela="viagens"] .corpo,
+.tela[data-tela="dividas"] .corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.tela[data-tela="frota"] .corpo > .segmentos,
+.tela[data-tela="viagens"] .corpo > .segmentos,
+.tela[data-tela="viagens"] .corpo > .aviso,
+.tela[data-tela="dividas"] .corpo > .aviso {
+  grid-column: 1 / -1;
+  max-width: 420px;
+}
+
+.tela[data-tela="viagens"] .corpo > .aviso,
+.tela[data-tela="dividas"] .corpo > .aviso { max-width: none; }
+
+/* Categorias: as duas colunas viram Entradas e Saídas lado a lado */
+.tela[data-tela="categorias"] .corpo,
+.tela[data-tela="formas-pagamento"] .corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.tela[data-tela="categorias"] .corpo > .segmentos {
+  grid-column: 1 / -1;
+  max-width: 340px;
+}
+
+.tela[data-tela="categorias"] .corpo > .aviso,
+.tela[data-tela="formas-pagamento"] .corpo > .aviso { grid-column: 1 / -1; }
+
+/* Botão de ação principal: no desktop fica no canto, menor e discreto */
+.botao-flutuante {
+  bottom: var(--espaco-lg);
+  right: var(--espaco-lg);
+  padding: 12px var(--espaco-md);
+  font-size: 13px;
+}
+
+/* -------------------------------------------------------------------------
+   5. A PÁGINA AO REDOR
+   ------------------------------------------------------------------------- */
+
+/* A galeria de celulares não faz sentido no modo sistema web. */
+#botao-celular,
+#botao-galeria { display: none; }
+
+.legenda {
+  width: 300px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+/* Em telas menores (projetor, notebook pequeno) o painel de explicação sai
+   de cena, para o sistema aproveitar toda a largura disponível. */
+@media (max-width: 1200px) {
+  .legenda { display: none; }
+}
+
+@media (max-width: 860px) {
+  .celular-tela { grid-template-columns: 76px 1fr; }
+  .menu-inferior button { flex-direction: column; gap: 4px; padding: 10px 4px; font-size: 10px; }
+  .marca-lateral small,
+  .marca-lateral strong,
+  .usuario-lateral div { display: none; }
+  .marca-lateral, .usuario-lateral { justify-content: center; }
+  .grade-kpi, .atalhos { grid-template-columns: 1fr 1fr; }
+}

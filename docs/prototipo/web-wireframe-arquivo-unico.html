@@ -1,0 +1,4099 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe de média fidelidade — Gestão Financeira e Controle de Frota</title>
+<style>
+/* =========================================================================
+   PROTÓTIPO — Gestão Financeira e Controle de Frota
+   Folha de estilo única.
+
+   Está organizada em blocos, nesta ordem:
+     1. Variáveis de cor e espaçamento (o "guia de estilos" do projeto)
+     2. Reset básico
+     3. A página que segura o protótipo (fundo, barra do topo, celular)
+     4. Componentes do aplicativo (barra, menu, cards, listas, botões...)
+     5. Estilos específicos de cada tela
+     6. Ajuste para telas pequenas
+
+   Para mudar a cara do app inteiro, mexa só no bloco 1.
+   ========================================================================= */
+
+
+/* =========================================================================
+   1. VARIÁVEIS — o guia de estilos do projeto
+   ------------------------------------------------------------------------
+   O requisito não funcional exige "adoção de um guia de estilos consolidado
+   (como Material Design) para garantir padronização de botões, margens,
+   tipografia e espaçamentos". As variáveis abaixo SÃO esse guia: nenhuma
+   regra mais adiante escreve uma cor ou uma margem solta.
+   ========================================================================= */
+
+:root {
+  /* --- Cores principais (paleta Material Design 3) --- */
+  --cor-primaria: #0B5FA5;
+  --cor-primaria-texto: #FFFFFF;
+  --cor-primaria-clara: #D3E4FF;
+  --cor-primaria-escura: #001C38;
+
+  --cor-secundaria: #535F70;
+  --cor-secundaria-clara: #D7E3F8;
+  --cor-secundaria-escura: #101C2B;
+
+  /* --- Cores de significado financeiro ---
+     A US11 pede "indicativos visuais discretos: verde para positivo,
+     vermelho para negativo". Discreto = colorir o número, nunca o card todo. */
+  --cor-positiva: #2E7D32;
+  --cor-positiva-fundo: #C8E6C9;
+  --cor-negativa: #C62828;
+  --cor-negativa-fundo: #FFCDD2;
+  --cor-alerta: #EF6C00;
+  --cor-alerta-fundo: #FFE0B2;
+
+  /* --- Superfícies e textos --- */
+  --cor-fundo: #FBFCFF;
+  --cor-superficie: #FFFFFF;
+  --cor-superficie-variante: #EEF1F6;
+  --cor-texto: #1A1C1E;
+  --cor-texto-suave: #5A6068;
+  --cor-borda: #DDE2EA;
+
+  /* --- Espaçamentos ---
+     Todos são múltiplos de 8, que é a grade do Material Design.
+     Usar sempre estes valores é o que dá o "respiro" pedido no requisito. */
+  --espaco-xs: 4px;
+  --espaco-sm: 8px;
+  --espaco-md: 16px;
+  --espaco-lg: 24px;
+  --espaco-xl: 32px;
+
+  /* --- Cantos arredondados --- */
+  --raio-sm: 8px;
+  --raio-md: 12px;
+  --raio-lg: 16px;
+  --raio-pilula: 999px;
+
+  /* --- Sombras suaves (elevação do Material Design) --- */
+  --sombra-1: 0 1px 2px rgba(16, 28, 43, .08), 0 1px 3px rgba(16, 28, 43, .06);
+  --sombra-2: 0 2px 6px rgba(16, 28, 43, .10), 0 1px 2px rgba(16, 28, 43, .06);
+
+  /* --- Tipografia --- */
+  --fonte: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+
+/* =========================================================================
+   2. RESET BÁSICO
+   ========================================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fonte);
+  color: var(--cor-texto);
+  background-color: #E7EBF2;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Os ícones são desenhos SVG guardados no topo do HTML e reaproveitados.
+   Assim o protótipo funciona sem internet — importante no dia da banca. */
+.icone {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icone-pequeno {
+  width: 18px;
+  height: 18px;
+}
+
+
+/* =========================================================================
+   3. A PÁGINA QUE SEGURA O PROTÓTIPO
+   ------------------------------------------------------------------------
+   Tudo aqui é a "moldura" da apresentação: a barra do topo, o painel de
+   controle e o desenho do celular. Nada disso faz parte do aplicativo.
+   ========================================================================= */
+
+.barra-topo {
+  background-color: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+  padding: var(--espaco-md) var(--espaco-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-md);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.barra-topo h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.barra-topo p {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.controles {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  flex-wrap: wrap;
+}
+
+.controles label {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  margin-right: var(--espaco-xs);
+}
+
+.controles select {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-superficie);
+  color: var(--cor-texto);
+  cursor: pointer;
+}
+
+.botao-modo {
+  font-size: 14px;
+  padding: 8px 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-superficie);
+  transition: background-color .15s;
+}
+
+.botao-modo:hover {
+  background-color: var(--cor-superficie-variante);
+}
+
+.botao-modo.ativo {
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+}
+
+/* --- Área central --- */
+
+.palco {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--espaco-xl);
+  padding: var(--espaco-xl) var(--espaco-lg);
+  flex-wrap: wrap;
+}
+
+/* --- O desenho do celular --- */
+
+.celular {
+  width: 380px;
+  /* Encolhe se a janela for baixa, para o celular sempre caber inteiro na
+     tela durante a apresentação, sem precisar rolar a página. */
+  height: clamp(600px, calc(100vh - 150px), 780px);
+  background-color: #14181F;
+  border-radius: 44px;
+  padding: 12px;
+  box-shadow: 0 24px 60px rgba(16, 28, 43, .28);
+  flex-shrink: 0;
+}
+
+.celular-tela {
+  width: 100%;
+  height: 100%;
+  background-color: var(--cor-fundo);
+  border-radius: 34px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Barra de status falsa, só para o desenho parecer um celular de verdade */
+.status-celular {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px var(--espaco-lg) 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-texto);
+  flex-shrink: 0;
+}
+
+.status-icones {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* --- Legenda ao lado do celular --- */
+
+.legenda {
+  width: 320px;
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
+  padding: var(--espaco-lg);
+  box-shadow: var(--sombra-1);
+}
+
+.legenda h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: var(--espaco-xs);
+}
+
+.legenda .us {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-primaria);
+  background-color: var(--cor-primaria-clara);
+  padding: 2px 10px;
+  border-radius: var(--raio-pilula);
+  margin-bottom: var(--espaco-md);
+}
+
+.legenda p {
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-md);
+}
+
+.legenda h3 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-sm);
+}
+
+.legenda ul li {
+  font-size: 14px;
+  color: var(--cor-texto);
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: var(--espaco-sm);
+}
+
+.legenda ul li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria);
+}
+
+/* --- Modo "todas as telas" --- */
+
+.galeria {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--espaco-xl);
+  padding: var(--espaco-xl) var(--espaco-lg);
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+body.modo-galeria .galeria { display: grid; }
+body.modo-galeria .palco   { display: none; }
+
+.galeria-item h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.galeria-item p {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-md);
+}
+
+/* Cada tela da galeria é o mesmo celular, só que reduzido.
+   Usamos "zoom" em vez de diminuir a largura: assim o celular encolhe
+   inteiro, sem espremer os textos e cortar palavras. */
+.galeria .celular {
+  width: 380px;
+  height: 780px;
+  zoom: .78;
+}
+
+
+/* =========================================================================
+   4. COMPONENTES DO APLICATIVO
+   ------------------------------------------------------------------------
+   Daqui para baixo é o app de verdade.
+   ========================================================================= */
+
+/* --- Troca de telas ---
+   Todas as telas existem no HTML; só a que tem a classe "ativa" aparece. */
+
+.tela {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tela.ativa {
+  display: flex;
+}
+
+/* Na galeria todas aparecem ao mesmo tempo, cada uma no seu celular */
+.galeria .tela { display: flex; }
+
+/* --- Barra superior do app --- */
+
+.app-barra {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  padding: var(--espaco-sm) var(--espaco-md);
+  flex-shrink: 0;
+}
+
+.app-barra h2 {
+  font-size: 20px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.app-barra button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--cor-texto);
+}
+
+.app-barra button:hover {
+  background-color: var(--cor-superficie-variante);
+}
+
+/* --- Corpo rolável --- */
+
+.corpo {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--espaco-md) var(--espaco-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-md);
+}
+
+/* Sem isto, o navegador espreme os cartões quando o conteúdo passa da
+   altura da tela, em vez de deixar rolar. */
+.corpo > * { flex-shrink: 0; }
+
+/* Quando a tela tem botão flutuante, sobra espaço no fim da rolagem para
+   ele não cobrir o último item da lista. */
+.tela:has(.botao-flutuante) .corpo { padding-bottom: 104px; }
+
+.corpo::-webkit-scrollbar { width: 4px; }
+.corpo::-webkit-scrollbar-thumb {
+  background-color: var(--cor-borda);
+  border-radius: 2px;
+}
+
+/* --- Menu inferior (a navegação por perfil da US17) --- */
+
+.menu-inferior {
+  display: flex;
+  background-color: var(--cor-superficie);
+  border-top: 1px solid var(--cor-borda);
+  padding: var(--espaco-sm) var(--espaco-xs);
+  flex-shrink: 0;
+}
+
+.menu-inferior button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 0;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+/* A "pílula" atrás do ícone ativo é a marca visual do Material Design 3 */
+.menu-inferior .marcador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 30px;
+  border-radius: var(--raio-pilula);
+  transition: background-color .15s;
+}
+
+.menu-inferior button.ativo { color: var(--cor-primaria); }
+.menu-inferior button.ativo .marcador {
+  background-color: var(--cor-primaria-clara);
+}
+
+/* --- Cartão (a base de quase tudo) --- */
+
+.cartao {
+  background-color: var(--cor-superficie);
+  border-radius: var(--raio-lg);
+  padding: var(--espaco-md);
+  box-shadow: var(--sombra-1);
+}
+
+/* --- Cartão de indicador (US11) --- */
+
+.grade-kpi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-md);
+}
+
+.kpi .kpi-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--raio-sm);
+  margin-bottom: var(--espaco-sm);
+}
+
+.kpi .kpi-rotulo {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.kpi .kpi-valor {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 2px 0;
+}
+
+.kpi .kpi-nota {
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+/* Variações de cor por significado */
+.tom-positivo .kpi-icone { background-color: var(--cor-positiva-fundo); color: var(--cor-positiva); }
+.tom-positivo .kpi-valor { color: var(--cor-positiva); }
+
+.tom-negativo .kpi-icone { background-color: var(--cor-negativa-fundo); color: var(--cor-negativa); }
+.tom-negativo .kpi-valor { color: var(--cor-negativa); }
+
+.tom-alerta   .kpi-icone { background-color: var(--cor-alerta-fundo);   color: var(--cor-alerta); }
+.tom-alerta   .kpi-valor { color: var(--cor-alerta); }
+
+.tom-neutro   .kpi-icone { background-color: var(--cor-secundaria-clara); color: var(--cor-secundaria); }
+.tom-neutro   .kpi-valor { color: var(--cor-texto); }
+
+/* --- Etiquetas (chips) --- */
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-superficie-variante);
+  color: var(--cor-texto-suave);
+  white-space: nowrap;
+}
+
+.etiqueta-positiva { background-color: var(--cor-positiva-fundo); color: var(--cor-positiva); }
+.etiqueta-negativa { background-color: var(--cor-negativa-fundo); color: var(--cor-negativa); }
+.etiqueta-alerta   { background-color: var(--cor-alerta-fundo);   color: var(--cor-alerta); }
+.etiqueta-primaria { background-color: var(--cor-primaria-clara); color: var(--cor-primaria); }
+
+/* --- Filtro em segmentos (o seletor de período da US11) --- */
+
+.segmentos {
+  display: flex;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  overflow: hidden;
+  background-color: var(--cor-superficie);
+}
+
+.segmentos button {
+  flex: 1;
+  padding: 8px 4px;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  border-right: 1px solid var(--cor-borda);
+  transition: background-color .15s;
+}
+
+.segmentos button:last-child { border-right: none; }
+.segmentos button:hover { background-color: var(--cor-superficie-variante); }
+
+.segmentos button.ativo {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  font-weight: 500;
+}
+
+/* --- Botões --- */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-sm);
+  padding: 12px var(--espaco-lg);
+  border-radius: var(--raio-pilula);
+  font-size: 15px;
+  font-weight: 500;
+  transition: filter .15s, background-color .15s;
+}
+
+.botao-cheio {
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  box-shadow: var(--sombra-1);
+}
+
+.botao-cheio:hover { filter: brightness(1.08); }
+
+.botao-suave {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+}
+
+.botao-suave:hover { filter: brightness(.97); }
+
+.botao-contorno {
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-primaria);
+  background-color: var(--cor-superficie);
+}
+
+.botao-contorno:hover { background-color: var(--cor-superficie-variante); }
+
+.botao-perigo {
+  border: 1px solid var(--cor-negativa);
+  color: var(--cor-negativa);
+  background-color: var(--cor-superficie);
+}
+
+.botao-texto {
+  color: var(--cor-primaria);
+  font-size: 14px;
+  font-weight: 500;
+  padding: var(--espaco-sm);
+}
+
+.botao-largo { width: 100%; }
+
+/* Botão flutuante de ação (o "+" do Material Design) */
+.botao-flutuante {
+  position: absolute;
+  right: var(--espaco-md);
+  bottom: 88px;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-md) var(--espaco-lg);
+  border-radius: var(--raio-lg);
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--sombra-2);
+}
+
+/* --- Listas --- */
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--cor-superficie);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-1);
+  overflow: hidden;
+}
+
+.lista-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  padding: var(--espaco-md);
+  border-bottom: 1px solid var(--cor-borda);
+  text-align: left;
+  width: 100%;
+}
+
+.lista-item:last-child { border-bottom: none; }
+.lista-item:hover { background-color: var(--cor-superficie-variante); }
+
+.lista-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--cor-superficie-variante);
+  color: var(--cor-secundaria);
+  flex-shrink: 0;
+}
+
+.lista-texto { flex: 1; min-width: 0; display: block; }
+
+.lista-titulo {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista-descricao {
+  display: block;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista-valor {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.valor-positivo { color: var(--cor-positiva); }
+.valor-negativo { color: var(--cor-negativa); }
+
+/* Item desativado (soft delete): continua visível, mas apagado.
+   Nunca some da lista -- é o que diferencia desativar de excluir. */
+.lista-item.inativo { opacity: .5; }
+
+/* --- Atalhos para os cadastros de apoio --- */
+
+.atalhos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-md);
+}
+
+.atalho {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+}
+
+.atalho-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  margin-bottom: var(--espaco-sm);
+}
+
+.atalho-titulo {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.atalho-nota {
+  display: block;
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+/* --- Linha com interruptor dentro de um cartão --- */
+
+.linha-interruptor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-md);
+}
+
+/* --- Campos de formulário ---
+   Estilo "outlined" do Material Design: borda fina e rótulo em cima. */
+
+.campo { margin-bottom: var(--espaco-md); }
+
+.campo label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+  margin-bottom: 6px;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--cor-texto);
+  padding: 12px var(--espaco-md);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-superficie);
+  outline: none;
+  transition: border-color .15s;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  border-color: var(--cor-primaria);
+  border-width: 2px;
+  padding: 11px 15px;
+}
+
+.campo .ajuda {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+  margin-top: 4px;
+}
+
+/* Estado de erro: é o que mostra a validação dos critérios de aceite */
+.campo.com-erro input { border-color: var(--cor-negativa); border-width: 2px; padding: 11px 15px; }
+.campo.com-erro .ajuda { color: var(--cor-negativa); font-weight: 500; }
+
+.linha-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-md);
+}
+
+/* --- Aviso em faixa (Snackbar / feedback visual) --- */
+
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-md);
+  border-radius: var(--raio-md);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.aviso-info    { background-color: var(--cor-primaria-clara); color: var(--cor-primaria-escura); }
+.aviso-alerta  { background-color: var(--cor-alerta-fundo);   color: #7A3E00; }
+.aviso-erro    { background-color: var(--cor-negativa-fundo); color: #6E1010; }
+.aviso-sucesso { background-color: var(--cor-positiva-fundo); color: #1B4620; }
+
+/* --- Título de seção --- */
+
+.titulo-secao {
+  font-size: 15px;
+  font-weight: 600;
+  padding: var(--espaco-sm) var(--espaco-xs) 0;
+}
+
+.linha-secao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--espaco-sm) var(--espaco-xs) 0;
+}
+
+.linha-secao h3 { font-size: 15px; font-weight: 600; }
+
+
+/* =========================================================================
+   5. ESTILOS ESPECÍFICOS DE CADA TELA
+   ========================================================================= */
+
+/* --- Login (US15) --- */
+
+.tela-login {
+  justify-content: center;
+  padding: var(--espaco-xl) var(--espaco-lg);
+  text-align: center;
+  overflow-y: auto;
+}
+
+.login-marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto var(--espaco-lg);
+  border-radius: 28px;
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+}
+
+.login-marca .icone { width: 44px; height: 44px; }
+
+.tela-login h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: var(--espaco-sm);
+}
+
+.tela-login .subtitulo {
+  font-size: 15px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-xl);
+}
+
+.tela-login .aviso-privacidade {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+  margin-top: var(--espaco-md);
+  padding: 0 var(--espaco-sm);
+}
+
+.separador {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  margin: var(--espaco-xl) 0 var(--espaco-md);
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.separador::before,
+.separador::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--cor-borda);
+}
+
+/* --- Saudação da tela inicial --- */
+
+.saudacao {
+  padding: 0 var(--espaco-xs);
+}
+
+.saudacao .ola {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.saudacao h2 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* --- Previsão de caixa (US05) --- */
+
+.previsao .previsao-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--espaco-sm);
+}
+
+.previsao .previsao-rotulo {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+}
+
+.previsao .previsao-valor {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--cor-positiva);
+  line-height: 1.15;
+}
+
+.previsao .previsao-nota {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+  margin-top: var(--espaco-xs);
+}
+
+/* --- Barras de despesa por categoria (US12) --- */
+
+.barras { display: flex; flex-direction: column; gap: var(--espaco-md); }
+
+.barra-item .barra-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.barra-item .barra-valor { font-weight: 600; }
+
+.barra-trilha {
+  height: 8px;
+  background-color: var(--cor-superficie-variante);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barra-preenchida {
+  height: 100%;
+  border-radius: 4px;
+  background-color: var(--cor-primaria);
+}
+
+/* --- Gráfico de colunas entradas x saídas (US12) --- */
+
+.grafico-colunas {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espaco-sm);
+  height: 170px;
+  padding-top: var(--espaco-md);
+}
+
+.coluna-mes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-sm);
+  height: 100%;
+}
+
+.coluna-par {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+}
+
+.coluna {
+  width: 11px;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+}
+
+.coluna-entrada { background-color: var(--cor-positiva); }
+.coluna-saida   { background-color: var(--cor-negativa); }
+
+.coluna-mes span {
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+.legenda-grafico {
+  display: flex;
+  justify-content: center;
+  gap: var(--espaco-lg);
+  margin-top: var(--espaco-md);
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.legenda-grafico span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ponto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.ponto-entrada { background-color: var(--cor-positiva); }
+.ponto-saida   { background-color: var(--cor-negativa); }
+
+/* --- Gráfico de rosca (US12) ---
+   Feito com conic-gradient: uma função de CSS puro, sem biblioteca. */
+
+.rosca-area {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-lg);
+}
+
+.rosca {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: conic-gradient(
+    #0B5FA5   0deg 133deg,
+    #4C8FD1 133deg 220deg,
+    #7FB2E4 220deg 286deg,
+    #B3D3F2 286deg 331deg,
+    #D9E7F8 331deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* O furo do meio da rosca */
+.rosca::after {
+  content: '';
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background-color: var(--cor-superficie);
+}
+
+.rosca-legenda {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-sm);
+  font-size: 13px;
+}
+
+.rosca-legenda li {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+}
+
+.rosca-legenda .quadrado {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.rosca-legenda .percentual {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+/* --- Pódio do ranking (US13) --- */
+
+.ranking { display: flex; flex-direction: column; gap: var(--espaco-sm); }
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  padding: var(--espaco-sm) 0;
+}
+
+.ranking-posicao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ranking-item:first-child .ranking-posicao {
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+}
+
+.ranking-texto { flex: 1; min-width: 0; }
+.ranking-texto strong { font-size: 14px; font-weight: 500; display: block; }
+.ranking-texto small { font-size: 12px; color: var(--cor-texto-suave); }
+
+/* --- Cartão de viagem (US08) --- */
+
+.viagem-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--espaco-sm);
+}
+
+.viagem-data { font-size: 12px; color: var(--cor-texto-suave); }
+
+.viagem-rota { font-size: 16px; font-weight: 600; margin-bottom: var(--espaco-sm); }
+
+.viagem-info {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-xs);
+}
+
+.hodometros {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--cor-borda);
+  padding-top: var(--espaco-md);
+  margin-top: var(--espaco-md);
+}
+
+.hodometro small {
+  display: block;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+.hodometro strong { font-size: 14px; font-weight: 600; }
+.hodometro.rodado strong { color: var(--cor-primaria); }
+
+/* --- Cartão de veículo (US06) --- */
+
+.veiculo-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espaco-sm);
+  margin-bottom: var(--espaco-sm);
+}
+
+.placa {
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  padding: 4px 10px;
+  border: 2px solid var(--cor-texto);
+  border-radius: 5px;
+  background-color: #FFFFFF;
+}
+
+.veiculo-nome { font-size: 15px; font-weight: 600; margin-top: var(--espaco-sm); }
+.veiculo-detalhe { font-size: 13px; color: var(--cor-texto-suave); }
+
+.veiculo-numeros {
+  display: flex;
+  gap: var(--espaco-lg);
+  border-top: 1px solid var(--cor-borda);
+  padding-top: var(--espaco-md);
+  margin-top: var(--espaco-md);
+}
+
+.veiculo-numeros small {
+  display: block;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+.veiculo-numeros strong { font-size: 14px; }
+
+/* --- Perfil nas configurações --- */
+
+.perfil-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  font-size: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.perfil-dados { flex: 1; min-width: 0; }
+.perfil-dados strong { font-size: 16px; font-weight: 600; display: block; }
+.perfil-dados small { font-size: 13px; color: var(--cor-texto-suave); }
+
+/* --- Interruptor (switch) --- */
+
+.interruptor {
+  width: 48px;
+  height: 28px;
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-superficie-variante);
+  border: 2px solid var(--cor-borda);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.interruptor::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--cor-texto-suave);
+  transition: transform .15s;
+}
+
+.interruptor.ligado {
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+}
+
+.interruptor.ligado::after {
+  background-color: #FFFFFF;
+  transform: translateX(20px);
+}
+
+/* --- Diálogo (US08, confirmação de encerramento) --- */
+
+.cobertura {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(16, 28, 43, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-lg);
+  z-index: 5;
+}
+
+.dialogo {
+  background-color: var(--cor-superficie);
+  border-radius: 28px;
+  padding: var(--espaco-lg);
+  width: 100%;
+  box-shadow: var(--sombra-2);
+}
+
+.dialogo h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: var(--espaco-md);
+}
+
+.dialogo p {
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-md);
+}
+
+.dialogo-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--espaco-sm);
+  margin-top: var(--espaco-lg);
+}
+
+
+/* =========================================================================
+   6. AJUSTE PARA TELAS PEQUENAS
+   ------------------------------------------------------------------------
+   Os critérios de aceite pedem design responsivo. Aqui é a página da
+   apresentação que se adapta; o app já é desenhado em tamanho de celular.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .palco { padding: var(--espaco-md); gap: var(--espaco-lg); }
+  .legenda { width: 100%; max-width: 380px; }
+}
+
+@media (max-width: 440px) {
+  .celular {
+    width: 100%;
+    max-width: 380px;
+    height: 700px;
+    border-radius: 32px;
+    padding: 8px;
+  }
+  .celular-tela { border-radius: 26px; }
+  .barra-topo { padding: var(--espaco-md); }
+}
+
+
+/* =========================================================================
+   7. MODO EXPORTAÇÃO
+   ------------------------------------------------------------------------
+   Ligado pelo endereço, com ?exportar=nome-da-tela. Esconde tudo que é
+   moldura de apresentação e deixa só a tela do aplicativo ocupando a
+   janela inteira -- é assim que geramos as imagens para os slides.
+   ========================================================================= */
+
+body.modo-exportar .barra-topo,
+body.modo-exportar .faixa-wireframe,
+body.modo-exportar .legenda,
+body.modo-exportar .galeria { display: none !important; }
+
+body.modo-exportar .palco {
+  padding: 0;
+  gap: 0;
+  display: block;
+}
+
+/* Tamanho fixo e encostado no canto superior esquerdo: assim a região a
+   recortar é sempre a mesma, e a imagem sai exatamente do tamanho de uma
+   tela de celular. */
+body.modo-exportar .celular {
+  width: 390px;
+  height: 720px;
+  max-width: none;
+  border: 1px solid #C8C8C8;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  background-color: var(--cor-fundo);
+  margin: 0;
+}
+
+body.modo-exportar .celular-tela {
+  border: none;
+  border-radius: 0;
+}
+
+</style>
+<style>
+/* =========================================================================
+   MODO WIREFRAME — baixa/média fidelidade
+
+   Este arquivo entra DEPOIS do estilo.css e sobrescreve o que for cor,
+   sombra e acabamento. A estrutura das telas continua exatamente a mesma:
+   o que muda é só a aparência.
+
+   Por que escala de cinza: nesta fase a discussão é sobre estrutura,
+   hierarquia e fluxo. Tirar a cor obriga todo mundo a olhar para o que
+   importa agora -- onde cada informação fica e em que ordem -- em vez de
+   discutir tom de azul. A paleta definitiva fica para o guia de estilos.
+   ========================================================================= */
+
+:root {
+  /* Tudo em cinza. Um único tom escuro faz o papel de "destaque". */
+  --cor-primaria: #4A4A4A;
+  --cor-primaria-texto: #FFFFFF;
+  --cor-primaria-clara: #E4E4E4;
+  --cor-primaria-escura: #2B2B2B;
+
+  --cor-secundaria: #6E6E6E;
+  --cor-secundaria-clara: #ECECEC;
+  --cor-secundaria-escura: #2B2B2B;
+
+  /* Positivo, negativo e alerta ficam iguais de propósito.
+     Quem diferencia entrada de saída aqui é o sinal + e -, não a cor. */
+  --cor-positiva: #2B2B2B;
+  --cor-positiva-fundo: #ECECEC;
+  --cor-negativa: #2B2B2B;
+  --cor-negativa-fundo: #ECECEC;
+  --cor-alerta: #2B2B2B;
+  --cor-alerta-fundo: #ECECEC;
+
+  --cor-fundo: #FFFFFF;
+  --cor-superficie: #FFFFFF;
+  --cor-superficie-variante: #F2F2F2;
+  --cor-texto: #2B2B2B;
+  --cor-texto-suave: #7A7A7A;
+  --cor-borda: #B8B8B8;
+
+  /* Wireframe não tem elevação. */
+  --sombra-1: none;
+  --sombra-2: none;
+
+  /* Cantos mais retos: caixa de rascunho, não cartão de produto. */
+  --raio-sm: 2px;
+  --raio-md: 3px;
+  --raio-lg: 4px;
+  --raio-pilula: 3px;
+}
+
+/* --- A moldura do celular vira um contorno simples --- */
+
+.celular {
+  background-color: #FFFFFF;
+  border: 2px solid #4A4A4A;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: none;
+  /* Desconta também a faixa de aviso do topo, para o celular caber
+     inteiro na tela sem precisar rolar a página. */
+  height: clamp(540px, calc(100vh - 210px), 780px);
+}
+
+.palco { padding-top: var(--espaco-lg); }
+
+.celular-tela {
+  border-radius: 4px;
+  border: 1px solid var(--cor-borda);
+}
+
+body { background-color: #FFFFFF; }
+
+.palco { border-top: 1px solid var(--cor-borda); }
+
+/* --- Cartões e listas viram caixas de contorno --- */
+
+.cartao,
+.lista,
+.legenda,
+.segmentos {
+  border: 1px solid var(--cor-borda);
+  box-shadow: none;
+}
+
+/* --- Ícones viram marcadores de posição tracejados ---
+   É a convenção de wireframe: a caixa mostra que ali vai um ícone,
+   sem prender a discussão ao desenho do ícone. */
+
+.lista-icone,
+.kpi-icone,
+.atalho-icone,
+.login-marca,
+.avatar {
+  background-color: #F2F2F2 !important;
+  border: 1px dashed var(--cor-borda);
+  color: #6E6E6E !important;
+  border-radius: 2px;
+}
+
+.icone { stroke-width: 1.5; }
+
+/* --- Botões --- */
+
+.botao-cheio {
+  background-color: #4A4A4A;
+  color: #FFFFFF;
+  box-shadow: none;
+}
+
+.botao-suave {
+  background-color: #ECECEC;
+  color: #2B2B2B;
+  border: 1px solid var(--cor-borda);
+}
+
+.botao-contorno,
+.botao-perigo {
+  border: 1px solid var(--cor-borda);
+  color: #2B2B2B;
+  background-color: #FFFFFF;
+}
+
+.botao-texto { color: #2B2B2B; text-decoration: underline; }
+
+.botao-flutuante {
+  background-color: #4A4A4A;
+  color: #FFFFFF;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+/* --- Etiquetas --- */
+
+.etiqueta,
+.etiqueta-positiva,
+.etiqueta-negativa,
+.etiqueta-alerta,
+.etiqueta-primaria {
+  background-color: #FFFFFF !important;
+  border: 1px solid var(--cor-borda);
+  color: #4A4A4A !important;
+}
+
+/* --- Valores: quem separa entrada de saída é o sinal, não a cor --- */
+
+.valor-positivo,
+.valor-negativo { color: #2B2B2B; }
+
+.kpi .kpi-valor,
+.previsao .previsao-valor { color: #2B2B2B !important; }
+
+/* --- Avisos viram caixas neutras com barra à esquerda --- */
+
+.aviso,
+.aviso-info,
+.aviso-alerta,
+.aviso-erro,
+.aviso-sucesso {
+  background-color: #F7F7F7 !important;
+  border: 1px solid var(--cor-borda);
+  border-left: 3px solid #4A4A4A;
+  color: #2B2B2B !important;
+  border-radius: 2px;
+}
+
+/* --- Campos de formulário --- */
+
+.campo input,
+.campo select,
+.campo textarea {
+  border-color: #8A8A8A;
+  border-radius: 2px;
+}
+
+.campo input:focus,
+.campo select:focus { border-color: #4A4A4A; }
+
+/* O erro continua visível, marcado por borda cheia e texto sublinhado,
+   já que não podemos usar vermelho. */
+.campo.com-erro input { border: 2px solid #2B2B2B; }
+.campo.com-erro .ajuda {
+  color: #2B2B2B;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* --- Menu inferior --- */
+
+.menu-inferior { border-top: 1px solid var(--cor-borda); }
+.menu-inferior button.ativo { color: #2B2B2B; }
+.menu-inferior button.ativo .marcador {
+  background-color: #E4E4E4;
+  border: 1px solid var(--cor-borda);
+  border-radius: 3px;
+}
+
+/* --- Segmentos --- */
+
+.segmentos button.ativo {
+  background-color: #E4E4E4;
+  color: #2B2B2B;
+  font-weight: 600;
+}
+
+/* --- Interruptor --- */
+
+.interruptor { background-color: #FFFFFF; border-color: #8A8A8A; }
+.interruptor::after { background-color: #8A8A8A; }
+.interruptor.ligado { background-color: #4A4A4A; border-color: #4A4A4A; }
+
+/* --- Gráficos em cinza ---
+   Entradas em cinza escuro, saídas em cinza claro com contorno. */
+
+.barra-trilha { background-color: #ECECEC; border: 1px solid #DADADA; }
+.barra-preenchida { background-color: #6E6E6E; }
+
+.coluna-entrada { background-color: #4A4A4A; }
+.coluna-saida   { background-color: #FFFFFF; border: 1px solid #4A4A4A; }
+
+.ponto-entrada { background-color: #4A4A4A; }
+.ponto-saida   { background-color: #FFFFFF; border: 1px solid #4A4A4A; }
+
+.rosca {
+  background: conic-gradient(
+    #4A4A4A   0deg 133deg,
+    #757575 133deg 220deg,
+    #9E9E9E 220deg 286deg,
+    #C4C4C4 286deg 331deg,
+    #E4E4E4 331deg 360deg
+  );
+  border: 1px solid var(--cor-borda);
+}
+
+.rosca-legenda .quadrado { border: 1px solid #8A8A8A; }
+
+/* --- Ranking --- */
+
+.ranking-posicao {
+  background-color: #FFFFFF;
+  border: 1px solid #4A4A4A;
+  color: #2B2B2B;
+}
+
+.ranking-item:first-child .ranking-posicao {
+  background-color: #4A4A4A;
+  color: #FFFFFF;
+}
+
+/* --- Diálogo --- */
+
+.dialogo { border: 1px solid #4A4A4A; border-radius: 4px; }
+
+/* --- Cabeçalho da página e legenda lateral --- */
+
+.barra-topo { border-bottom: 1px solid var(--cor-borda); }
+
+.botao-modo { border-radius: 3px; }
+.botao-modo.ativo { background-color: #4A4A4A; border-color: #4A4A4A; }
+
+.legenda .us {
+  background-color: #FFFFFF;
+  border: 1px solid var(--cor-borda);
+  color: #2B2B2B;
+  border-radius: 2px;
+}
+
+.legenda ul li::before { background-color: #7A7A7A; }
+
+/* --- Faixa de aviso no topo, explicando o que é este arquivo --- */
+
+.faixa-wireframe {
+  background-color: #F2F2F2;
+  border-bottom: 1px solid var(--cor-borda);
+  padding: 10px 24px;
+  font-size: 13px;
+  color: #4A4A4A;
+  text-align: center;
+}
+
+.faixa-wireframe strong { color: #2B2B2B; }
+
+</style>
+<style>
+/* =========================================================================
+   MODO SISTEMA WEB (desktop)
+
+   Entra DEPOIS do estilo.css (e do wireframe.css, quando houver) e
+   reorganiza o mesmo HTML para tela grande:
+
+     - o menu sai de baixo e vira uma barra lateral fixa à esquerda
+     - a moldura de celular vira a janela do sistema, ocupando a tela
+     - os cartões de indicador passam de 2 para 4 colunas
+     - os formulários passam a usar duas colunas
+     - os gráficos ficam lado a lado
+
+   Nenhuma tela foi reescrita: o que muda é só o arranjo.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   1. A JANELA DO SISTEMA
+   ------------------------------------------------------------------------- */
+
+.palco {
+  align-items: stretch;
+  padding: var(--espaco-md);
+  gap: var(--espaco-md);
+  flex-wrap: nowrap;
+}
+
+.celular {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  height: calc(100vh - 100px);
+  border-radius: var(--raio-md);
+  padding: 0;
+  box-shadow: var(--sombra-2);
+}
+
+/* Quando existe a faixa de aviso do wireframe, desconta a altura dela. */
+body:has(.faixa-wireframe) .celular { height: calc(100vh - 145px); }
+
+.celular-tela {
+  border-radius: var(--raio-md);
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  grid-template-rows: 1fr;
+}
+
+/* A barra de status falsa do celular não faz sentido num sistema web. */
+.status-celular { display: none; }
+
+/* -------------------------------------------------------------------------
+   2. O MENU VIRA BARRA LATERAL
+   ------------------------------------------------------------------------- */
+
+.menu-inferior {
+  grid-column: 1;
+  grid-row: 1;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  height: 100%;
+  padding: var(--espaco-md) var(--espaco-sm);
+  border-top: none;
+  border-right: 1px solid var(--cor-borda);
+  background-color: var(--cor-superficie-variante);
+  overflow-y: auto;
+}
+
+.menu-inferior button {
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--espaco-md);
+  padding: 10px var(--espaco-md);
+  border-radius: var(--raio-sm);
+  font-size: 14px;
+  text-align: left;
+}
+
+.menu-inferior button:hover { background-color: rgba(0, 0, 0, .05); }
+
+/* A pílula do Material dá lugar à linha inteira destacada. */
+.menu-inferior .marcador {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.menu-inferior button.ativo {
+  background-color: var(--cor-primaria-clara);
+  font-weight: 600;
+}
+
+/* Marca do sistema no topo da barra lateral */
+.marca-lateral {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-sm) var(--espaco-md) var(--espaco-lg);
+}
+
+.marca-lateral .marca-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  flex-shrink: 0;
+}
+
+.marca-lateral strong {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.marca-lateral small {
+  display: block;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+/* Rodapé da barra lateral com o usuário conectado */
+.usuario-lateral {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-md);
+  border-top: 1px solid var(--cor-borda);
+  font-size: 13px;
+}
+
+.usuario-lateral .usuario-inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.usuario-lateral small {
+  display: block;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+/* -------------------------------------------------------------------------
+   3. A ÁREA DE CONTEÚDO
+   ------------------------------------------------------------------------- */
+
+.tela.ativa {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+
+/* O login ocupa a janela inteira, porque nele não existe menu. */
+.tela-login.ativa {
+  grid-column: 1 / -1;
+  align-items: center;
+}
+
+.tela-login .login-marca,
+.tela-login h1,
+.tela-login .subtitulo,
+.tela-login .acoes,
+.tela-login .separador,
+.tela-login .lista,
+.tela-login > .botao,
+.tela-login > p,
+.tela-login > div {
+  max-width: 420px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.app-barra {
+  padding: var(--espaco-md) var(--espaco-lg);
+  border-bottom: 1px solid var(--cor-borda);
+  background-color: var(--cor-superficie);
+}
+
+.app-barra h2 { font-size: 22px; }
+
+.corpo {
+  padding: var(--espaco-lg);
+  gap: var(--espaco-lg);
+}
+
+/* -------------------------------------------------------------------------
+   4. O CONTEÚDO SE ESPALHA NA LARGURA
+   ------------------------------------------------------------------------- */
+
+/* Quatro indicadores numa linha só, em vez de duas linhas de dois. */
+.grade-kpi {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espaco-lg);
+}
+
+.kpi .kpi-valor { font-size: 26px; }
+
+.atalhos {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espaco-lg);
+}
+
+/* Formulários em duas colunas. O último campo, quando ímpar, ocupa a linha. */
+.tela[data-tela="nova-movimentacao"] .cartao,
+.tela[data-tela="editar-categoria"] .cartao:first-child {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--espaco-lg);
+  align-items: start;
+}
+
+.linha-campos { grid-column: 1 / -1; }
+
+/* Listas com mais respiro nas laterais */
+.lista-item { padding: var(--espaco-md) var(--espaco-lg); }
+.lista-valor { min-width: 130px; }
+
+/* Gráficos e rankings lado a lado */
+.tela[data-tela="relatorios"] .corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.tela[data-tela="relatorios"] .corpo > .segmentos,
+.tela[data-tela="relatorios"] .corpo > .botao {
+  grid-column: 1 / -1;
+  max-width: 340px;
+}
+
+.grafico-colunas { height: 220px; }
+.coluna { width: 18px; }
+
+/* Cartões de veículo e viagem em duas colunas */
+.tela[data-tela="frota"] .corpo,
+.tela[data-tela="viagens"] .corpo,
+.tela[data-tela="dividas"] .corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.tela[data-tela="frota"] .corpo > .segmentos,
+.tela[data-tela="viagens"] .corpo > .segmentos,
+.tela[data-tela="viagens"] .corpo > .aviso,
+.tela[data-tela="dividas"] .corpo > .aviso {
+  grid-column: 1 / -1;
+  max-width: 420px;
+}
+
+.tela[data-tela="viagens"] .corpo > .aviso,
+.tela[data-tela="dividas"] .corpo > .aviso { max-width: none; }
+
+/* Categorias: as duas colunas viram Entradas e Saídas lado a lado */
+.tela[data-tela="categorias"] .corpo,
+.tela[data-tela="formas-pagamento"] .corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.tela[data-tela="categorias"] .corpo > .segmentos {
+  grid-column: 1 / -1;
+  max-width: 340px;
+}
+
+.tela[data-tela="categorias"] .corpo > .aviso,
+.tela[data-tela="formas-pagamento"] .corpo > .aviso { grid-column: 1 / -1; }
+
+/* Botão de ação principal: no desktop fica no canto, menor e discreto */
+.botao-flutuante {
+  bottom: var(--espaco-lg);
+  right: var(--espaco-lg);
+  padding: 12px var(--espaco-md);
+  font-size: 13px;
+}
+
+/* -------------------------------------------------------------------------
+   5. A PÁGINA AO REDOR
+   ------------------------------------------------------------------------- */
+
+/* A galeria de celulares não faz sentido no modo sistema web. */
+#botao-celular,
+#botao-galeria { display: none; }
+
+.legenda {
+  width: 300px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+/* Em telas menores (projetor, notebook pequeno) o painel de explicação sai
+   de cena, para o sistema aproveitar toda a largura disponível. */
+@media (max-width: 1200px) {
+  .legenda { display: none; }
+}
+
+@media (max-width: 860px) {
+  .celular-tela { grid-template-columns: 76px 1fr; }
+  .menu-inferior button { flex-direction: column; gap: 4px; padding: 10px 4px; font-size: 10px; }
+  .marca-lateral small,
+  .marca-lateral strong,
+  .usuario-lateral div { display: none; }
+  .marca-lateral, .usuario-lateral { justify-content: center; }
+  .grade-kpi, .atalhos { grid-template-columns: 1fr 1fr; }
+}
+
+</style>
+
+<!--
+  ===========================================================================
+  PROTÓTIPO DE TELAS — Gestão Financeira e Controle de Frota
+  Aplicativo mobile para empresas do ramo logístico
+
+  Como isto funciona:
+    - Todas as telas estão escritas aqui embaixo, uma dentro da outra.
+    - Só aparece a tela que tem a classe "ativa". O arquivo js/prototipo.js
+      cuida de trocar essa classe quando você clica no menu.
+    - Para editar um texto, procure a tela pelo comentário e mude direto.
+    - Para mudar cores, margens ou fontes, mexa apenas no começo do arquivo
+      css/estilo.css, no bloco "1. VARIÁVEIS".
+
+  Nenhuma biblioteca externa é usada. Abra o index.html no navegador e pronto.
+  ===========================================================================
+-->
+
+<!-- ==========================================================================
+     DESENHOS DOS ÍCONES
+     Ficam escondidos aqui e são reaproveitados nas telas com <use>.
+     Guardar os ícones dentro do arquivo faz o protótipo funcionar sem
+     internet, o que evita sustos no dia da apresentação.
+     ========================================================================== -->
+<svg style="display:none">
+  <symbol id="i-caminhao" viewBox="0 0 24 24">
+    <path d="M3 17V7a1 1 0 0 1 1-1h9v11H3z"/>
+    <path d="M13 10h4l3 3v4h-7z"/>
+    <circle cx="7.5" cy="17.5" r="1.8"/>
+    <circle cx="16.5" cy="17.5" r="1.8"/>
+  </symbol>
+  <symbol id="i-carteira" viewBox="0 0 24 24">
+    <rect x="3" y="6" width="18" height="13" rx="2"/>
+    <path d="M3 10h18"/>
+    <circle cx="16.5" cy="14.5" r="1.1"/>
+  </symbol>
+  <symbol id="i-receber" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 7.5v9M8.5 13 12 16.5 15.5 13"/>
+  </symbol>
+  <symbol id="i-pagar" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 16.5v-9M8.5 11 12 7.5 15.5 11"/>
+  </symbol>
+  <symbol id="i-painel" viewBox="0 0 24 24">
+    <rect x="3" y="3" width="7" height="9" rx="1.5"/>
+    <rect x="14" y="3" width="7" height="5" rx="1.5"/>
+    <rect x="14" y="12" width="7" height="9" rx="1.5"/>
+    <rect x="3" y="16" width="7" height="5" rx="1.5"/>
+  </symbol>
+  <symbol id="i-dinheiro" viewBox="0 0 24 24">
+    <rect x="2" y="6" width="20" height="12" rx="2"/>
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M5.5 12h.01M18.5 12h.01"/>
+  </symbol>
+  <symbol id="i-rota" viewBox="0 0 24 24">
+    <circle cx="6" cy="5.5" r="2.5"/>
+    <circle cx="18" cy="18.5" r="2.5"/>
+    <path d="M9 5.5h5a3.5 3.5 0 0 1 0 7h-4a3.5 3.5 0 0 0 0 7h5"/>
+  </symbol>
+  <symbol id="i-grafico" viewBox="0 0 24 24">
+    <path d="M3 3v18h18"/>
+    <path d="M7 15.5 11 10l3 3 5-7"/>
+  </symbol>
+  <symbol id="i-ajustes" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="3.2"/>
+    <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/>
+  </symbol>
+  <symbol id="i-google" viewBox="0 0 24 24">
+    <path d="M20.5 12.2a8.5 8.5 0 1 1-2.6-6.1"/>
+    <path d="M20.5 12.2H12"/>
+  </symbol>
+  <symbol id="i-usuario" viewBox="0 0 24 24">
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>
+  </symbol>
+  <symbol id="i-grupo" viewBox="0 0 24 24">
+    <circle cx="9" cy="8" r="3.5"/>
+    <path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/>
+    <path d="M16 5.6a3.5 3.5 0 0 1 0 6.8"/>
+    <path d="M18.2 14.4c2 .8 3.3 2.4 3.3 4.7"/>
+  </symbol>
+  <symbol id="i-avancar" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-voltar"  viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-check"   viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="i-mais"    viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-calendario" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="16" rx="2"/>
+    <path d="M3 10h18M8 3v4M16 3v4"/>
+  </symbol>
+  <symbol id="i-sair" viewBox="0 0 24 24">
+    <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/>
+    <path d="M10 17l-5-5 5-5M5 12h11"/>
+  </symbol>
+  <symbol id="i-escudo" viewBox="0 0 24 24">
+    <path d="M12 3l8 3v6c0 5-3.5 8.2-8 9-4.5-.8-8-4-8-9V6z"/>
+  </symbol>
+  <symbol id="i-relogio" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/><path d="M12 7v5.3l3.5 2"/>
+  </symbol>
+  <symbol id="i-chave" viewBox="0 0 24 24">
+    <path d="M15.5 3.5a5 5 0 0 0-4.6 7L3 18.4 5.6 21l7.9-7.9a5 5 0 0 0 7-4.6 5 5 0 0 0-.4-2l-3.2 3.2-2.6-2.6 3.2-3.2a5 5 0 0 0-2-.4z"/>
+  </symbol>
+  <symbol id="i-combustivel" viewBox="0 0 24 24">
+    <path d="M4 20V5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v15"/>
+    <path d="M2.5 20h12"/>
+    <path d="M13 9h3.5a2 2 0 0 1 2 2v5.5a1.6 1.6 0 0 0 3.2 0V9.5L19 7"/>
+  </symbol>
+  <symbol id="i-bandeira" viewBox="0 0 24 24">
+    <path d="M5.5 21V3.5"/><path d="M5.5 4.5h13l-2.6 4.2 2.6 4.3h-13"/>
+  </symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24">
+    <path d="M4 8h3l1.5-2.2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+    <circle cx="12" cy="13.2" r="3.4"/>
+  </symbol>
+  <symbol id="i-lua" viewBox="0 0 24 24">
+    <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>
+  </symbol>
+  <symbol id="i-info" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/>
+  </symbol>
+  <symbol id="i-alerta" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.3h.01"/>
+  </symbol>
+  <symbol id="i-exportar" viewBox="0 0 24 24">
+    <path d="M12 15.5V3"/><path d="M7.5 7.5 12 3l4.5 4.5"/>
+    <path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>
+  </symbol>
+  <symbol id="i-local" viewBox="0 0 24 24">
+    <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/>
+    <circle cx="12" cy="10" r="2.5"/>
+  </symbol>
+  <symbol id="i-etiqueta" viewBox="0 0 24 24">
+    <path d="M3 3h8.2L21 12.8 12.8 21 3 11.2z"/>
+    <circle cx="7.6" cy="7.6" r="1.3"/>
+  </symbol>
+  <symbol id="i-cartao" viewBox="0 0 24 24">
+    <rect x="2" y="5" width="20" height="14" rx="2.5"/>
+    <path d="M2 10h20"/>
+    <path d="M6 14.5h3"/>
+  </symbol>
+  <symbol id="i-pix" viewBox="0 0 24 24">
+    <path d="M12 2.8 21.2 12 12 21.2 2.8 12z"/>
+    <path d="M8.6 8.6 12 12l3.4-3.4M8.6 15.4 12 12l3.4 3.4"/>
+  </symbol>
+  <symbol id="i-boleto" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="14" rx="2"/>
+    <path d="M7 9v6M10 9v6M13.5 9v6M17 9v6"/>
+  </symbol>
+  <symbol id="i-olho-fechado" viewBox="0 0 24 24">
+    <path d="M9.9 5.2A9.6 9.6 0 0 1 12 5c5 0 9 4.5 9 7a11 11 0 0 1-2.6 3.6"/>
+    <path d="M6.2 6.9C3.9 8.4 3 10.8 3 12c0 2.5 4 7 9 7a9.4 9.4 0 0 0 4.2-1"/>
+    <path d="M3 3l18 18"/>
+  </symbol>
+  <symbol id="i-semrede" viewBox="0 0 24 24">
+    <path d="M6.5 19h10a4 4 0 0 0 .9-7.9A6 6 0 0 0 7.2 9"/>
+    <path d="M3 3l18 18"/>
+  </symbol>
+</svg>
+
+
+<!-- ==========================================================================
+     BARRA DA APRESENTAÇÃO
+     Não faz parte do aplicativo: são os controles de quem está mostrando.
+     ========================================================================== -->
+<header class="barra-topo">
+  <div>
+    <h1>Gestão Financeira e Controle de Frota</h1>
+    <p>Wireframe de média fidelidade &middot; Entrega 1 &middot; sistema web para empresas do ramo logístico</p>
+  </div>
+
+  <div class="controles">
+    <label for="seletor-perfil">Entrar como</label>
+    <select id="seletor-perfil">
+      <option value="ADMINISTRADOR">Administrador</option>
+      <option value="GESTOR_FROTA">Gestor de Frota</option>
+      <option value="FINANCEIRO">Financeiro</option>
+      <option value="MOTORISTA">Operador/Motorista</option>
+    </select>
+
+    <button class="botao-modo ativo" id="botao-celular">Um celular</button>
+    <button class="botao-modo" id="botao-galeria">Todas as telas</button>
+  </div>
+</header>
+
+<div class="faixa-wireframe">
+  <strong>Wireframe de média fidelidade.</strong>
+  Escala de cinza proposital: nesta fase discutimos estrutura, hierarquia e fluxo.
+  A paleta definitiva entra no guia de estilos.
+</div>
+
+
+<!-- ==========================================================================
+     PALCO — o celular no meio da tela, com a explicação ao lado
+     ========================================================================== -->
+<main class="palco">
+
+  <div class="celular">
+    <div class="celular-tela" id="celular-tela">
+
+      <!-- Barra de status falsa, só para parecer um celular -->
+      <div class="status-celular">
+        <span>09:41</span>
+        <div class="status-icones">
+          <span>5G</span>
+          <span>100%</span>
+        </div>
+      </div>
+
+
+      <!-- ==================================================================
+           TELA 1 — LOGIN (US15)
+           Autenticação via conta do Google, sem formulário de senha.
+           =================================================================== -->
+      <section class="tela tela-login ativa" data-tela="login">
+        <div class="login-marca">
+          <svg class="icone"><use href="#i-caminhao"></use></svg>
+        </div>
+
+        <h1>Gestão de Frota</h1>
+        <p class="subtitulo">
+          Controle financeiro e operacional da sua transportadora, em tempo real.
+        </p>
+
+        <button class="botao botao-cheio botao-largo" data-ir="inicio">
+          <svg class="icone icone-pequeno"><use href="#i-google"></use></svg>
+          Entrar com Google
+        </button>
+
+        <p class="aviso-privacidade">
+          Usamos sua conta Google apenas para identificar você.
+          Não temos acesso à sua senha.
+        </p>
+
+        <div class="separador">ou entre como</div>
+
+        <div class="lista">
+          <button class="lista-item" data-ir="inicio" data-perfil="ADMINISTRADOR">
+            <span class="lista-icone">
+              <svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg>
+            </span>
+            <span class="lista-texto">
+              <span class="lista-titulo">Ana Ribeiro</span>
+              <span class="lista-descricao">Administrador</span>
+            </span>
+            <svg class="icone icone-pequeno"><use href="#i-avancar"></use></svg>
+          </button>
+
+          <button class="lista-item" data-ir="viagens" data-perfil="MOTORISTA">
+            <span class="lista-icone">
+              <svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg>
+            </span>
+            <span class="lista-texto">
+              <span class="lista-titulo">João Batista</span>
+              <span class="lista-descricao">Operador/Motorista</span>
+            </span>
+            <svg class="icone icone-pequeno"><use href="#i-avancar"></use></svg>
+          </button>
+
+          <!-- A US16 diz que o primeiro login fica "Aguardando Aprovação" -->
+          <button class="lista-item" data-ir="login">
+            <span class="lista-icone">
+              <svg class="icone icone-pequeno"><use href="#i-relogio"></use></svg>
+            </span>
+            <span class="lista-texto">
+              <span class="lista-titulo">Marina Souza</span>
+              <span class="lista-descricao">Aguardando aprovação</span>
+            </span>
+            <svg class="icone icone-pequeno"><use href="#i-avancar"></use></svg>
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 2 — INÍCIO / INDICADORES (US11)
+           Cards de KPI e filtro de período.
+           =================================================================== -->
+      <section class="tela" data-tela="inicio">
+        <div class="corpo">
+          <div class="saudacao">
+            <p class="ola">Olá, Ana</p>
+            <h2>Visão geral</h2>
+          </div>
+
+          <!-- Filtro de data exigido pela US11 -->
+          <div class="segmentos">
+            <button class="ativo">Mês</button>
+            <button>Ano</button>
+            <button>Período</button>
+          </div>
+
+          <div class="grade-kpi">
+            <div class="cartao kpi tom-positivo">
+              <div class="kpi-icone">
+                <svg class="icone icone-pequeno"><use href="#i-carteira"></use></svg>
+              </div>
+              <p class="kpi-rotulo">Saldo atual</p>
+              <p class="kpi-valor">R$ 11,4 mil</p>
+              <p class="kpi-nota">Somente lançamentos pagos</p>
+            </div>
+
+            <div class="cartao kpi tom-neutro">
+              <div class="kpi-icone">
+                <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+              </div>
+              <p class="kpi-rotulo">Veículos em viagem</p>
+              <p class="kpi-valor">2</p>
+              <p class="kpi-nota">Viagens em andamento</p>
+            </div>
+
+            <div class="cartao kpi tom-positivo">
+              <div class="kpi-icone">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </div>
+              <p class="kpi-rotulo">A receber no mês</p>
+              <p class="kpi-valor">R$ 11,2 mil</p>
+              <p class="kpi-nota">Fretes pendentes</p>
+            </div>
+
+            <div class="cartao kpi tom-negativo">
+              <div class="kpi-icone">
+                <svg class="icone icone-pequeno"><use href="#i-pagar"></use></svg>
+              </div>
+              <p class="kpi-rotulo">A pagar no mês</p>
+              <p class="kpi-valor">R$ 31,9 mil</p>
+              <p class="kpi-nota">Despesas pendentes</p>
+            </div>
+          </div>
+
+          <!-- Motor de previsão da US05 -->
+          <div class="cartao previsao">
+            <div class="previsao-topo">
+              <span class="previsao-rotulo">Previsão de caixa</span>
+              <span class="etiqueta">Próximos 30 dias</span>
+            </div>
+            <p class="previsao-valor" style="color: var(--cor-negativa)">- R$ 9.316,00</p>
+            <p class="previsao-nota">
+              Atenção: as pendências do período levam o caixa a saldo negativo.
+            </p>
+          </div>
+
+          <div class="titulo-secao">Maiores despesas</div>
+
+          <div class="cartao barras">
+            <div class="barra-item">
+              <div class="barra-topo">
+                <span>Salários</span>
+                <span class="barra-valor">R$ 18.600,00</span>
+              </div>
+              <div class="barra-trilha"><div class="barra-preenchida" style="width:100%"></div></div>
+            </div>
+
+            <div class="barra-item">
+              <div class="barra-topo">
+                <span>Financiamento</span>
+                <span class="barra-valor">R$ 7.850,00</span>
+              </div>
+              <div class="barra-trilha"><div class="barra-preenchida" style="width:42%"></div></div>
+            </div>
+
+            <div class="barra-item">
+              <div class="barra-topo">
+                <span>Combustível</span>
+                <span class="barra-valor">R$ 5.140,00</span>
+              </div>
+              <div class="barra-trilha"><div class="barra-preenchida" style="width:28%"></div></div>
+            </div>
+
+            <div class="barra-item">
+              <div class="barra-topo">
+                <span>Manutenção</span>
+                <span class="barra-valor">R$ 5.400,00</span>
+              </div>
+              <div class="barra-trilha"><div class="barra-preenchida" style="width:29%"></div></div>
+            </div>
+          </div>
+
+          <button class="botao-texto" data-ir="relatorios">Ver relatórios completos</button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 3 — FINANCEIRO (US03)
+           Lista de movimentações de caixa.
+           =================================================================== -->
+      <section class="tela" data-tela="financeiro">
+        <div class="app-barra">
+          <h2>Financeiro</h2>
+          <button data-ir="dividas" title="Dívidas">
+            <svg class="icone"><use href="#i-calendario"></use></svg>
+          </button>
+        </div>
+
+        <div class="corpo">
+          <!-- Atalhos para os cadastros de apoio (US01 e US02) -->
+          <div class="atalhos">
+            <button class="cartao atalho" data-ir="categorias">
+              <span class="atalho-icone">
+                <svg class="icone icone-pequeno"><use href="#i-etiqueta"></use></svg>
+              </span>
+              <span class="atalho-titulo">Categorias</span>
+              <span class="atalho-nota">7 cadastradas</span>
+            </button>
+
+            <button class="cartao atalho" data-ir="formas-pagamento">
+              <span class="atalho-icone">
+                <svg class="icone icone-pequeno"><use href="#i-cartao"></use></svg>
+              </span>
+              <span class="atalho-titulo">Formas de pagamento</span>
+              <span class="atalho-nota">6 disponíveis</span>
+            </button>
+          </div>
+
+          <div class="segmentos">
+            <button class="ativo">Tudo</button>
+            <button>Entradas</button>
+            <button>Saídas</button>
+          </div>
+
+          <div class="lista">
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-positiva-fundo); color: var(--cor-positiva)">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Frete carga seca SP-CWB</span>
+                <span class="lista-descricao">Frete &middot; Pix &middot; pago em 28/08</span>
+              </span>
+              <span class="lista-valor valor-positivo">+ R$ 8.400</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-combustivel"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Abastecimento posto Graal</span>
+                <span class="lista-descricao">Combustível &middot; 372 L &middot; viagem SP-CWB</span>
+              </span>
+              <span class="lista-valor valor-negativo">- R$ 2.180</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-alerta-fundo); color: var(--cor-alerta)">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Frete refrigerado CPQ-RJ</span>
+                <span class="lista-descricao">Pendente &middot; vence 05/09</span>
+              </span>
+              <span class="lista-valor valor-positivo">+ R$ 11.200</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-alerta-fundo); color: var(--cor-alerta)">
+                <svg class="icone icone-pequeno"><use href="#i-chave"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Revisão de freios &mdash; DAF XF 480</span>
+                <span class="lista-descricao">Manutenção &middot; pendente &middot; vence 10/09</span>
+              </span>
+              <span class="lista-valor valor-negativo">- R$ 5.400</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-alerta-fundo); color: var(--cor-alerta)">
+                <svg class="icone icone-pequeno"><use href="#i-dinheiro"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Financiamento Volvo &mdash; 14/48</span>
+                <span class="lista-descricao">Boleto &middot; pendente &middot; vence 15/09</span>
+              </span>
+              <span class="lista-valor valor-negativo">- R$ 7.850</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Folha de pagamento agosto</span>
+                <span class="lista-descricao">Salários &middot; pendente &middot; vence 05/09</span>
+              </span>
+              <span class="lista-valor valor-negativo">- R$ 18.600</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="botao-flutuante" data-ir="nova-movimentacao">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Novo lançamento
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 4 — NOVA MOVIMENTAÇÃO (US03 + US09)
+           Mostra de propósito um campo com erro, para deixar visível a
+           validação exigida nos critérios de aceite.
+           =================================================================== -->
+      <section class="tela" data-tela="nova-movimentacao">
+        <div class="app-barra">
+          <button data-ir="financeiro">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Novo lançamento</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="segmentos">
+            <button>Entrada</button>
+            <button class="ativo">Saída</button>
+          </div>
+
+          <div class="cartao">
+            <!-- Campo com erro: o app não aceita valor zero ou negativo -->
+            <div class="campo com-erro">
+              <label for="c-valor">Valor</label>
+              <input id="c-valor" type="text" value="R$ 0,00">
+              <p class="ajuda">O valor deve ser maior que zero.</p>
+            </div>
+
+            <div class="campo">
+              <label for="c-descricao">Descrição</label>
+              <input id="c-descricao" type="text" value="Abastecimento posto Graal">
+            </div>
+
+            <div class="campo">
+              <label for="c-categoria">Categoria</label>
+              <select id="c-categoria">
+                <option>Combustível</option>
+                <option>Pedágio</option>
+                <option>Manutenção</option>
+                <option>Salários</option>
+                <option>Financiamento</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="c-pagamento">Forma de pagamento</label>
+              <select id="c-pagamento">
+                <option>Cartão Corporativo</option>
+                <option>Pix</option>
+                <option>Boleto</option>
+                <option>Transferência TED</option>
+              </select>
+            </div>
+
+            <!-- A ponte entre os módulos, da US09 -->
+            <div class="campo">
+              <label for="c-viagem">Vincular à viagem <span style="font-weight:400">(opcional)</span></label>
+              <select id="c-viagem">
+                <option>Nenhuma</option>
+                <option selected>São Paulo/SP &rarr; Curitiba/PR &middot; 20/08</option>
+                <option>Campinas/SP &rarr; Rio de Janeiro/RJ &middot; 14/08</option>
+              </select>
+              <p class="ajuda">Vincular permite calcular o custo por quilômetro da viagem.</p>
+            </div>
+
+            <!-- Campo extra da US09, necessário para o km/l da US10 -->
+            <div class="campo">
+              <label for="c-litros">Quantidade em litros</label>
+              <input id="c-litros" type="text" value="372">
+            </div>
+
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="c-vencimento">Vencimento</label>
+                <input id="c-vencimento" type="text" value="21/08/2026">
+              </div>
+              <div class="campo">
+                <label for="c-status">Status</label>
+                <select id="c-status">
+                  <option selected>Pago</option>
+                  <option>Pendente</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- A US03 diz: se o status for Pago, esta data vira obrigatória -->
+            <div class="campo">
+              <label for="c-datapagamento">Data de pagamento <span style="color:var(--cor-negativa)">*</span></label>
+              <input id="c-datapagamento" type="text" value="21/08/2026">
+              <p class="ajuda">Obrigatória porque o status está como Pago.</p>
+            </div>
+
+            <button class="botao botao-contorno botao-largo">
+              <svg class="icone icone-pequeno"><use href="#i-camera"></use></svg>
+              Anexar comprovante
+            </button>
+          </div>
+
+          <button class="botao botao-cheio botao-largo" data-ir="financeiro">Salvar lançamento</button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 5 — DÍVIDAS E PARCELAMENTOS (US04)
+           =================================================================== -->
+      <section class="tela" data-tela="dividas">
+        <div class="app-barra">
+          <button data-ir="financeiro">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Dívidas</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              Ao salvar uma dívida, o sistema cria automaticamente todas as
+              parcelas futuras no fluxo de caixa, já com status pendente.
+            </span>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <div>
+                <p class="veiculo-nome">Financiamento Caminhão Volvo FH 460</p>
+                <p class="veiculo-detalhe">48 parcelas de R$ 7.850,00</p>
+              </div>
+              <span class="etiqueta etiqueta-alerta">14 de 48</span>
+            </div>
+
+            <div class="barra-trilha" style="margin-top: 16px">
+              <div class="barra-preenchida" style="width:29%"></div>
+            </div>
+
+            <div class="veiculo-numeros">
+              <div>
+                <small>Soma total</small>
+                <strong>R$ 376.800,00</strong>
+              </div>
+              <div>
+                <small>Quitação antecipada</small>
+                <strong>R$ 231.000,00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <div>
+                <p class="veiculo-nome">Financiamento Carreta Randon</p>
+                <p class="veiculo-detalhe">36 parcelas de R$ 3.200,00</p>
+              </div>
+              <span class="etiqueta etiqueta-alerta">6 de 36</span>
+            </div>
+
+            <div class="barra-trilha" style="margin-top: 16px">
+              <div class="barra-preenchida" style="width:17%"></div>
+            </div>
+
+            <div class="veiculo-numeros">
+              <div>
+                <small>Soma total</small>
+                <strong>R$ 115.200,00</strong>
+              </div>
+              <div>
+                <small>Quitação antecipada</small>
+                <strong>R$ 88.400,00</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="botao-flutuante">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Nova dívida
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 6 — FROTA (US06 e US06-b)
+           =================================================================== -->
+      <section class="tela" data-tela="frota">
+        <div class="app-barra">
+          <h2>Frota</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="segmentos">
+            <button class="ativo">Todos</button>
+            <button>Disponível</button>
+            <button>Em viagem</button>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <span class="placa">RTA-9F12</span>
+              <span class="etiqueta etiqueta-alerta">Em viagem</span>
+            </div>
+            <p class="veiculo-nome">Volvo FH 460</p>
+            <p class="veiculo-detalhe">2021 &middot; 32 toneladas</p>
+            <div class="veiculo-numeros">
+              <div><small>Custo por km</small><strong>R$ 2,84</strong></div>
+              <div><small>Consumo médio</small><strong>2,4 km/L</strong></div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <span class="placa">QXB-4521</span>
+              <span class="etiqueta etiqueta-positiva">Disponível</span>
+            </div>
+            <p class="veiculo-nome">Scania R 450</p>
+            <p class="veiculo-detalhe">2019 &middot; 30 toneladas</p>
+            <div class="veiculo-numeros">
+              <div><small>Custo por km</small><strong>R$ 5,89</strong></div>
+              <div><small>Consumo médio</small><strong>2,1 km/L</strong></div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <span class="placa">MHD-3312</span>
+              <span class="etiqueta etiqueta-negativa">Em manutenção</span>
+            </div>
+            <p class="veiculo-nome">DAF XF 480</p>
+            <p class="veiculo-detalhe">2018 &middot; 28 toneladas</p>
+
+            <div class="aviso aviso-alerta" style="margin-top: 16px">
+              <svg class="icone icone-pequeno"><use href="#i-chave"></use></svg>
+              <span>
+                Revisão de freios aberta em 27/08. A despesa de R$ 5.400,00
+                já foi lançada no caixa automaticamente.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <button class="botao-flutuante">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Novo veículo
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 7 — VIAGENS (US08)
+           É a tela que o motorista vê ao abrir o aplicativo.
+           =================================================================== -->
+      <section class="tela" data-tela="viagens">
+        <div class="app-barra">
+          <h2>Viagens</h2>
+        </div>
+
+        <div class="corpo">
+          <!-- Sinal de que o app funciona sem internet (Offline-First) -->
+          <div class="aviso aviso-alerta">
+            <svg class="icone icone-pequeno"><use href="#i-semrede"></use></svg>
+            <span>
+              Sem conexão. Seus apontamentos estão salvos no aparelho e serão
+              enviados assim que a rede voltar.
+            </span>
+          </div>
+
+          <div class="segmentos">
+            <button class="ativo">Todas</button>
+            <button>Em andamento</button>
+            <button>Concluídas</button>
+          </div>
+
+          <div class="cartao">
+            <div class="viagem-topo">
+              <span class="etiqueta etiqueta-alerta">
+                <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+                Em andamento
+              </span>
+              <span class="viagem-data">30/08/2026</span>
+            </div>
+
+            <p class="viagem-rota">São Paulo/SP &rarr; Curitiba/PR</p>
+
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+              Volvo FH 460
+            </p>
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg>
+              João Batista
+            </p>
+
+            <div class="hodometros">
+              <div class="hodometro"><small>Inicial</small><strong>184.320 km</strong></div>
+              <div class="hodometro"><small>Final</small><strong>&mdash;</strong></div>
+              <div class="hodometro rodado"><small>Rodado</small><strong>&mdash;</strong></div>
+            </div>
+
+            <button class="botao botao-suave botao-largo" style="margin-top:16px" data-ir="encerrar-viagem">
+              <svg class="icone icone-pequeno"><use href="#i-bandeira"></use></svg>
+              Encerrar viagem
+            </button>
+          </div>
+
+          <div class="cartao">
+            <div class="viagem-topo">
+              <span class="etiqueta etiqueta-positiva">
+                <svg class="icone icone-pequeno"><use href="#i-check"></use></svg>
+                Concluída
+              </span>
+              <span class="viagem-data">20/08/2026</span>
+            </div>
+
+            <p class="viagem-rota">São Paulo/SP &rarr; Curitiba/PR</p>
+
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+              Scania R 450
+            </p>
+
+            <div class="hodometros">
+              <div class="hodometro"><small>Inicial</small><strong>251.400 km</strong></div>
+              <div class="hodometro"><small>Final</small><strong>251.815 km</strong></div>
+              <div class="hodometro rodado"><small>Rodado</small><strong>415 km</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="botao-flutuante">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Abrir viagem
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 8 — ENCERRAR VIAGEM (US08)
+           A validação crítica: o hodômetro final não pode ser menor ou
+           igual ao inicial. A tela mostra o erro acontecendo.
+           =================================================================== -->
+      <section class="tela" data-tela="encerrar-viagem">
+        <div class="app-barra">
+          <button data-ir="viagens">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Encerrar viagem</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="cartao">
+            <p class="viagem-rota">São Paulo/SP &rarr; Curitiba/PR</p>
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+              Volvo FH 460 &middot; placa RTA-9F12
+            </p>
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-calendario"></use></svg>
+              Iniciada em 30/08/2026
+            </p>
+
+            <div class="hodometros">
+              <div class="hodometro">
+                <small>Hodômetro inicial registrado</small>
+                <strong>184.320 km</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="campo com-erro" style="margin-bottom:0">
+              <label for="c-hodometro">Hodômetro final</label>
+              <input id="c-hodometro" type="text" value="183.900">
+              <p class="ajuda">O hodômetro final deve ser maior que o inicial.</p>
+            </div>
+          </div>
+
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              Ao confirmar, o sistema calcula e salva a quilometragem rodada
+              sozinho. Você não precisa fazer a conta.
+            </span>
+          </div>
+
+          <button class="botao botao-cheio botao-largo" data-ir="viagens">Confirmar encerramento</button>
+          <button class="botao botao-texto botao-largo" data-ir="viagens">Cancelar</button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 9 — RELATÓRIOS (US10, US12, US13, US14)
+           =================================================================== -->
+      <section class="tela" data-tela="relatorios">
+        <div class="app-barra">
+          <h2>Relatórios</h2>
+          <button title="Exportar">
+            <svg class="icone"><use href="#i-exportar"></use></svg>
+          </button>
+        </div>
+
+        <div class="corpo">
+          <div class="segmentos">
+            <button>3 meses</button>
+            <button class="ativo">6 meses</button>
+            <button>1 ano</button>
+          </div>
+
+          <!-- Gráfico de colunas da US12 -->
+          <div class="cartao">
+            <div class="titulo-secao" style="padding:0 0 4px">Entradas e saídas</div>
+
+            <div class="grafico-colunas">
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:52%"></div>
+                  <div class="coluna coluna-saida"   style="height:44%"></div>
+                </div>
+                <span>Mar</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:68%"></div>
+                  <div class="coluna coluna-saida"   style="height:50%"></div>
+                </div>
+                <span>Abr</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:45%"></div>
+                  <div class="coluna coluna-saida"   style="height:62%"></div>
+                </div>
+                <span>Mai</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:80%"></div>
+                  <div class="coluna coluna-saida"   style="height:55%"></div>
+                </div>
+                <span>Jun</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:72%"></div>
+                  <div class="coluna coluna-saida"   style="height:66%"></div>
+                </div>
+                <span>Jul</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:58%"></div>
+                  <div class="coluna coluna-saida"   style="height:88%"></div>
+                </div>
+                <span>Ago</span>
+              </div>
+            </div>
+
+            <div class="legenda-grafico">
+              <span><i class="ponto ponto-entrada"></i> Entradas</span>
+              <span><i class="ponto ponto-saida"></i> Saídas</span>
+            </div>
+          </div>
+
+          <!-- Gráfico de rosca da US12, feito só com CSS -->
+          <div class="cartao">
+            <div class="titulo-secao" style="padding:0 0 16px">Despesas por categoria</div>
+
+            <div class="rosca-area">
+              <div class="rosca"></div>
+
+              <ul class="rosca-legenda">
+                <li>
+                  <i class="quadrado" style="background:#0B5FA5"></i>
+                  Salários <span class="percentual">37%</span>
+                </li>
+                <li>
+                  <i class="quadrado" style="background:#4C8FD1"></i>
+                  Financiamento <span class="percentual">24%</span>
+                </li>
+                <li>
+                  <i class="quadrado" style="background:#7FB2E4"></i>
+                  Combustível <span class="percentual">18%</span>
+                </li>
+                <li>
+                  <i class="quadrado" style="background:#B3D3F2"></i>
+                  Manutenção <span class="percentual">13%</span>
+                </li>
+                <li>
+                  <i class="quadrado" style="background:#D9E7F8"></i>
+                  Pedágio <span class="percentual">8%</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Rankings da US13 -->
+          <div class="cartao">
+            <div class="titulo-secao" style="padding:0 0 8px">Rotas mais lucrativas</div>
+
+            <div class="ranking">
+              <div class="ranking-item">
+                <span class="ranking-posicao">1</span>
+                <span class="ranking-texto">
+                  <strong>Campinas/SP &rarr; Rio de Janeiro/RJ</strong>
+                  <small>512 km rodados &middot; margem de 74%</small>
+                </span>
+                <span class="lista-valor valor-positivo">R$ 8.240</span>
+              </div>
+
+              <div class="ranking-item">
+                <span class="ranking-posicao">2</span>
+                <span class="ranking-texto">
+                  <strong>São Paulo/SP &rarr; Curitiba/PR</strong>
+                  <small>415 km rodados &middot; margem de 71%</small>
+                </span>
+                <span class="lista-valor valor-positivo">R$ 5.956</span>
+              </div>
+
+              <div class="ranking-item">
+                <span class="ranking-posicao">3</span>
+                <span class="ranking-texto">
+                  <strong>Curitiba/PR &rarr; Porto Alegre/RS</strong>
+                  <small>711 km rodados &middot; margem de 52%</small>
+                </span>
+                <span class="lista-valor valor-positivo">R$ 4.180</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="titulo-secao" style="padding:0 0 8px">Maior custo por quilômetro</div>
+
+            <div class="ranking">
+              <div class="ranking-item">
+                <span class="ranking-posicao">1</span>
+                <span class="ranking-texto">
+                  <strong>Scania R 450</strong>
+                  <small>QXB-4521 &middot; 2,1 km/L</small>
+                </span>
+                <span class="lista-valor valor-negativo">R$ 5,89/km</span>
+              </div>
+
+              <div class="ranking-item">
+                <span class="ranking-posicao">2</span>
+                <span class="ranking-texto">
+                  <strong>Iveco Hi-Way 480</strong>
+                  <small>LKE-5T77 &middot; 2,2 km/L</small>
+                </span>
+                <span class="lista-valor valor-negativo">R$ 3,12/km</span>
+              </div>
+
+              <div class="ranking-item">
+                <span class="ranking-posicao">3</span>
+                <span class="ranking-texto">
+                  <strong>Volvo FH 460</strong>
+                  <small>RTA-9F12 &middot; 2,4 km/L</small>
+                </span>
+                <span class="lista-valor valor-negativo">R$ 2,84/km</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exportação da US14 -->
+          <button class="botao botao-contorno botao-largo">
+            <svg class="icone icone-pequeno"><use href="#i-exportar"></use></svg>
+            Exportar período em CSV
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 10 — USUÁRIOS E PERMISSÕES (US16)
+           Visível apenas para o Administrador.
+           =================================================================== -->
+      <section class="tela" data-tela="usuarios">
+        <div class="app-barra">
+          <button data-ir="ajustes">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Usuários</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="aviso aviso-alerta">
+            <svg class="icone icone-pequeno"><use href="#i-alerta"></use></svg>
+            <span>
+              1 cadastro aguardando aprovação. Enquanto não for aprovado,
+              a pessoa não consegue usar o aplicativo.
+            </span>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <div>
+                <p class="veiculo-nome">Marina Souza</p>
+                <p class="veiculo-detalhe">marina.souza@translog.com.br</p>
+              </div>
+              <span class="etiqueta etiqueta-alerta">Aguardando</span>
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap">
+              <button class="botao botao-contorno" style="padding:8px 16px; font-size:14px">
+                <svg class="icone icone-pequeno"><use href="#i-escudo"></use></svg>
+                Operador/Motorista
+              </button>
+              <button class="botao botao-cheio" style="padding:8px 16px; font-size:14px">
+                <svg class="icone icone-pequeno"><use href="#i-check"></use></svg>
+                Aprovar
+              </button>
+            </div>
+          </div>
+
+          <div class="lista">
+            <button class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Ana Ribeiro</span>
+                <span class="lista-descricao">Administrador</span>
+              </span>
+              <span class="etiqueta etiqueta-positiva">Ativo</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Carlos Menezes</span>
+                <span class="lista-descricao">Gestor de Frota</span>
+              </span>
+              <span class="etiqueta etiqueta-positiva">Ativo</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Beatriz Lima</span>
+                <span class="lista-descricao">Financeiro</span>
+              </span>
+              <span class="etiqueta etiqueta-positiva">Ativo</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">João Batista</span>
+                <span class="lista-descricao">Operador/Motorista</span>
+              </span>
+              <span class="etiqueta etiqueta-positiva">Ativo</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 11 — AJUSTES (US15, opção de sair)
+           =================================================================== -->
+      <section class="tela" data-tela="ajustes">
+        <div class="app-barra">
+          <h2>Ajustes</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="cartao">
+            <div class="perfil-cabecalho">
+              <div class="avatar">AR</div>
+              <div class="perfil-dados">
+                <strong>Ana Ribeiro</strong>
+                <small>ana.ribeiro@translog.com.br</small>
+                <span class="etiqueta etiqueta-primaria" style="margin-top:6px">Administrador</span>
+              </div>
+            </div>
+
+            <p style="font-size:13px; color:var(--cor-texto-suave); margin-top:16px; padding-top:16px; border-top:1px solid var(--cor-borda)">
+              Acesso total ao sistema.
+            </p>
+          </div>
+
+          <div class="lista">
+            <div class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-lua"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Tema escuro</span>
+                <span class="lista-descricao">Acompanha o aparelho quando desligado</span>
+              </span>
+              <span class="interruptor"></span>
+            </div>
+
+            <!-- Só o Administrador enxerga este item (US16) -->
+            <button class="lista-item" data-ir="usuarios" data-somente-admin>
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-grupo"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Usuários e permissões</span>
+                <span class="lista-descricao">Aprovar cadastros e definir perfis</span>
+              </span>
+              <svg class="icone icone-pequeno"><use href="#i-avancar"></use></svg>
+            </button>
+
+            <div class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-info"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Sobre o aplicativo</span>
+                <span class="lista-descricao">Versão 0.1.0 &middot; protótipo da Sprint 1</span>
+              </span>
+            </div>
+          </div>
+
+          <button class="botao botao-perigo botao-largo" data-ir="login">
+            <svg class="icone icone-pequeno"><use href="#i-sair"></use></svg>
+            Sair da conta
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 12 — CATEGORIAS (US01)
+           Cadastrar, listar, editar e desativar categorias.
+           Repare que em nenhum lugar existe a palavra "excluir": a saída de
+           uma categoria é sempre desativação (soft delete), porque apagar de
+           verdade quebraria os lançamentos antigos que apontam para ela.
+           =================================================================== -->
+      <section class="tela" data-tela="categorias">
+        <div class="app-barra">
+          <button data-ir="financeiro">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Categorias</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="segmentos">
+            <button class="ativo">Todas</button>
+            <button>Entradas</button>
+            <button>Saídas</button>
+          </div>
+
+          <div class="titulo-secao">Entradas</div>
+
+          <div class="lista">
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-positiva-fundo); color: var(--cor-positiva)">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Frete</span>
+                <span class="lista-descricao">Entrada &middot; padrão do sistema</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-positiva-fundo); color: var(--cor-positiva)">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Reembolso de cliente</span>
+                <span class="lista-descricao">Entrada &middot; criada pela empresa</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+          </div>
+
+          <div class="titulo-secao">Saídas</div>
+
+          <div class="lista">
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-combustivel"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Combustível</span>
+                <span class="lista-descricao">Saída &middot; padrão do sistema</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-rota"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Pedágio</span>
+                <span class="lista-descricao">Saída &middot; padrão do sistema</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-chave"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Manutenção</span>
+                <span class="lista-descricao">Saída &middot; padrão do sistema</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <!-- Uma categoria desativada: continua na lista, apagada, com a
+                 etiqueta explicando o que aconteceu. Este item é a resposta
+                 visual à pergunta do enunciado sobre soft delete. -->
+            <button class="lista-item inativo" data-ir="editar-categoria">
+              <span class="lista-icone">
+                <svg class="icone icone-pequeno"><use href="#i-olho-fechado"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Diária de ajudante</span>
+                <span class="lista-descricao">Saída &middot; usada em 12 lançamentos</span>
+              </span>
+              <span class="etiqueta">Inativa</span>
+            </button>
+          </div>
+
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              Categorias inativas somem dos formulários de novo lançamento, mas
+              continuam aparecendo nos relatórios e no histórico. Nada é apagado.
+            </span>
+          </div>
+        </div>
+
+        <button class="botao-flutuante" data-ir="editar-categoria">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Nova categoria
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 13 — EDITAR CATEGORIA (US01)
+           O botão destrutivo se chama "Desativar", nunca "Excluir".
+           =================================================================== -->
+      <section class="tela" data-tela="editar-categoria">
+        <div class="app-barra">
+          <button data-ir="categorias">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Editar categoria</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="cartao">
+            <div class="campo">
+              <label for="cat-titulo">Título</label>
+              <input id="cat-titulo" type="text" value="Combustível">
+              <p class="ajuda">Obrigatório. É o nome que aparece nos lançamentos.</p>
+            </div>
+
+            <div class="campo" style="margin-bottom:0">
+              <label>Tipo</label>
+              <div class="segmentos">
+                <button>Entrada (receita)</button>
+                <button class="ativo">Saída (despesa)</button>
+              </div>
+              <p class="ajuda">
+                Obrigatório. Define se a categoria soma ou subtrai do saldo.
+              </p>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="linha-interruptor">
+              <div>
+                <p class="lista-titulo">Categoria ativa</p>
+                <p class="lista-descricao">Disponível para novos lançamentos</p>
+              </div>
+              <span class="interruptor ligado"></span>
+            </div>
+          </div>
+
+          <div class="aviso aviso-alerta">
+            <svg class="icone icone-pequeno"><use href="#i-alerta"></use></svg>
+            <span>
+              <strong>Esta categoria não pode ser excluída.</strong>
+              Ela está vinculada a 47 lançamentos no fluxo de caixa. Apagá-la
+              deixaria esses registros sem categoria e quebraria os relatórios.
+              Para tirá-la de circulação, desligue o interruptor acima: ela some
+              dos novos lançamentos e o histórico continua intacto.
+            </span>
+          </div>
+
+          <button class="botao botao-cheio botao-largo" data-ir="categorias">
+            Salvar alterações
+          </button>
+
+          <button class="botao botao-perigo botao-largo" data-ir="categorias">
+            <svg class="icone icone-pequeno"><use href="#i-olho-fechado"></use></svg>
+            Desativar categoria
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 14 — FORMAS DE PAGAMENTO (US02)
+           As quatro opções fixas exigidas pela user story, mais as que a
+           empresa cadastrar.
+           =================================================================== -->
+      <section class="tela" data-tela="formas-pagamento">
+        <div class="app-barra">
+          <button data-ir="financeiro">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Formas de pagamento</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="titulo-secao">Padrão do sistema</div>
+
+          <div class="lista">
+            <div class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-primaria-clara); color: var(--cor-primaria)">
+                <svg class="icone icone-pequeno"><use href="#i-pix"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Pix</span>
+                <span class="lista-descricao">Usada em 38 lançamentos</span>
+              </span>
+              <span class="etiqueta etiqueta-primaria">Fixa</span>
+            </div>
+
+            <div class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-primaria-clara); color: var(--cor-primaria)">
+                <svg class="icone icone-pequeno"><use href="#i-boleto"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Boleto</span>
+                <span class="lista-descricao">Usada em 24 lançamentos</span>
+              </span>
+              <span class="etiqueta etiqueta-primaria">Fixa</span>
+            </div>
+
+            <div class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-primaria-clara); color: var(--cor-primaria)">
+                <svg class="icone icone-pequeno"><use href="#i-exportar"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Transferência TED</span>
+                <span class="lista-descricao">Usada em 11 lançamentos</span>
+              </span>
+              <span class="etiqueta etiqueta-primaria">Fixa</span>
+            </div>
+
+            <div class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-primaria-clara); color: var(--cor-primaria)">
+                <svg class="icone icone-pequeno"><use href="#i-cartao"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Cartão Corporativo</span>
+                <span class="lista-descricao">Usada em 52 lançamentos</span>
+              </span>
+              <span class="etiqueta etiqueta-primaria">Fixa</span>
+            </div>
+          </div>
+
+          <div class="titulo-secao">Cadastradas pela empresa</div>
+
+          <div class="lista">
+            <button class="lista-item" data-ir="nova-forma-pagamento">
+              <span class="lista-icone">
+                <svg class="icone icone-pequeno"><use href="#i-dinheiro"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Dinheiro em espécie</span>
+                <span class="lista-descricao">Usada em 6 lançamentos</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <button class="lista-item inativo" data-ir="nova-forma-pagamento">
+              <span class="lista-icone">
+                <svg class="icone icone-pequeno"><use href="#i-olho-fechado"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Vale-pedágio antigo</span>
+                <span class="lista-descricao">Usada em 3 lançamentos</span>
+              </span>
+              <span class="etiqueta">Inativa</span>
+            </button>
+          </div>
+
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              As quatro formas padrão não podem ser removidas, porque o sistema
+              depende delas. As que a empresa cadastrar podem ser desativadas a
+              qualquer momento, sem afetar os lançamentos antigos.
+            </span>
+          </div>
+        </div>
+
+        <button class="botao-flutuante" data-ir="nova-forma-pagamento">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Nova forma
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 15 — NOVA FORMA DE PAGAMENTO (US02)
+           =================================================================== -->
+      <section class="tela" data-tela="nova-forma-pagamento">
+        <div class="app-barra">
+          <button data-ir="formas-pagamento">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Nova forma</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="cartao">
+            <div class="campo" style="margin-bottom:0">
+              <label for="fp-nome">Nome da forma de pagamento</label>
+              <input id="fp-nome" type="text" value="Dinheiro em espécie">
+              <p class="ajuda">
+                Obrigatório. Não pode repetir uma forma que já existe.
+              </p>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="linha-interruptor">
+              <div>
+                <p class="lista-titulo">Disponível para uso</p>
+                <p class="lista-descricao">Aparece na lista ao criar lançamentos</p>
+              </div>
+              <span class="interruptor ligado"></span>
+            </div>
+          </div>
+
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              Formas de pagamento criadas aqui ficam disponíveis para toda a
+              empresa, em todos os lançamentos.
+            </span>
+          </div>
+
+          <button class="botao botao-cheio botao-largo" data-ir="formas-pagamento">
+            Salvar forma de pagamento
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           MENU INFERIOR
+           Os itens que aparecem dependem do perfil de quem entrou.
+           É aqui que a US17 (navegação contextual) fica visível: entre como
+           Operador/Motorista no seletor lá em cima e veja Início, Financeiro
+           e Relatórios sumirem por completo.
+           =================================================================== -->
+      <nav class="menu-inferior" id="menu-inferior">
+                <div class="marca-lateral">
+          <span class="marca-icone">
+            <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+          </span>
+          <span>
+            <strong>Gestão de Frota</strong>
+            <small>TransLog Transportes</small>
+          </span>
+        </div>
+
+<button data-ir="inicio" data-perfis="ADMINISTRADOR,GESTOR_FROTA,FINANCEIRO">
+          <span class="marcador"><svg class="icone"><use href="#i-painel"></use></svg></span>
+          Início
+        </button>
+
+        <button data-ir="financeiro" data-perfis="ADMINISTRADOR,FINANCEIRO">
+          <span class="marcador"><svg class="icone"><use href="#i-dinheiro"></use></svg></span>
+          Financeiro
+        </button>
+
+        <button data-ir="frota" data-perfis="ADMINISTRADOR,GESTOR_FROTA,MOTORISTA">
+          <span class="marcador"><svg class="icone"><use href="#i-caminhao"></use></svg></span>
+          Frota
+        </button>
+
+        <button data-ir="viagens" data-perfis="ADMINISTRADOR,GESTOR_FROTA,FINANCEIRO,MOTORISTA">
+          <span class="marcador"><svg class="icone"><use href="#i-rota"></use></svg></span>
+          Viagens
+        </button>
+
+        <button data-ir="ajustes" data-perfis="ADMINISTRADOR,GESTOR_FROTA,FINANCEIRO,MOTORISTA">
+          <span class="marcador"><svg class="icone"><use href="#i-ajustes"></use></svg></span>
+          Ajustes
+        </button>
+
+        <div class="usuario-lateral">
+          <span class="usuario-inicial">AR</span>
+          <div>
+            Ana Ribeiro
+            <small>Administrador</small>
+          </div>
+        </div>
+      </nav>
+
+    </div><!-- fim da tela do celular -->
+  </div><!-- fim do celular -->
+
+
+  <!-- Explicação ao lado, preenchida pelo js/prototipo.js -->
+  <aside class="legenda">
+    <span class="us" id="legenda-us">US15</span>
+    <h2 id="legenda-titulo">Login</h2>
+    <p id="legenda-texto">Descrição da tela.</p>
+    <h3>Critérios atendidos</h3>
+    <ul id="legenda-itens"></ul>
+  </aside>
+
+</main>
+
+
+<!-- ==========================================================================
+     GALERIA — todas as telas lado a lado
+     É preenchida pelo js/prototipo.js copiando as telas de cima.
+     Serve para imprimir, colar nos slides ou mostrar o conjunto de uma vez.
+     ========================================================================== -->
+<section class="galeria" id="galeria"></section>
+
+<script>
+/* =========================================================================
+   PROTÓTIPO — Gestão Financeira e Controle de Frota
+   Comportamento das telas.
+
+   Este arquivo é curto de propósito. Ele faz cinco coisas:
+     1. Troca a tela quando você clica em algo com data-ir
+     2. Mostra ou esconde itens do menu conforme o perfil escolhido
+     3. Atualiza a explicação que fica ao lado do celular
+     4. Faz os botões de filtro e o interruptor responderem ao clique
+     5. Monta a galeria com todas as telas
+
+   Nada aqui é obrigatório para o protótipo existir: se você apagar este
+   arquivo, o index.html continua abrindo e mostrando a tela de login.
+   ========================================================================= */
+
+
+/* -------------------------------------------------------------------------
+   1. TEXTO DA EXPLICAÇÃO DE CADA TELA
+   Serve tanto para o painel ao lado do celular quanto para os títulos da
+   galeria. Para mudar um texto, é só editar aqui embaixo.
+   ------------------------------------------------------------------------- */
+
+var TELAS = {
+  'login': {
+    us: 'US15',
+    titulo: 'Login com Google',
+    texto: 'Entrada pelo fluxo nativo do Google, sem formulário de e-mail e senha dentro do aplicativo.',
+    itens: [
+      'Botão claro e padronizado "Entrar com Google"',
+      'Nenhum campo de senha próprio: o fluxo é OAuth2',
+      'Mensagem amigável se a conexão falhar',
+      'Usuário sem aprovação não entra (US16)'
+    ]
+  },
+  'inicio': {
+    us: 'US11',
+    titulo: 'Indicadores na tela inicial',
+    texto: 'Visão instantânea da saúde do negócio assim que o aplicativo abre.',
+    itens: [
+      'Saldo atual, a receber, a pagar e veículos em viagem',
+      'Filtro por mês, ano ou período personalizado',
+      'Valores em real, com verde e vermelho discretos',
+      'Previsão de caixa vinda do motor da US05'
+    ]
+  },
+  'financeiro': {
+    us: 'US03',
+    titulo: 'Movimentações de caixa',
+    texto: 'Histórico de entradas e saídas, com status de pagamento visível em cada linha.',
+    itens: [
+      'Entradas e saídas na mesma lista, separadas por cor',
+      'Status pendente ou pago em destaque',
+      'Vínculo com a viagem que gerou o custo (US09)',
+      'Atalho para dívidas e parcelamentos'
+    ]
+  },
+  'nova-movimentacao': {
+    us: 'US03',
+    menu: 'financeiro',
+    titulo: 'Registro de movimentação',
+    texto: 'Formulário de lançamento. Está propositalmente com um erro na tela para mostrar a validação funcionando.',
+    itens: [
+      'Valor, descrição, categoria e forma de pagamento',
+      'Valor zero ou negativo é recusado',
+      'Data de pagamento vira obrigatória quando o status é pago',
+      'Anexo de comprovante pela câmera ou galeria',
+      'Litros abastecidos, que alimentam o km por litro (US09)'
+    ]
+  },
+  'categorias': {
+    us: 'US01',
+    titulo: 'Categorias de movimentação',
+    texto: 'Cadastro das categorias que classificam cada entrada e saída do caixa.',
+    menu: 'financeiro',
+    itens: [
+      'Criar, editar e desativar categorias',
+      'Título obrigatório e tipo Entrada ou Saída obrigatório',
+      'Categorias padrão já vêm cadastradas',
+      'Nada é excluído: a categoria inativa fica na lista, apagada'
+    ]
+  },
+  'editar-categoria': {
+    us: 'US01',
+    titulo: 'Edição e desativação (soft delete)',
+    texto: 'A resposta à pergunta do enunciado sobre como a interface evita quebrar o banco.',
+    menu: 'financeiro',
+    itens: [
+      'Em nenhum lugar existe o botão "Excluir"',
+      'A ação destrutiva se chama "Desativar categoria"',
+      'A tela informa quantos lançamentos dependem dela',
+      'Desativada, ela some dos novos lançamentos e fica nos relatórios'
+    ]
+  },
+  'formas-pagamento': {
+    us: 'US02',
+    titulo: 'Formas de pagamento',
+    texto: 'As quatro opções fixas exigidas pela user story, mais as que a empresa criar.',
+    menu: 'financeiro',
+    itens: [
+      'Pix, Boleto, Transferência TED e Cartão Corporativo fixos',
+      'As fixas não podem ser removidas: o sistema depende delas',
+      'A empresa pode cadastrar formas próprias',
+      'As próprias podem ser desativadas sem afetar o histórico'
+    ]
+  },
+  'nova-forma-pagamento': {
+    us: 'US02',
+    titulo: 'Cadastro de forma de pagamento',
+    texto: 'Formulário para a empresa criar uma forma de pagamento própria.',
+    menu: 'financeiro',
+    itens: [
+      'Nome obrigatório e sem repetir uma forma existente',
+      'Nasce disponível, e pode ser desligada depois',
+      'Vale para toda a empresa, em todos os lançamentos'
+    ]
+  },
+  'dividas': {
+    us: 'US04',
+    menu: 'financeiro',
+    titulo: 'Dívidas e parcelamentos',
+    texto: 'Financiamentos de longo prazo que geram parcelas automáticas no fluxo de caixa.',
+    itens: [
+      'Quantidade de parcelas e valor de cada uma',
+      'Soma total calculada sozinha',
+      'Valor de quitação antecipada',
+      'As parcelas futuras entram no caixa como pendentes'
+    ]
+  },
+  'frota': {
+    us: 'US06',
+    titulo: 'Frota de veículos',
+    texto: 'Cadastro dos veículos com o status operacional e os números de desempenho de cada um.',
+    itens: [
+      'Placa nos padrões Mercosul e antigo',
+      'Status disponível, em viagem ou em manutenção',
+      'Custo por quilômetro e consumo médio (US10)',
+      'Manutenção lança a despesa no caixa sozinha (US06-b)'
+    ]
+  },
+  'viagens': {
+    us: 'US08',
+    titulo: 'Viagens e hodômetro',
+    texto: 'A tela que o motorista usa em campo. É nela que o aplicativo abre para o perfil dele.',
+    itens: [
+      'Abertura e fechamento com apontamento de hodômetro',
+      'Quilometragem rodada calculada pelo sistema',
+      'Funciona sem internet e sincroniza depois',
+      'O motorista vê apenas as viagens dele (US18)'
+    ]
+  },
+  'encerrar-viagem': {
+    us: 'US08',
+    menu: 'viagens',
+    titulo: 'Encerramento de viagem',
+    texto: 'A validação crítica do projeto: o hodômetro final não pode ser menor nem igual ao inicial.',
+    itens: [
+      'O sistema bloqueia o fechamento com valor inválido',
+      'Mensagem de erro explicando o que está errado',
+      'A quilometragem rodada é calculada e salva',
+      'Sem rede, o registro fica guardado no aparelho'
+    ]
+  },
+  'relatorios': {
+    us: 'US12',
+    menu: 'inicio',
+    titulo: 'Relatórios e gráficos',
+    texto: 'Consolidação visual do desempenho financeiro e logístico do período.',
+    itens: [
+      'Entradas contra saídas ao longo dos meses',
+      'Distribuição das despesas por categoria',
+      'Três rotas mais lucrativas (US13)',
+      'Três veículos com maior custo por quilômetro (US13)',
+      'Exportação do período em CSV (US14)'
+    ]
+  },
+  'usuarios': {
+    us: 'US16',
+    menu: 'ajustes',
+    titulo: 'Usuários e permissões',
+    texto: 'Tela visível apenas para o Administrador, onde os cadastros são aprovados.',
+    itens: [
+      'Novo cadastro entra como aguardando aprovação',
+      'O administrador aprova e define o perfil de acesso',
+      'Quatro perfis: Administrador, Gestor de Frota, Financeiro e Motorista',
+      'Quem não foi aprovado não usa o aplicativo'
+    ]
+  },
+  'ajustes': {
+    us: 'US15',
+    titulo: 'Ajustes e conta',
+    texto: 'Dados do perfil conectado, preferências e a opção de sair exigida pela user story.',
+    itens: [
+      'Perfil de acesso do usuário em destaque',
+      'Opção de sair da conta',
+      'Gestão de usuários apenas para o Administrador',
+      'Alternância de tema claro e escuro'
+    ]
+  }
+};
+
+/* A ordem em que as telas aparecem na galeria. */
+var ORDEM_DAS_TELAS = [
+  'login', 'inicio',
+  'financeiro', 'categorias', 'editar-categoria', 'formas-pagamento',
+  'nova-forma-pagamento', 'nova-movimentacao', 'dividas',
+  'frota', 'viagens', 'encerrar-viagem', 'relatorios', 'usuarios', 'ajustes'
+];
+
+/* Qual tela abre primeiro para cada perfil.
+   A US17 diz que o motorista deve abrir direto em Viagens. */
+var TELA_INICIAL_DO_PERFIL = {
+  ADMINISTRADOR: 'inicio',
+  GESTOR_FROTA: 'inicio',
+  FINANCEIRO: 'inicio',
+  MOTORISTA: 'viagens'
+};
+
+/* Perfil escolhido no seletor do topo. */
+var perfilAtual = 'ADMINISTRADOR';
+
+
+/* -------------------------------------------------------------------------
+   2. TROCAR DE TELA
+   ------------------------------------------------------------------------- */
+
+function mostrarTela(nome) {
+  var telas = document.querySelectorAll('#celular-tela .tela');
+
+  for (var i = 0; i < telas.length; i++) {
+    if (telas[i].getAttribute('data-tela') === nome) {
+      telas[i].classList.add('ativa');
+    } else {
+      telas[i].classList.remove('ativa');
+    }
+  }
+
+  atualizarMenu(nome);
+  atualizarLegenda(nome);
+}
+
+/* Marca o item certo do menu e esconde o menu na tela de login.
+   Telas filhas (Categorias, por exemplo) declaram um "menu" nos dados acima
+   para manter o item pai aceso enquanto você navega dentro dele. */
+function atualizarMenu(nome) {
+  var menu = document.getElementById('menu-inferior');
+  menu.style.display = (nome === 'login') ? 'none' : 'flex';
+
+  var aceso = (TELAS[nome] && TELAS[nome].menu) || nome;
+
+  var botoes = menu.querySelectorAll('button');
+  for (var i = 0; i < botoes.length; i++) {
+    var destino = botoes[i].getAttribute('data-ir');
+    if (destino === aceso) {
+      botoes[i].classList.add('ativo');
+    } else {
+      botoes[i].classList.remove('ativo');
+    }
+  }
+}
+
+/* Preenche o painel de explicação ao lado do celular. */
+function atualizarLegenda(nome) {
+  var dados = TELAS[nome];
+  if (!dados) return;
+
+  document.getElementById('legenda-us').textContent = dados.us;
+  document.getElementById('legenda-titulo').textContent = dados.titulo;
+  document.getElementById('legenda-texto').textContent = dados.texto;
+
+  var lista = document.getElementById('legenda-itens');
+  lista.innerHTML = '';
+
+  for (var i = 0; i < dados.itens.length; i++) {
+    var item = document.createElement('li');
+    item.textContent = dados.itens[i];
+    lista.appendChild(item);
+  }
+}
+
+
+/* -------------------------------------------------------------------------
+   3. APLICAR O PERFIL ESCOLHIDO
+   Esta função é a demonstração viva da US17: os itens de menu que o perfil
+   não pode acessar não ficam desabilitados, eles somem da interface.
+   ------------------------------------------------------------------------- */
+
+function aplicarPerfil(perfil, menu, raiz) {
+  var botoes = menu.querySelectorAll('button');
+
+  for (var i = 0; i < botoes.length; i++) {
+    var permitidos = botoes[i].getAttribute('data-perfis') || '';
+    if (permitidos.indexOf(perfil) >= 0) {
+      botoes[i].style.display = 'flex';
+    } else {
+      botoes[i].style.display = 'none';
+    }
+  }
+
+  /* O item "Usuários e permissões" só existe para o Administrador (US16). */
+  var somenteAdmin = raiz.querySelectorAll('[data-somente-admin]');
+  for (var j = 0; j < somenteAdmin.length; j++) {
+    somenteAdmin[j].style.display = (perfil === 'ADMINISTRADOR') ? 'flex' : 'none';
+  }
+}
+
+
+/* -------------------------------------------------------------------------
+   4. LIGAR OS CLIQUES
+   ------------------------------------------------------------------------- */
+
+/* Qualquer elemento com data-ir leva para a tela indicada. */
+document.addEventListener('click', function (evento) {
+  var alvo = evento.target.closest('[data-ir]');
+  if (!alvo) return;
+
+  /* Se o botão também define um perfil (os atalhos da tela de login),
+     trocamos o perfil junto. */
+  var perfilDoBotao = alvo.getAttribute('data-perfil');
+  if (perfilDoBotao) {
+    perfilAtual = perfilDoBotao;
+    document.getElementById('seletor-perfil').value = perfilDoBotao;
+    aplicarPerfil(perfilAtual, document.getElementById('menu-inferior'), document);
+  }
+
+  mostrarTela(alvo.getAttribute('data-ir'));
+});
+
+/* Os botões de filtro em segmentos: clicar marca só o que foi clicado. */
+document.addEventListener('click', function (evento) {
+  var botao = evento.target.closest('.segmentos button');
+  if (!botao) return;
+
+  var irmaos = botao.parentElement.querySelectorAll('button');
+  for (var i = 0; i < irmaos.length; i++) {
+    irmaos[i].classList.remove('ativo');
+  }
+  botao.classList.add('ativo');
+});
+
+/* O interruptor de tema escuro liga e desliga. */
+document.addEventListener('click', function (evento) {
+  var chave = evento.target.closest('.interruptor');
+  if (!chave) return;
+  chave.classList.toggle('ligado');
+});
+
+/* O seletor de perfil no topo da página. */
+document.getElementById('seletor-perfil').addEventListener('change', function () {
+  perfilAtual = this.value;
+  aplicarPerfil(perfilAtual, document.getElementById('menu-inferior'), document);
+  mostrarTela(TELA_INICIAL_DO_PERFIL[perfilAtual]);
+  montarGaleria();
+});
+
+/* Os dois botões de modo de visualização. */
+document.getElementById('botao-celular').addEventListener('click', function () {
+  document.body.classList.remove('modo-galeria');
+  this.classList.add('ativo');
+  document.getElementById('botao-galeria').classList.remove('ativo');
+});
+
+document.getElementById('botao-galeria').addEventListener('click', function () {
+  document.body.classList.add('modo-galeria');
+  this.classList.add('ativo');
+  document.getElementById('botao-celular').classList.remove('ativo');
+  montarGaleria();
+});
+
+
+/* -------------------------------------------------------------------------
+   5. MONTAR A GALERIA
+   Copia o celular inteiro uma vez para cada tela, deixando só aquela tela
+   dentro da cópia. É como conseguimos ver todas de uma vez sem repetir o
+   HTML onze vezes.
+   ------------------------------------------------------------------------- */
+
+function montarGaleria() {
+  var galeria = document.getElementById('galeria');
+  galeria.innerHTML = '';
+
+  for (var i = 0; i < ORDEM_DAS_TELAS.length; i++) {
+    var nome = ORDEM_DAS_TELAS[i];
+    var dados = TELAS[nome];
+
+    /* Copia o celular inteiro */
+    var copia = document.getElementById('celular-tela').cloneNode(true);
+    copia.removeAttribute('id');
+
+    /* Apaga da cópia todas as telas menos a que interessa */
+    var telas = copia.querySelectorAll('.tela');
+    for (var j = 0; j < telas.length; j++) {
+      if (telas[j].getAttribute('data-tela') === nome) {
+        telas[j].classList.add('ativa');
+      } else {
+        telas[j].remove();
+      }
+    }
+
+    /* Ajusta o menu da cópia */
+    var menu = copia.querySelector('.menu-inferior');
+    menu.removeAttribute('id');
+    menu.style.display = (nome === 'login') ? 'none' : 'flex';
+    aplicarPerfil(perfilAtual, menu, copia);
+
+    var aceso = dados.menu || nome;
+    var botoes = menu.querySelectorAll('button');
+    for (var k = 0; k < botoes.length; k++) {
+      if (botoes[k].getAttribute('data-ir') === aceso) {
+        botoes[k].classList.add('ativo');
+      } else {
+        botoes[k].classList.remove('ativo');
+      }
+    }
+
+    /* Monta o bloco: título, descrição e o celular reduzido */
+    var bloco = document.createElement('div');
+    bloco.className = 'galeria-item';
+
+    var titulo = document.createElement('h3');
+    titulo.textContent = (i + 1) + '. ' + dados.titulo;
+
+    var descricao = document.createElement('p');
+    descricao.textContent = dados.us + ' — ' + dados.texto;
+
+    var celular = document.createElement('div');
+    celular.className = 'celular';
+    celular.appendChild(copia);
+
+    bloco.appendChild(titulo);
+    bloco.appendChild(descricao);
+    bloco.appendChild(celular);
+    galeria.appendChild(bloco);
+  }
+}
+
+
+/* -------------------------------------------------------------------------
+   6. ESTADO INICIAL
+   ------------------------------------------------------------------------- */
+
+aplicarPerfil(perfilAtual, document.getElementById('menu-inferior'), document);
+mostrarTela('login');
+
+
+/* -------------------------------------------------------------------------
+   7. MODO EXPORTAÇÃO
+   Serve para gerar as imagens das telas para os slides.
+
+   Abra com ?exportar=nome-da-tela para ver só aquela tela, ocupando a
+   janela inteira, sem o cabeçalho e sem o painel de explicação.
+   Exemplo:  wireframe.html?exportar=viagens&perfil=MOTORISTA
+   ------------------------------------------------------------------------- */
+
+(function preparaExportacao() {
+  var parametros = new URLSearchParams(window.location.search);
+  var telaPedida = parametros.get('exportar');
+  if (!telaPedida) return;
+
+  var perfilPedido = parametros.get('perfil');
+  if (perfilPedido && TELA_INICIAL_DO_PERFIL[perfilPedido]) {
+    perfilAtual = perfilPedido;
+    document.getElementById('seletor-perfil').value = perfilPedido;
+    aplicarPerfil(perfilAtual, document.getElementById('menu-inferior'), document);
+  }
+
+  document.body.classList.add('modo-exportar');
+  mostrarTela(telaPedida);
+})();
+
+</script>

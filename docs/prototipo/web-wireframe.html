@@ -1,0 +1,1625 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe de média fidelidade — Gestão Financeira e Controle de Frota</title>
+<link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/wireframe.css">
+<link rel="stylesheet" href="css/web.css">
+
+<!--
+  ===========================================================================
+  PROTÓTIPO DE TELAS — Gestão Financeira e Controle de Frota
+  Aplicativo mobile para empresas do ramo logístico
+
+  Como isto funciona:
+    - Todas as telas estão escritas aqui embaixo, uma dentro da outra.
+    - Só aparece a tela que tem a classe "ativa". O arquivo js/prototipo.js
+      cuida de trocar essa classe quando você clica no menu.
+    - Para editar um texto, procure a tela pelo comentário e mude direto.
+    - Para mudar cores, margens ou fontes, mexa apenas no começo do arquivo
+      css/estilo.css, no bloco "1. VARIÁVEIS".
+
+  Nenhuma biblioteca externa é usada. Abra o index.html no navegador e pronto.
+  ===========================================================================
+-->
+
+<!-- ==========================================================================
+     DESENHOS DOS ÍCONES
+     Ficam escondidos aqui e são reaproveitados nas telas com <use>.
+     Guardar os ícones dentro do arquivo faz o protótipo funcionar sem
+     internet, o que evita sustos no dia da apresentação.
+     ========================================================================== -->
+<svg style="display:none">
+  <symbol id="i-caminhao" viewBox="0 0 24 24">
+    <path d="M3 17V7a1 1 0 0 1 1-1h9v11H3z"/>
+    <path d="M13 10h4l3 3v4h-7z"/>
+    <circle cx="7.5" cy="17.5" r="1.8"/>
+    <circle cx="16.5" cy="17.5" r="1.8"/>
+  </symbol>
+  <symbol id="i-carteira" viewBox="0 0 24 24">
+    <rect x="3" y="6" width="18" height="13" rx="2"/>
+    <path d="M3 10h18"/>
+    <circle cx="16.5" cy="14.5" r="1.1"/>
+  </symbol>
+  <symbol id="i-receber" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 7.5v9M8.5 13 12 16.5 15.5 13"/>
+  </symbol>
+  <symbol id="i-pagar" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 16.5v-9M8.5 11 12 7.5 15.5 11"/>
+  </symbol>
+  <symbol id="i-painel" viewBox="0 0 24 24">
+    <rect x="3" y="3" width="7" height="9" rx="1.5"/>
+    <rect x="14" y="3" width="7" height="5" rx="1.5"/>
+    <rect x="14" y="12" width="7" height="9" rx="1.5"/>
+    <rect x="3" y="16" width="7" height="5" rx="1.5"/>
+  </symbol>
+  <symbol id="i-dinheiro" viewBox="0 0 24 24">
+    <rect x="2" y="6" width="20" height="12" rx="2"/>
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M5.5 12h.01M18.5 12h.01"/>
+  </symbol>
+  <symbol id="i-rota" viewBox="0 0 24 24">
+    <circle cx="6" cy="5.5" r="2.5"/>
+    <circle cx="18" cy="18.5" r="2.5"/>
+    <path d="M9 5.5h5a3.5 3.5 0 0 1 0 7h-4a3.5 3.5 0 0 0 0 7h5"/>
+  </symbol>
+  <symbol id="i-grafico" viewBox="0 0 24 24">
+    <path d="M3 3v18h18"/>
+    <path d="M7 15.5 11 10l3 3 5-7"/>
+  </symbol>
+  <symbol id="i-ajustes" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="3.2"/>
+    <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/>
+  </symbol>
+  <symbol id="i-google" viewBox="0 0 24 24">
+    <path d="M20.5 12.2a8.5 8.5 0 1 1-2.6-6.1"/>
+    <path d="M20.5 12.2H12"/>
+  </symbol>
+  <symbol id="i-usuario" viewBox="0 0 24 24">
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>
+  </symbol>
+  <symbol id="i-grupo" viewBox="0 0 24 24">
+    <circle cx="9" cy="8" r="3.5"/>
+    <path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/>
+    <path d="M16 5.6a3.5 3.5 0 0 1 0 6.8"/>
+    <path d="M18.2 14.4c2 .8 3.3 2.4 3.3 4.7"/>
+  </symbol>
+  <symbol id="i-avancar" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-voltar"  viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-check"   viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="i-mais"    viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-calendario" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="16" rx="2"/>
+    <path d="M3 10h18M8 3v4M16 3v4"/>
+  </symbol>
+  <symbol id="i-sair" viewBox="0 0 24 24">
+    <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/>
+    <path d="M10 17l-5-5 5-5M5 12h11"/>
+  </symbol>
+  <symbol id="i-escudo" viewBox="0 0 24 24">
+    <path d="M12 3l8 3v6c0 5-3.5 8.2-8 9-4.5-.8-8-4-8-9V6z"/>
+  </symbol>
+  <symbol id="i-relogio" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/><path d="M12 7v5.3l3.5 2"/>
+  </symbol>
+  <symbol id="i-chave" viewBox="0 0 24 24">
+    <path d="M15.5 3.5a5 5 0 0 0-4.6 7L3 18.4 5.6 21l7.9-7.9a5 5 0 0 0 7-4.6 5 5 0 0 0-.4-2l-3.2 3.2-2.6-2.6 3.2-3.2a5 5 0 0 0-2-.4z"/>
+  </symbol>
+  <symbol id="i-combustivel" viewBox="0 0 24 24">
+    <path d="M4 20V5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v15"/>
+    <path d="M2.5 20h12"/>
+    <path d="M13 9h3.5a2 2 0 0 1 2 2v5.5a1.6 1.6 0 0 0 3.2 0V9.5L19 7"/>
+  </symbol>
+  <symbol id="i-bandeira" viewBox="0 0 24 24">
+    <path d="M5.5 21V3.5"/><path d="M5.5 4.5h13l-2.6 4.2 2.6 4.3h-13"/>
+  </symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24">
+    <path d="M4 8h3l1.5-2.2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+    <circle cx="12" cy="13.2" r="3.4"/>
+  </symbol>
+  <symbol id="i-lua" viewBox="0 0 24 24">
+    <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>
+  </symbol>
+  <symbol id="i-info" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/>
+  </symbol>
+  <symbol id="i-alerta" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.3h.01"/>
+  </symbol>
+  <symbol id="i-exportar" viewBox="0 0 24 24">
+    <path d="M12 15.5V3"/><path d="M7.5 7.5 12 3l4.5 4.5"/>
+    <path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>
+  </symbol>
+  <symbol id="i-local" viewBox="0 0 24 24">
+    <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/>
+    <circle cx="12" cy="10" r="2.5"/>
+  </symbol>
+  <symbol id="i-etiqueta" viewBox="0 0 24 24">
+    <path d="M3 3h8.2L21 12.8 12.8 21 3 11.2z"/>
+    <circle cx="7.6" cy="7.6" r="1.3"/>
+  </symbol>
+  <symbol id="i-cartao" viewBox="0 0 24 24">
+    <rect x="2" y="5" width="20" height="14" rx="2.5"/>
+    <path d="M2 10h20"/>
+    <path d="M6 14.5h3"/>
+  </symbol>
+  <symbol id="i-pix" viewBox="0 0 24 24">
+    <path d="M12 2.8 21.2 12 12 21.2 2.8 12z"/>
+    <path d="M8.6 8.6 12 12l3.4-3.4M8.6 15.4 12 12l3.4 3.4"/>
+  </symbol>
+  <symbol id="i-boleto" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="14" rx="2"/>
+    <path d="M7 9v6M10 9v6M13.5 9v6M17 9v6"/>
+  </symbol>
+  <symbol id="i-olho-fechado" viewBox="0 0 24 24">
+    <path d="M9.9 5.2A9.6 9.6 0 0 1 12 5c5 0 9 4.5 9 7a11 11 0 0 1-2.6 3.6"/>
+    <path d="M6.2 6.9C3.9 8.4 3 10.8 3 12c0 2.5 4 7 9 7a9.4 9.4 0 0 0 4.2-1"/>
+    <path d="M3 3l18 18"/>
+  </symbol>
+  <symbol id="i-semrede" viewBox="0 0 24 24">
+    <path d="M6.5 19h10a4 4 0 0 0 .9-7.9A6 6 0 0 0 7.2 9"/>
+    <path d="M3 3l18 18"/>
+  </symbol>
+</svg>
+
+
+<!-- ==========================================================================
+     BARRA DA APRESENTAÇÃO
+     Não faz parte do aplicativo: são os controles de quem está mostrando.
+     ========================================================================== -->
+<header class="barra-topo">
+  <div>
+    <h1>Gestão Financeira e Controle de Frota</h1>
+    <p>Wireframe de média fidelidade &middot; Entrega 1 &middot; sistema web para empresas do ramo logístico</p>
+  </div>
+
+  <div class="controles">
+    <label for="seletor-perfil">Entrar como</label>
+    <select id="seletor-perfil">
+      <option value="ADMINISTRADOR">Administrador</option>
+      <option value="GESTOR_FROTA">Gestor de Frota</option>
+      <option value="FINANCEIRO">Financeiro</option>
+      <option value="MOTORISTA">Operador/Motorista</option>
+    </select>
+
+    <button class="botao-modo ativo" id="botao-celular">Um celular</button>
+    <button class="botao-modo" id="botao-galeria">Todas as telas</button>
+  </div>
+</header>
+
+<div class="faixa-wireframe">
+  <strong>Wireframe de média fidelidade.</strong>
+  Escala de cinza proposital: nesta fase discutimos estrutura, hierarquia e fluxo.
+  A paleta definitiva entra no guia de estilos.
+</div>
+
+
+<!-- ==========================================================================
+     PALCO — o celular no meio da tela, com a explicação ao lado
+     ========================================================================== -->
+<main class="palco">
+
+  <div class="celular">
+    <div class="celular-tela" id="celular-tela">
+
+      <!-- Barra de status falsa, só para parecer um celular -->
+      <div class="status-celular">
+        <span>09:41</span>
+        <div class="status-icones">
+          <span>5G</span>
+          <span>100%</span>
+        </div>
+      </div>
+
+
+      <!-- ==================================================================
+           TELA 1 — LOGIN (US15)
+           Autenticação via conta do Google, sem formulário de senha.
+           =================================================================== -->
+      <section class="tela tela-login ativa" data-tela="login">
+        <div class="login-marca">
+          <svg class="icone"><use href="#i-caminhao"></use></svg>
+        </div>
+
+        <h1>Gestão de Frota</h1>
+        <p class="subtitulo">
+          Controle financeiro e operacional da sua transportadora, em tempo real.
+        </p>
+
+        <button class="botao botao-cheio botao-largo" data-ir="inicio">
+          <svg class="icone icone-pequeno"><use href="#i-google"></use></svg>
+          Entrar com Google
+        </button>
+
+        <p class="aviso-privacidade">
+          Usamos sua conta Google apenas para identificar você.
+          Não temos acesso à sua senha.
+        </p>
+
+        <div class="separador">ou entre como</div>
+
+        <div class="lista">
+          <button class="lista-item" data-ir="inicio" data-perfil="ADMINISTRADOR">
+            <span class="lista-icone">
+              <svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg>
+            </span>
+            <span class="lista-texto">
+              <span class="lista-titulo">Ana Ribeiro</span>
+              <span class="lista-descricao">Administrador</span>
+            </span>
+            <svg class="icone icone-pequeno"><use href="#i-avancar"></use></svg>
+          </button>
+
+          <button class="lista-item" data-ir="viagens" data-perfil="MOTORISTA">
+            <span class="lista-icone">
+              <svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg>
+            </span>
+            <span class="lista-texto">
+              <span class="lista-titulo">João Batista</span>
+              <span class="lista-descricao">Operador/Motorista</span>
+            </span>
+            <svg class="icone icone-pequeno"><use href="#i-avancar"></use></svg>
+          </button>
+
+          <!-- A US16 diz que o primeiro login fica "Aguardando Aprovação" -->
+          <button class="lista-item" data-ir="login">
+            <span class="lista-icone">
+              <svg class="icone icone-pequeno"><use href="#i-relogio"></use></svg>
+            </span>
+            <span class="lista-texto">
+              <span class="lista-titulo">Marina Souza</span>
+              <span class="lista-descricao">Aguardando aprovação</span>
+            </span>
+            <svg class="icone icone-pequeno"><use href="#i-avancar"></use></svg>
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 2 — INÍCIO / INDICADORES (US11)
+           Cards de KPI e filtro de período.
+           =================================================================== -->
+      <section class="tela" data-tela="inicio">
+        <div class="corpo">
+          <div class="saudacao">
+            <p class="ola">Olá, Ana</p>
+            <h2>Visão geral</h2>
+          </div>
+
+          <!-- Filtro de data exigido pela US11 -->
+          <div class="segmentos">
+            <button class="ativo">Mês</button>
+            <button>Ano</button>
+            <button>Período</button>
+          </div>
+
+          <div class="grade-kpi">
+            <div class="cartao kpi tom-positivo">
+              <div class="kpi-icone">
+                <svg class="icone icone-pequeno"><use href="#i-carteira"></use></svg>
+              </div>
+              <p class="kpi-rotulo">Saldo atual</p>
+              <p class="kpi-valor">R$ 11,4 mil</p>
+              <p class="kpi-nota">Somente lançamentos pagos</p>
+            </div>
+
+            <div class="cartao kpi tom-neutro">
+              <div class="kpi-icone">
+                <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+              </div>
+              <p class="kpi-rotulo">Veículos em viagem</p>
+              <p class="kpi-valor">2</p>
+              <p class="kpi-nota">Viagens em andamento</p>
+            </div>
+
+            <div class="cartao kpi tom-positivo">
+              <div class="kpi-icone">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </div>
+              <p class="kpi-rotulo">A receber no mês</p>
+              <p class="kpi-valor">R$ 11,2 mil</p>
+              <p class="kpi-nota">Fretes pendentes</p>
+            </div>
+
+            <div class="cartao kpi tom-negativo">
+              <div class="kpi-icone">
+                <svg class="icone icone-pequeno"><use href="#i-pagar"></use></svg>
+              </div>
+              <p class="kpi-rotulo">A pagar no mês</p>
+              <p class="kpi-valor">R$ 31,9 mil</p>
+              <p class="kpi-nota">Despesas pendentes</p>
+            </div>
+          </div>
+
+          <!-- Motor de previsão da US05 -->
+          <div class="cartao previsao">
+            <div class="previsao-topo">
+              <span class="previsao-rotulo">Previsão de caixa</span>
+              <span class="etiqueta">Próximos 30 dias</span>
+            </div>
+            <p class="previsao-valor" style="color: var(--cor-negativa)">- R$ 9.316,00</p>
+            <p class="previsao-nota">
+              Atenção: as pendências do período levam o caixa a saldo negativo.
+            </p>
+          </div>
+
+          <div class="titulo-secao">Maiores despesas</div>
+
+          <div class="cartao barras">
+            <div class="barra-item">
+              <div class="barra-topo">
+                <span>Salários</span>
+                <span class="barra-valor">R$ 18.600,00</span>
+              </div>
+              <div class="barra-trilha"><div class="barra-preenchida" style="width:100%"></div></div>
+            </div>
+
+            <div class="barra-item">
+              <div class="barra-topo">
+                <span>Financiamento</span>
+                <span class="barra-valor">R$ 7.850,00</span>
+              </div>
+              <div class="barra-trilha"><div class="barra-preenchida" style="width:42%"></div></div>
+            </div>
+
+            <div class="barra-item">
+              <div class="barra-topo">
+                <span>Combustível</span>
+                <span class="barra-valor">R$ 5.140,00</span>
+              </div>
+              <div class="barra-trilha"><div class="barra-preenchida" style="width:28%"></div></div>
+            </div>
+
+            <div class="barra-item">
+              <div class="barra-topo">
+                <span>Manutenção</span>
+                <span class="barra-valor">R$ 5.400,00</span>
+              </div>
+              <div class="barra-trilha"><div class="barra-preenchida" style="width:29%"></div></div>
+            </div>
+          </div>
+
+          <button class="botao-texto" data-ir="relatorios">Ver relatórios completos</button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 3 — FINANCEIRO (US03)
+           Lista de movimentações de caixa.
+           =================================================================== -->
+      <section class="tela" data-tela="financeiro">
+        <div class="app-barra">
+          <h2>Financeiro</h2>
+          <button data-ir="dividas" title="Dívidas">
+            <svg class="icone"><use href="#i-calendario"></use></svg>
+          </button>
+        </div>
+
+        <div class="corpo">
+          <!-- Atalhos para os cadastros de apoio (US01 e US02) -->
+          <div class="atalhos">
+            <button class="cartao atalho" data-ir="categorias">
+              <span class="atalho-icone">
+                <svg class="icone icone-pequeno"><use href="#i-etiqueta"></use></svg>
+              </span>
+              <span class="atalho-titulo">Categorias</span>
+              <span class="atalho-nota">7 cadastradas</span>
+            </button>
+
+            <button class="cartao atalho" data-ir="formas-pagamento">
+              <span class="atalho-icone">
+                <svg class="icone icone-pequeno"><use href="#i-cartao"></use></svg>
+              </span>
+              <span class="atalho-titulo">Formas de pagamento</span>
+              <span class="atalho-nota">6 disponíveis</span>
+            </button>
+          </div>
+
+          <div class="segmentos">
+            <button class="ativo">Tudo</button>
+            <button>Entradas</button>
+            <button>Saídas</button>
+          </div>
+
+          <div class="lista">
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-positiva-fundo); color: var(--cor-positiva)">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Frete carga seca SP-CWB</span>
+                <span class="lista-descricao">Frete &middot; Pix &middot; pago em 28/08</span>
+              </span>
+              <span class="lista-valor valor-positivo">+ R$ 8.400</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-combustivel"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Abastecimento posto Graal</span>
+                <span class="lista-descricao">Combustível &middot; 372 L &middot; viagem SP-CWB</span>
+              </span>
+              <span class="lista-valor valor-negativo">- R$ 2.180</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-alerta-fundo); color: var(--cor-alerta)">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Frete refrigerado CPQ-RJ</span>
+                <span class="lista-descricao">Pendente &middot; vence 05/09</span>
+              </span>
+              <span class="lista-valor valor-positivo">+ R$ 11.200</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-alerta-fundo); color: var(--cor-alerta)">
+                <svg class="icone icone-pequeno"><use href="#i-chave"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Revisão de freios &mdash; DAF XF 480</span>
+                <span class="lista-descricao">Manutenção &middot; pendente &middot; vence 10/09</span>
+              </span>
+              <span class="lista-valor valor-negativo">- R$ 5.400</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-alerta-fundo); color: var(--cor-alerta)">
+                <svg class="icone icone-pequeno"><use href="#i-dinheiro"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Financiamento Volvo &mdash; 14/48</span>
+                <span class="lista-descricao">Boleto &middot; pendente &middot; vence 15/09</span>
+              </span>
+              <span class="lista-valor valor-negativo">- R$ 7.850</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Folha de pagamento agosto</span>
+                <span class="lista-descricao">Salários &middot; pendente &middot; vence 05/09</span>
+              </span>
+              <span class="lista-valor valor-negativo">- R$ 18.600</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="botao-flutuante" data-ir="nova-movimentacao">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Novo lançamento
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 4 — NOVA MOVIMENTAÇÃO (US03 + US09)
+           Mostra de propósito um campo com erro, para deixar visível a
+           validação exigida nos critérios de aceite.
+           =================================================================== -->
+      <section class="tela" data-tela="nova-movimentacao">
+        <div class="app-barra">
+          <button data-ir="financeiro">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Novo lançamento</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="segmentos">
+            <button>Entrada</button>
+            <button class="ativo">Saída</button>
+          </div>
+
+          <div class="cartao">
+            <!-- Campo com erro: o app não aceita valor zero ou negativo -->
+            <div class="campo com-erro">
+              <label for="c-valor">Valor</label>
+              <input id="c-valor" type="text" value="R$ 0,00">
+              <p class="ajuda">O valor deve ser maior que zero.</p>
+            </div>
+
+            <div class="campo">
+              <label for="c-descricao">Descrição</label>
+              <input id="c-descricao" type="text" value="Abastecimento posto Graal">
+            </div>
+
+            <div class="campo">
+              <label for="c-categoria">Categoria</label>
+              <select id="c-categoria">
+                <option>Combustível</option>
+                <option>Pedágio</option>
+                <option>Manutenção</option>
+                <option>Salários</option>
+                <option>Financiamento</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="c-pagamento">Forma de pagamento</label>
+              <select id="c-pagamento">
+                <option>Cartão Corporativo</option>
+                <option>Pix</option>
+                <option>Boleto</option>
+                <option>Transferência TED</option>
+              </select>
+            </div>
+
+            <!-- A ponte entre os módulos, da US09 -->
+            <div class="campo">
+              <label for="c-viagem">Vincular à viagem <span style="font-weight:400">(opcional)</span></label>
+              <select id="c-viagem">
+                <option>Nenhuma</option>
+                <option selected>São Paulo/SP &rarr; Curitiba/PR &middot; 20/08</option>
+                <option>Campinas/SP &rarr; Rio de Janeiro/RJ &middot; 14/08</option>
+              </select>
+              <p class="ajuda">Vincular permite calcular o custo por quilômetro da viagem.</p>
+            </div>
+
+            <!-- Campo extra da US09, necessário para o km/l da US10 -->
+            <div class="campo">
+              <label for="c-litros">Quantidade em litros</label>
+              <input id="c-litros" type="text" value="372">
+            </div>
+
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="c-vencimento">Vencimento</label>
+                <input id="c-vencimento" type="text" value="21/08/2026">
+              </div>
+              <div class="campo">
+                <label for="c-status">Status</label>
+                <select id="c-status">
+                  <option selected>Pago</option>
+                  <option>Pendente</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- A US03 diz: se o status for Pago, esta data vira obrigatória -->
+            <div class="campo">
+              <label for="c-datapagamento">Data de pagamento <span style="color:var(--cor-negativa)">*</span></label>
+              <input id="c-datapagamento" type="text" value="21/08/2026">
+              <p class="ajuda">Obrigatória porque o status está como Pago.</p>
+            </div>
+
+            <button class="botao botao-contorno botao-largo">
+              <svg class="icone icone-pequeno"><use href="#i-camera"></use></svg>
+              Anexar comprovante
+            </button>
+          </div>
+
+          <button class="botao botao-cheio botao-largo" data-ir="financeiro">Salvar lançamento</button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 5 — DÍVIDAS E PARCELAMENTOS (US04)
+           =================================================================== -->
+      <section class="tela" data-tela="dividas">
+        <div class="app-barra">
+          <button data-ir="financeiro">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Dívidas</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              Ao salvar uma dívida, o sistema cria automaticamente todas as
+              parcelas futuras no fluxo de caixa, já com status pendente.
+            </span>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <div>
+                <p class="veiculo-nome">Financiamento Caminhão Volvo FH 460</p>
+                <p class="veiculo-detalhe">48 parcelas de R$ 7.850,00</p>
+              </div>
+              <span class="etiqueta etiqueta-alerta">14 de 48</span>
+            </div>
+
+            <div class="barra-trilha" style="margin-top: 16px">
+              <div class="barra-preenchida" style="width:29%"></div>
+            </div>
+
+            <div class="veiculo-numeros">
+              <div>
+                <small>Soma total</small>
+                <strong>R$ 376.800,00</strong>
+              </div>
+              <div>
+                <small>Quitação antecipada</small>
+                <strong>R$ 231.000,00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <div>
+                <p class="veiculo-nome">Financiamento Carreta Randon</p>
+                <p class="veiculo-detalhe">36 parcelas de R$ 3.200,00</p>
+              </div>
+              <span class="etiqueta etiqueta-alerta">6 de 36</span>
+            </div>
+
+            <div class="barra-trilha" style="margin-top: 16px">
+              <div class="barra-preenchida" style="width:17%"></div>
+            </div>
+
+            <div class="veiculo-numeros">
+              <div>
+                <small>Soma total</small>
+                <strong>R$ 115.200,00</strong>
+              </div>
+              <div>
+                <small>Quitação antecipada</small>
+                <strong>R$ 88.400,00</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="botao-flutuante">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Nova dívida
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 6 — FROTA (US06 e US06-b)
+           =================================================================== -->
+      <section class="tela" data-tela="frota">
+        <div class="app-barra">
+          <h2>Frota</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="segmentos">
+            <button class="ativo">Todos</button>
+            <button>Disponível</button>
+            <button>Em viagem</button>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <span class="placa">RTA-9F12</span>
+              <span class="etiqueta etiqueta-alerta">Em viagem</span>
+            </div>
+            <p class="veiculo-nome">Volvo FH 460</p>
+            <p class="veiculo-detalhe">2021 &middot; 32 toneladas</p>
+            <div class="veiculo-numeros">
+              <div><small>Custo por km</small><strong>R$ 2,84</strong></div>
+              <div><small>Consumo médio</small><strong>2,4 km/L</strong></div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <span class="placa">QXB-4521</span>
+              <span class="etiqueta etiqueta-positiva">Disponível</span>
+            </div>
+            <p class="veiculo-nome">Scania R 450</p>
+            <p class="veiculo-detalhe">2019 &middot; 30 toneladas</p>
+            <div class="veiculo-numeros">
+              <div><small>Custo por km</small><strong>R$ 5,89</strong></div>
+              <div><small>Consumo médio</small><strong>2,1 km/L</strong></div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <span class="placa">MHD-3312</span>
+              <span class="etiqueta etiqueta-negativa">Em manutenção</span>
+            </div>
+            <p class="veiculo-nome">DAF XF 480</p>
+            <p class="veiculo-detalhe">2018 &middot; 28 toneladas</p>
+
+            <div class="aviso aviso-alerta" style="margin-top: 16px">
+              <svg class="icone icone-pequeno"><use href="#i-chave"></use></svg>
+              <span>
+                Revisão de freios aberta em 27/08. A despesa de R$ 5.400,00
+                já foi lançada no caixa automaticamente.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <button class="botao-flutuante">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Novo veículo
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 7 — VIAGENS (US08)
+           É a tela que o motorista vê ao abrir o aplicativo.
+           =================================================================== -->
+      <section class="tela" data-tela="viagens">
+        <div class="app-barra">
+          <h2>Viagens</h2>
+        </div>
+
+        <div class="corpo">
+          <!-- Sinal de que o app funciona sem internet (Offline-First) -->
+          <div class="aviso aviso-alerta">
+            <svg class="icone icone-pequeno"><use href="#i-semrede"></use></svg>
+            <span>
+              Sem conexão. Seus apontamentos estão salvos no aparelho e serão
+              enviados assim que a rede voltar.
+            </span>
+          </div>
+
+          <div class="segmentos">
+            <button class="ativo">Todas</button>
+            <button>Em andamento</button>
+            <button>Concluídas</button>
+          </div>
+
+          <div class="cartao">
+            <div class="viagem-topo">
+              <span class="etiqueta etiqueta-alerta">
+                <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+                Em andamento
+              </span>
+              <span class="viagem-data">30/08/2026</span>
+            </div>
+
+            <p class="viagem-rota">São Paulo/SP &rarr; Curitiba/PR</p>
+
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+              Volvo FH 460
+            </p>
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg>
+              João Batista
+            </p>
+
+            <div class="hodometros">
+              <div class="hodometro"><small>Inicial</small><strong>184.320 km</strong></div>
+              <div class="hodometro"><small>Final</small><strong>&mdash;</strong></div>
+              <div class="hodometro rodado"><small>Rodado</small><strong>&mdash;</strong></div>
+            </div>
+
+            <button class="botao botao-suave botao-largo" style="margin-top:16px" data-ir="encerrar-viagem">
+              <svg class="icone icone-pequeno"><use href="#i-bandeira"></use></svg>
+              Encerrar viagem
+            </button>
+          </div>
+
+          <div class="cartao">
+            <div class="viagem-topo">
+              <span class="etiqueta etiqueta-positiva">
+                <svg class="icone icone-pequeno"><use href="#i-check"></use></svg>
+                Concluída
+              </span>
+              <span class="viagem-data">20/08/2026</span>
+            </div>
+
+            <p class="viagem-rota">São Paulo/SP &rarr; Curitiba/PR</p>
+
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+              Scania R 450
+            </p>
+
+            <div class="hodometros">
+              <div class="hodometro"><small>Inicial</small><strong>251.400 km</strong></div>
+              <div class="hodometro"><small>Final</small><strong>251.815 km</strong></div>
+              <div class="hodometro rodado"><small>Rodado</small><strong>415 km</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="botao-flutuante">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Abrir viagem
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 8 — ENCERRAR VIAGEM (US08)
+           A validação crítica: o hodômetro final não pode ser menor ou
+           igual ao inicial. A tela mostra o erro acontecendo.
+           =================================================================== -->
+      <section class="tela" data-tela="encerrar-viagem">
+        <div class="app-barra">
+          <button data-ir="viagens">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Encerrar viagem</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="cartao">
+            <p class="viagem-rota">São Paulo/SP &rarr; Curitiba/PR</p>
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+              Volvo FH 460 &middot; placa RTA-9F12
+            </p>
+            <p class="viagem-info">
+              <svg class="icone icone-pequeno"><use href="#i-calendario"></use></svg>
+              Iniciada em 30/08/2026
+            </p>
+
+            <div class="hodometros">
+              <div class="hodometro">
+                <small>Hodômetro inicial registrado</small>
+                <strong>184.320 km</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="campo com-erro" style="margin-bottom:0">
+              <label for="c-hodometro">Hodômetro final</label>
+              <input id="c-hodometro" type="text" value="183.900">
+              <p class="ajuda">O hodômetro final deve ser maior que o inicial.</p>
+            </div>
+          </div>
+
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              Ao confirmar, o sistema calcula e salva a quilometragem rodada
+              sozinho. Você não precisa fazer a conta.
+            </span>
+          </div>
+
+          <button class="botao botao-cheio botao-largo" data-ir="viagens">Confirmar encerramento</button>
+          <button class="botao botao-texto botao-largo" data-ir="viagens">Cancelar</button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 9 — RELATÓRIOS (US10, US12, US13, US14)
+           =================================================================== -->
+      <section class="tela" data-tela="relatorios">
+        <div class="app-barra">
+          <h2>Relatórios</h2>
+          <button title="Exportar">
+            <svg class="icone"><use href="#i-exportar"></use></svg>
+          </button>
+        </div>
+
+        <div class="corpo">
+          <div class="segmentos">
+            <button>3 meses</button>
+            <button class="ativo">6 meses</button>
+            <button>1 ano</button>
+          </div>
+
+          <!-- Gráfico de colunas da US12 -->
+          <div class="cartao">
+            <div class="titulo-secao" style="padding:0 0 4px">Entradas e saídas</div>
+
+            <div class="grafico-colunas">
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:52%"></div>
+                  <div class="coluna coluna-saida"   style="height:44%"></div>
+                </div>
+                <span>Mar</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:68%"></div>
+                  <div class="coluna coluna-saida"   style="height:50%"></div>
+                </div>
+                <span>Abr</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:45%"></div>
+                  <div class="coluna coluna-saida"   style="height:62%"></div>
+                </div>
+                <span>Mai</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:80%"></div>
+                  <div class="coluna coluna-saida"   style="height:55%"></div>
+                </div>
+                <span>Jun</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:72%"></div>
+                  <div class="coluna coluna-saida"   style="height:66%"></div>
+                </div>
+                <span>Jul</span>
+              </div>
+              <div class="coluna-mes">
+                <div class="coluna-par">
+                  <div class="coluna coluna-entrada" style="height:58%"></div>
+                  <div class="coluna coluna-saida"   style="height:88%"></div>
+                </div>
+                <span>Ago</span>
+              </div>
+            </div>
+
+            <div class="legenda-grafico">
+              <span><i class="ponto ponto-entrada"></i> Entradas</span>
+              <span><i class="ponto ponto-saida"></i> Saídas</span>
+            </div>
+          </div>
+
+          <!-- Gráfico de rosca da US12, feito só com CSS -->
+          <div class="cartao">
+            <div class="titulo-secao" style="padding:0 0 16px">Despesas por categoria</div>
+
+            <div class="rosca-area">
+              <div class="rosca"></div>
+
+              <ul class="rosca-legenda">
+                <li>
+                  <i class="quadrado" style="background:#0B5FA5"></i>
+                  Salários <span class="percentual">37%</span>
+                </li>
+                <li>
+                  <i class="quadrado" style="background:#4C8FD1"></i>
+                  Financiamento <span class="percentual">24%</span>
+                </li>
+                <li>
+                  <i class="quadrado" style="background:#7FB2E4"></i>
+                  Combustível <span class="percentual">18%</span>
+                </li>
+                <li>
+                  <i class="quadrado" style="background:#B3D3F2"></i>
+                  Manutenção <span class="percentual">13%</span>
+                </li>
+                <li>
+                  <i class="quadrado" style="background:#D9E7F8"></i>
+                  Pedágio <span class="percentual">8%</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Rankings da US13 -->
+          <div class="cartao">
+            <div class="titulo-secao" style="padding:0 0 8px">Rotas mais lucrativas</div>
+
+            <div class="ranking">
+              <div class="ranking-item">
+                <span class="ranking-posicao">1</span>
+                <span class="ranking-texto">
+                  <strong>Campinas/SP &rarr; Rio de Janeiro/RJ</strong>
+                  <small>512 km rodados &middot; margem de 74%</small>
+                </span>
+                <span class="lista-valor valor-positivo">R$ 8.240</span>
+              </div>
+
+              <div class="ranking-item">
+                <span class="ranking-posicao">2</span>
+                <span class="ranking-texto">
+                  <strong>São Paulo/SP &rarr; Curitiba/PR</strong>
+                  <small>415 km rodados &middot; margem de 71%</small>
+                </span>
+                <span class="lista-valor valor-positivo">R$ 5.956</span>
+              </div>
+
+              <div class="ranking-item">
+                <span class="ranking-posicao">3</span>
+                <span class="ranking-texto">
+                  <strong>Curitiba/PR &rarr; Porto Alegre/RS</strong>
+                  <small>711 km rodados &middot; margem de 52%</small>
+                </span>
+                <span class="lista-valor valor-positivo">R$ 4.180</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="titulo-secao" style="padding:0 0 8px">Maior custo por quilômetro</div>
+
+            <div class="ranking">
+              <div class="ranking-item">
+                <span class="ranking-posicao">1</span>
+                <span class="ranking-texto">
+                  <strong>Scania R 450</strong>
+                  <small>QXB-4521 &middot; 2,1 km/L</small>
+                </span>
+                <span class="lista-valor valor-negativo">R$ 5,89/km</span>
+              </div>
+
+              <div class="ranking-item">
+                <span class="ranking-posicao">2</span>
+                <span class="ranking-texto">
+                  <strong>Iveco Hi-Way 480</strong>
+                  <small>LKE-5T77 &middot; 2,2 km/L</small>
+                </span>
+                <span class="lista-valor valor-negativo">R$ 3,12/km</span>
+              </div>
+
+              <div class="ranking-item">
+                <span class="ranking-posicao">3</span>
+                <span class="ranking-texto">
+                  <strong>Volvo FH 460</strong>
+                  <small>RTA-9F12 &middot; 2,4 km/L</small>
+                </span>
+                <span class="lista-valor valor-negativo">R$ 2,84/km</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exportação da US14 -->
+          <button class="botao botao-contorno botao-largo">
+            <svg class="icone icone-pequeno"><use href="#i-exportar"></use></svg>
+            Exportar período em CSV
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 10 — USUÁRIOS E PERMISSÕES (US16)
+           Visível apenas para o Administrador.
+           =================================================================== -->
+      <section class="tela" data-tela="usuarios">
+        <div class="app-barra">
+          <button data-ir="ajustes">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Usuários</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="aviso aviso-alerta">
+            <svg class="icone icone-pequeno"><use href="#i-alerta"></use></svg>
+            <span>
+              1 cadastro aguardando aprovação. Enquanto não for aprovado,
+              a pessoa não consegue usar o aplicativo.
+            </span>
+          </div>
+
+          <div class="cartao">
+            <div class="veiculo-topo">
+              <div>
+                <p class="veiculo-nome">Marina Souza</p>
+                <p class="veiculo-detalhe">marina.souza@translog.com.br</p>
+              </div>
+              <span class="etiqueta etiqueta-alerta">Aguardando</span>
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap">
+              <button class="botao botao-contorno" style="padding:8px 16px; font-size:14px">
+                <svg class="icone icone-pequeno"><use href="#i-escudo"></use></svg>
+                Operador/Motorista
+              </button>
+              <button class="botao botao-cheio" style="padding:8px 16px; font-size:14px">
+                <svg class="icone icone-pequeno"><use href="#i-check"></use></svg>
+                Aprovar
+              </button>
+            </div>
+          </div>
+
+          <div class="lista">
+            <button class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Ana Ribeiro</span>
+                <span class="lista-descricao">Administrador</span>
+              </span>
+              <span class="etiqueta etiqueta-positiva">Ativo</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Carlos Menezes</span>
+                <span class="lista-descricao">Gestor de Frota</span>
+              </span>
+              <span class="etiqueta etiqueta-positiva">Ativo</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Beatriz Lima</span>
+                <span class="lista-descricao">Financeiro</span>
+              </span>
+              <span class="etiqueta etiqueta-positiva">Ativo</span>
+            </button>
+
+            <button class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-usuario"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">João Batista</span>
+                <span class="lista-descricao">Operador/Motorista</span>
+              </span>
+              <span class="etiqueta etiqueta-positiva">Ativo</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 11 — AJUSTES (US15, opção de sair)
+           =================================================================== -->
+      <section class="tela" data-tela="ajustes">
+        <div class="app-barra">
+          <h2>Ajustes</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="cartao">
+            <div class="perfil-cabecalho">
+              <div class="avatar">AR</div>
+              <div class="perfil-dados">
+                <strong>Ana Ribeiro</strong>
+                <small>ana.ribeiro@translog.com.br</small>
+                <span class="etiqueta etiqueta-primaria" style="margin-top:6px">Administrador</span>
+              </div>
+            </div>
+
+            <p style="font-size:13px; color:var(--cor-texto-suave); margin-top:16px; padding-top:16px; border-top:1px solid var(--cor-borda)">
+              Acesso total ao sistema.
+            </p>
+          </div>
+
+          <div class="lista">
+            <div class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-lua"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Tema escuro</span>
+                <span class="lista-descricao">Acompanha o aparelho quando desligado</span>
+              </span>
+              <span class="interruptor"></span>
+            </div>
+
+            <!-- Só o Administrador enxerga este item (US16) -->
+            <button class="lista-item" data-ir="usuarios" data-somente-admin>
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-grupo"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Usuários e permissões</span>
+                <span class="lista-descricao">Aprovar cadastros e definir perfis</span>
+              </span>
+              <svg class="icone icone-pequeno"><use href="#i-avancar"></use></svg>
+            </button>
+
+            <div class="lista-item">
+              <span class="lista-icone"><svg class="icone icone-pequeno"><use href="#i-info"></use></svg></span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Sobre o aplicativo</span>
+                <span class="lista-descricao">Versão 0.1.0 &middot; protótipo da Sprint 1</span>
+              </span>
+            </div>
+          </div>
+
+          <button class="botao botao-perigo botao-largo" data-ir="login">
+            <svg class="icone icone-pequeno"><use href="#i-sair"></use></svg>
+            Sair da conta
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 12 — CATEGORIAS (US01)
+           Cadastrar, listar, editar e desativar categorias.
+           Repare que em nenhum lugar existe a palavra "excluir": a saída de
+           uma categoria é sempre desativação (soft delete), porque apagar de
+           verdade quebraria os lançamentos antigos que apontam para ela.
+           =================================================================== -->
+      <section class="tela" data-tela="categorias">
+        <div class="app-barra">
+          <button data-ir="financeiro">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Categorias</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="segmentos">
+            <button class="ativo">Todas</button>
+            <button>Entradas</button>
+            <button>Saídas</button>
+          </div>
+
+          <div class="titulo-secao">Entradas</div>
+
+          <div class="lista">
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-positiva-fundo); color: var(--cor-positiva)">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Frete</span>
+                <span class="lista-descricao">Entrada &middot; padrão do sistema</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-positiva-fundo); color: var(--cor-positiva)">
+                <svg class="icone icone-pequeno"><use href="#i-receber"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Reembolso de cliente</span>
+                <span class="lista-descricao">Entrada &middot; criada pela empresa</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+          </div>
+
+          <div class="titulo-secao">Saídas</div>
+
+          <div class="lista">
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-combustivel"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Combustível</span>
+                <span class="lista-descricao">Saída &middot; padrão do sistema</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-rota"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Pedágio</span>
+                <span class="lista-descricao">Saída &middot; padrão do sistema</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <button class="lista-item" data-ir="editar-categoria">
+              <span class="lista-icone" style="background: var(--cor-negativa-fundo); color: var(--cor-negativa)">
+                <svg class="icone icone-pequeno"><use href="#i-chave"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Manutenção</span>
+                <span class="lista-descricao">Saída &middot; padrão do sistema</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <!-- Uma categoria desativada: continua na lista, apagada, com a
+                 etiqueta explicando o que aconteceu. Este item é a resposta
+                 visual à pergunta do enunciado sobre soft delete. -->
+            <button class="lista-item inativo" data-ir="editar-categoria">
+              <span class="lista-icone">
+                <svg class="icone icone-pequeno"><use href="#i-olho-fechado"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Diária de ajudante</span>
+                <span class="lista-descricao">Saída &middot; usada em 12 lançamentos</span>
+              </span>
+              <span class="etiqueta">Inativa</span>
+            </button>
+          </div>
+
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              Categorias inativas somem dos formulários de novo lançamento, mas
+              continuam aparecendo nos relatórios e no histórico. Nada é apagado.
+            </span>
+          </div>
+        </div>
+
+        <button class="botao-flutuante" data-ir="editar-categoria">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Nova categoria
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 13 — EDITAR CATEGORIA (US01)
+           O botão destrutivo se chama "Desativar", nunca "Excluir".
+           =================================================================== -->
+      <section class="tela" data-tela="editar-categoria">
+        <div class="app-barra">
+          <button data-ir="categorias">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Editar categoria</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="cartao">
+            <div class="campo">
+              <label for="cat-titulo">Título</label>
+              <input id="cat-titulo" type="text" value="Combustível">
+              <p class="ajuda">Obrigatório. É o nome que aparece nos lançamentos.</p>
+            </div>
+
+            <div class="campo" style="margin-bottom:0">
+              <label>Tipo</label>
+              <div class="segmentos">
+                <button>Entrada (receita)</button>
+                <button class="ativo">Saída (despesa)</button>
+              </div>
+              <p class="ajuda">
+                Obrigatório. Define se a categoria soma ou subtrai do saldo.
+              </p>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="linha-interruptor">
+              <div>
+                <p class="lista-titulo">Categoria ativa</p>
+                <p class="lista-descricao">Disponível para novos lançamentos</p>
+              </div>
+              <span class="interruptor ligado"></span>
+            </div>
+          </div>
+
+          <div class="aviso aviso-alerta">
+            <svg class="icone icone-pequeno"><use href="#i-alerta"></use></svg>
+            <span>
+              <strong>Esta categoria não pode ser excluída.</strong>
+              Ela está vinculada a 47 lançamentos no fluxo de caixa. Apagá-la
+              deixaria esses registros sem categoria e quebraria os relatórios.
+              Para tirá-la de circulação, desligue o interruptor acima: ela some
+              dos novos lançamentos e o histórico continua intacto.
+            </span>
+          </div>
+
+          <button class="botao botao-cheio botao-largo" data-ir="categorias">
+            Salvar alterações
+          </button>
+
+          <button class="botao botao-perigo botao-largo" data-ir="categorias">
+            <svg class="icone icone-pequeno"><use href="#i-olho-fechado"></use></svg>
+            Desativar categoria
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 14 — FORMAS DE PAGAMENTO (US02)
+           As quatro opções fixas exigidas pela user story, mais as que a
+           empresa cadastrar.
+           =================================================================== -->
+      <section class="tela" data-tela="formas-pagamento">
+        <div class="app-barra">
+          <button data-ir="financeiro">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Formas de pagamento</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="titulo-secao">Padrão do sistema</div>
+
+          <div class="lista">
+            <div class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-primaria-clara); color: var(--cor-primaria)">
+                <svg class="icone icone-pequeno"><use href="#i-pix"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Pix</span>
+                <span class="lista-descricao">Usada em 38 lançamentos</span>
+              </span>
+              <span class="etiqueta etiqueta-primaria">Fixa</span>
+            </div>
+
+            <div class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-primaria-clara); color: var(--cor-primaria)">
+                <svg class="icone icone-pequeno"><use href="#i-boleto"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Boleto</span>
+                <span class="lista-descricao">Usada em 24 lançamentos</span>
+              </span>
+              <span class="etiqueta etiqueta-primaria">Fixa</span>
+            </div>
+
+            <div class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-primaria-clara); color: var(--cor-primaria)">
+                <svg class="icone icone-pequeno"><use href="#i-exportar"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Transferência TED</span>
+                <span class="lista-descricao">Usada em 11 lançamentos</span>
+              </span>
+              <span class="etiqueta etiqueta-primaria">Fixa</span>
+            </div>
+
+            <div class="lista-item">
+              <span class="lista-icone" style="background: var(--cor-primaria-clara); color: var(--cor-primaria)">
+                <svg class="icone icone-pequeno"><use href="#i-cartao"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Cartão Corporativo</span>
+                <span class="lista-descricao">Usada em 52 lançamentos</span>
+              </span>
+              <span class="etiqueta etiqueta-primaria">Fixa</span>
+            </div>
+          </div>
+
+          <div class="titulo-secao">Cadastradas pela empresa</div>
+
+          <div class="lista">
+            <button class="lista-item" data-ir="nova-forma-pagamento">
+              <span class="lista-icone">
+                <svg class="icone icone-pequeno"><use href="#i-dinheiro"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Dinheiro em espécie</span>
+                <span class="lista-descricao">Usada em 6 lançamentos</span>
+              </span>
+              <span class="interruptor ligado"></span>
+            </button>
+
+            <button class="lista-item inativo" data-ir="nova-forma-pagamento">
+              <span class="lista-icone">
+                <svg class="icone icone-pequeno"><use href="#i-olho-fechado"></use></svg>
+              </span>
+              <span class="lista-texto">
+                <span class="lista-titulo">Vale-pedágio antigo</span>
+                <span class="lista-descricao">Usada em 3 lançamentos</span>
+              </span>
+              <span class="etiqueta">Inativa</span>
+            </button>
+          </div>
+
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              As quatro formas padrão não podem ser removidas, porque o sistema
+              depende delas. As que a empresa cadastrar podem ser desativadas a
+              qualquer momento, sem afetar os lançamentos antigos.
+            </span>
+          </div>
+        </div>
+
+        <button class="botao-flutuante" data-ir="nova-forma-pagamento">
+          <svg class="icone icone-pequeno"><use href="#i-mais"></use></svg>
+          Nova forma
+        </button>
+      </section>
+
+
+      <!-- ==================================================================
+           TELA 15 — NOVA FORMA DE PAGAMENTO (US02)
+           =================================================================== -->
+      <section class="tela" data-tela="nova-forma-pagamento">
+        <div class="app-barra">
+          <button data-ir="formas-pagamento">
+            <svg class="icone"><use href="#i-voltar"></use></svg>
+          </button>
+          <h2>Nova forma</h2>
+        </div>
+
+        <div class="corpo">
+          <div class="cartao">
+            <div class="campo" style="margin-bottom:0">
+              <label for="fp-nome">Nome da forma de pagamento</label>
+              <input id="fp-nome" type="text" value="Dinheiro em espécie">
+              <p class="ajuda">
+                Obrigatório. Não pode repetir uma forma que já existe.
+              </p>
+            </div>
+          </div>
+
+          <div class="cartao">
+            <div class="linha-interruptor">
+              <div>
+                <p class="lista-titulo">Disponível para uso</p>
+                <p class="lista-descricao">Aparece na lista ao criar lançamentos</p>
+              </div>
+              <span class="interruptor ligado"></span>
+            </div>
+          </div>
+
+          <div class="aviso aviso-info">
+            <svg class="icone icone-pequeno"><use href="#i-info"></use></svg>
+            <span>
+              Formas de pagamento criadas aqui ficam disponíveis para toda a
+              empresa, em todos os lançamentos.
+            </span>
+          </div>
+
+          <button class="botao botao-cheio botao-largo" data-ir="formas-pagamento">
+            Salvar forma de pagamento
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ==================================================================
+           MENU INFERIOR
+           Os itens que aparecem dependem do perfil de quem entrou.
+           É aqui que a US17 (navegação contextual) fica visível: entre como
+           Operador/Motorista no seletor lá em cima e veja Início, Financeiro
+           e Relatórios sumirem por completo.
+           =================================================================== -->
+      <nav class="menu-inferior" id="menu-inferior">
+                <div class="marca-lateral">
+          <span class="marca-icone">
+            <svg class="icone icone-pequeno"><use href="#i-caminhao"></use></svg>
+          </span>
+          <span>
+            <strong>Gestão de Frota</strong>
+            <small>TransLog Transportes</small>
+          </span>
+        </div>
+
+<button data-ir="inicio" data-perfis="ADMINISTRADOR,GESTOR_FROTA,FINANCEIRO">
+          <span class="marcador"><svg class="icone"><use href="#i-painel"></use></svg></span>
+          Início
+        </button>
+
+        <button data-ir="financeiro" data-perfis="ADMINISTRADOR,FINANCEIRO">
+          <span class="marcador"><svg class="icone"><use href="#i-dinheiro"></use></svg></span>
+          Financeiro
+        </button>
+
+        <button data-ir="frota" data-perfis="ADMINISTRADOR,GESTOR_FROTA,MOTORISTA">
+          <span class="marcador"><svg class="icone"><use href="#i-caminhao"></use></svg></span>
+          Frota
+        </button>
+
+        <button data-ir="viagens" data-perfis="ADMINISTRADOR,GESTOR_FROTA,FINANCEIRO,MOTORISTA">
+          <span class="marcador"><svg class="icone"><use href="#i-rota"></use></svg></span>
+          Viagens
+        </button>
+
+        <button data-ir="ajustes" data-perfis="ADMINISTRADOR,GESTOR_FROTA,FINANCEIRO,MOTORISTA">
+          <span class="marcador"><svg class="icone"><use href="#i-ajustes"></use></svg></span>
+          Ajustes
+        </button>
+
+        <div class="usuario-lateral">
+          <span class="usuario-inicial">AR</span>
+          <div>
+            Ana Ribeiro
+            <small>Administrador</small>
+          </div>
+        </div>
+      </nav>
+
+    </div><!-- fim da tela do celular -->
+  </div><!-- fim do celular -->
+
+
+  <!-- Explicação ao lado, preenchida pelo js/prototipo.js -->
+  <aside class="legenda">
+    <span class="us" id="legenda-us">US15</span>
+    <h2 id="legenda-titulo">Login</h2>
+    <p id="legenda-texto">Descrição da tela.</p>
+    <h3>Critérios atendidos</h3>
+    <ul id="legenda-itens"></ul>
+  </aside>
+
+</main>
+
+
+<!-- ==========================================================================
+     GALERIA — todas as telas lado a lado
+     É preenchida pelo js/prototipo.js copiando as telas de cima.
+     Serve para imprimir, colar nos slides ou mostrar o conjunto de uma vez.
+     ========================================================================== -->
+<section class="galeria" id="galeria"></section>
+
+<script src="js/prototipo.js"></script>
