@@ -44,18 +44,21 @@ public static class MauiProgram
 
         builder.Services.AddScoped<ICategoriaService, CategoriaService>();
         builder.Services.AddScoped<IFormaPagamentoService, FormaPagamentoService>();
+        builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
         // ---------- ViewModels ----------
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<DashboardViewModel>();
         builder.Services.AddTransient<CategoriasViewModel>();
         builder.Services.AddTransient<FormasPagamentoViewModel>();
+        builder.Services.AddTransient<UsuariosViewModel>();
 
         // ---------- Páginas ----------
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<CategoriasPage>();
         builder.Services.AddTransient<FormasPagamentoPage>();
         builder.Services.AddTransient<DashboardPage>();
+        builder.Services.AddTransient<UsuariosPage>();
 
         return builder.Build();
     }
