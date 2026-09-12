@@ -7,7 +7,7 @@
              x:DataType="vm:CategoriasViewModel"
              Title="Categorias">
 
-    <Grid RowDefinitions="Auto, *" Padding="16" RowSpacing="12">
+    <Grid RowDefinitions="Auto, Auto, *" Padding="16" RowSpacing="12">
 
         <!-- Formulário de criação: só aparece para Administrador/Financeiro (RBAC) -->
         <Frame Grid.Row="0"
@@ -29,7 +29,32 @@
             </VerticalStackLayout>
         </Frame>
 
-        <RefreshView Grid.Row="1"
+        <!-- Formulário de edição: aparece só quando uma categoria foi selecionada para editar -->
+        <Frame Grid.Row="1"
+               IsVisible="{Binding CategoriaEmEdicao, Converter={StaticResource NotNullToBoolConverter}}"
+               Padding="12"
+               CornerRadius="12"
+               BorderColor="#DCE3EE"
+               BackgroundColor="#F5F8FF">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Editando categoria" FontAttributes="Bold" FontSize="12" TextColor="Gray" />
+                <Entry Placeholder="Nome da categoria" Text="{Binding EdicaoNome}" />
+                <Picker Title="Tipo" SelectedItem="{Binding EdicaoTipo}">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type models:TipoCategoria}">
+                            <models:TipoCategoria>Receita</models:TipoCategoria>
+                            <models:TipoCategoria>Despesa</models:TipoCategoria>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+                <HorizontalStackLayout Spacing="8">
+                    <Button Text="Salvar" Command="{Binding SalvarEdicaoCommand}" />
+                    <Button Text="Cancelar" Command="{Binding CancelarEdicaoCommand}" BackgroundColor="Gray" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Frame>
+
+        <RefreshView Grid.Row="2"
                      IsRefreshing="{Binding Carregando}"
                      Command="{Binding CarregarCommand}">
             <CollectionView ItemsSource="{Binding Categorias}">
@@ -41,18 +66,41 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Categoria">
-                        <Grid Padding="12,10" ColumnDefinitions="*, Auto">
-                            <VerticalStackLayout Grid.Column="0">
-                                <Label Text="{Binding Nome}" FontAttributes="Bold" />
-                                <Label Text="{Binding Tipo}" FontSize="12" TextColor="Gray" />
-                            </VerticalStackLayout>
-                            <Label Grid.Column="1"
-                                   Text="Pendente"
-                                   TextColor="Orange"
-                                   FontSize="11"
-                                   VerticalOptions="Center"
-                                   IsVisible="{Binding PendenteSincronizacao}" />
-                        </Grid>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Editar"
+                                               BackgroundColor="#2C6CE0"
+                                               IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeGerenciar}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IniciarEdicaoCommand}"
+                                               CommandParameter="{Binding .}" />
+                                    <SwipeItem Text="Desativar"
+                                               BackgroundColor="#D9534F"
+                                               IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeDesativar}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DesativarCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Grid Padding="12,10" ColumnDefinitions="*, Auto" Opacity="{Binding Ativo, Converter={StaticResource BoolToOpacityConverter}}">
+                                <VerticalStackLayout Grid.Column="0">
+                                    <Label Text="{Binding Nome}" FontAttributes="Bold" />
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="{Binding Tipo}" FontSize="12" TextColor="Gray" />
+                                        <Label Text="· inativa"
+                                               FontSize="12"
+                                               TextColor="#D9534F"
+                                               IsVisible="{Binding Ativo, Converter={StaticResource InverseBoolConverter}}" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1"
+                                       Text="Pendente"
+                                       TextColor="Orange"
+                                       FontSize="11"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding PendenteSincronizacao}" />
+                            </Grid>
+                        </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

@@ -12,6 +12,16 @@ public interface ICategoriaService
     Task<List<Categoria>> ListarAsync();
 
     Task<Categoria> CriarAsync(string nome, TipoCategoria tipo);
+
+    /// <summary>Chama PUT /categorias/{id} — endpoint já existente na API.</summary>
+    Task<Categoria> AtualizarAsync(Guid id, string nome, TipoCategoria tipo, bool ativo);
+
+    /// <summary>
+    /// Soft delete: chama DELETE /categorias/{id}, que marca Ativo=false
+    /// no servidor em vez de remover o registro (preserva o histórico
+    /// financeiro que aponta para essa categoria).
+    /// </summary>
+    Task DesativarAsync(Guid id);
 }
 
 public class CategoriaService : ICategoriaService
@@ -75,5 +85,44 @@ public class CategoriaService : ICategoriaService
 
         await _localDb.SalvarCategoriaLocalAsync(categoriaLocal);
         return categoriaLocal;
+    }
+
+    public async Task<Categoria> AtualizarAsync(Guid id, string nome, TipoCategoria tipo, bool ativo)
+    {
+        // Editar exige conexão: sem endpoint de fila de edição offline
+        // implementado ainda, então falha explicitamente se estiver offline
+        // em vez de fingir que salvou.
+        if (!_connectivity.EstaOnline())
+        {
+            throw new InvalidOperationException("Editar categorias exige conexão com a internet.");
+        }
+
+        var response = await _httpClient.PutAsJsonAsync($"categorias/{id}", new { nome, tipo, ativo });
+        response.EnsureSuccessStatusCode();
+
+        var categoriaAtualizada = new Categoria { Id = id, Nome = nome, Tipo = tipo, Ativo = ativo };
+        await _localDb.SalvarCategoriaLocalAsync(categoriaAtualizada);
+        return categoriaAtualizada;
+    }
+
+    public async Task DesativarAsync(Guid id)
+    {
+        if (!_connectivity.EstaOnline())
+        {
+            throw new InvalidOperationException("Desativar categorias exige conexão com a internet.");
+        }
+
+        var response = await _httpClient.DeleteAsync($"categorias/{id}");
+        response.EnsureSuccessStatusCode();
+
+        // Reflete o soft delete no cache local (Ativo=false), sem apagar
+        // a linha, espelhando o que a API faz.
+        var categorias = await _localDb.ListarCategoriasAsync();
+        var categoria = categorias.FirstOrDefault(c => c.Id == id);
+        if (categoria is not null)
+        {
+            categoria.Ativo = false;
+            await _localDb.SalvarCategoriaLocalAsync(categoria);
+        }
     }
 }

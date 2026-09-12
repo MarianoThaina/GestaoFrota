@@ -8,6 +8,8 @@
         <ResourceDictionary>
             <local:InverseBoolConverter x:Key="InverseBoolConverter" />
             <local:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+            <local:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
+            <local:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 

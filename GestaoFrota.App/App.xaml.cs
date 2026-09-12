@@ -38,7 +38,12 @@ public partial class App : Application
 
         if (sessaoValida)
         {
-            window.Page = new AppShell();
+            var usuario = await authService.ObterUsuarioLogadoAsync();
+
+            var appShell = new AppShell();
+            appShell.ConfigurarMenuPorPerfil(usuario);
+
+            window.Page = appShell;
         }
     }
 }
