@@ -11,15 +11,23 @@ public partial class AppShell : Shell
         AbaUsuarios.IsVisible = false;
     }
 
-    public void ConfigurarMenuPorPerfil(UsuarioLogado usuario)
+    /// <summary>
+    /// Adapta o menu por perfil (US17): o Motorista não deve nem ver as
+    /// abas financeiras (Categorias/Pagamento) — a restrição de escrita já
+    /// é validada no backend, mas a navegação também não deve oferecer uma
+    /// área que ele não pode usar. Usuários e Financeiro ficam restritos
+    /// ao Administrador e ao Financeiro/GestorDeFrota, respectivamente.
+    /// </summary>
+    public void ConfigurarMenuPorPerfil(UsuarioLogado? usuario)
     {
-        if (usuario is null)
-        {
-            AbaUsuarios.IsVisible = false;
-            return;
-        }
+        var perfil = usuario?.Perfil;
 
-        AbaUsuarios.IsVisible =
-            usuario.Perfil == PerfilUsuario.Administrador;
+        var podeVerFinanceiro = perfil is PerfilUsuario.Administrador
+            or PerfilUsuario.GestorDeFrota
+            or PerfilUsuario.Financeiro;
+
+        AbaCategorias.IsVisible = podeVerFinanceiro;
+        AbaFormasPagamento.IsVisible = podeVerFinanceiro;
+        AbaUsuarios.IsVisible = perfil == PerfilUsuario.Administrador;
     }
 }

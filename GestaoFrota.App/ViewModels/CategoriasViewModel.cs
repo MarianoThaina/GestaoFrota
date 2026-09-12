@@ -26,6 +26,24 @@ public partial class CategoriasViewModel : BaseViewModel
     [ObservableProperty]
     private bool podeGerenciar;
 
+    /// <summary>
+    /// Só o Administrador pode desativar (DELETE /categorias/{id} exige
+    /// Roles = Perfis.Administrador na API) — Financeiro pode criar/editar
+    /// mas não desativar.
+    /// </summary>
+    [ObservableProperty]
+    private bool podeDesativar;
+
+    /// <summary>Categoria em edição no momento (null quando nenhuma está sendo editada).</summary>
+    [ObservableProperty]
+    private Categoria? categoriaEmEdicao;
+
+    [ObservableProperty]
+    private string edicaoNome = string.Empty;
+
+    [ObservableProperty]
+    private TipoCategoria edicaoTipo;
+
     public CategoriasViewModel(ICategoriaService categoriaService, IAuthService authService)
     {
         _categoriaService = categoriaService;
@@ -42,6 +60,7 @@ public partial class CategoriasViewModel : BaseViewModel
         {
             var usuario = await _authService.ObterUsuarioLogadoAsync();
             PodeGerenciar = usuario?.Perfil is Models.PerfilUsuario.Administrador or Models.PerfilUsuario.Financeiro;
+            PodeDesativar = usuario?.Perfil is Models.PerfilUsuario.Administrador;
 
             var categorias = await _categoriaService.ListarAsync();
 
@@ -79,6 +98,75 @@ public partial class CategoriasViewModel : BaseViewModel
         catch (Exception ex)
         {
             MensagemErro = "Não foi possível criar a categoria.";
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+    }
+
+    [RelayCommand]
+    private void IniciarEdicao(Categoria categoria)
+    {
+        CategoriaEmEdicao = categoria;
+        EdicaoNome = categoria.Nome;
+        EdicaoTipo = categoria.Tipo;
+    }
+
+    [RelayCommand]
+    private void CancelarEdicao()
+    {
+        CategoriaEmEdicao = null;
+        EdicaoNome = string.Empty;
+    }
+
+    [RelayCommand]
+    private async Task SalvarEdicaoAsync()
+    {
+        if (CategoriaEmEdicao is null || string.IsNullOrWhiteSpace(EdicaoNome))
+        {
+            return;
+        }
+
+        try
+        {
+            var atualizada = await _categoriaService.AtualizarAsync(
+                CategoriaEmEdicao.Id, EdicaoNome.Trim(), EdicaoTipo, CategoriaEmEdicao.Ativo);
+
+            var indice = Categorias.IndexOf(CategoriaEmEdicao);
+            if (indice >= 0)
+            {
+                Categorias[indice] = atualizada;
+            }
+
+            CategoriaEmEdicao = null;
+        }
+        catch (Exception ex)
+        {
+            MensagemErro = "Não foi possível salvar a edição. Verifique sua conexão.";
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+    }
+
+    /// <summary>
+    /// Soft delete (US01): a categoria não é removida, só marcada como
+    /// inativa — os lançamentos históricos continuam apontando para ela.
+    /// </summary>
+    [RelayCommand]
+    private async Task DesativarAsync(Categoria categoria)
+    {
+        try
+        {
+            await _categoriaService.DesativarAsync(categoria.Id);
+            categoria.Ativo = false;
+
+            var indice = Categorias.IndexOf(categoria);
+            if (indice >= 0)
+            {
+                // Força o CollectionView a re-renderizar a linha.
+                Categorias[indice] = categoria;
+            }
+        }
+        catch (Exception ex)
+        {
+            MensagemErro = "Não foi possível desativar a categoria. Verifique sua conexão.";
             System.Diagnostics.Debug.WriteLine(ex);
         }
     }
