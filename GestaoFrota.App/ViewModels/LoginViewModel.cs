@@ -25,16 +25,27 @@ public partial class LoginViewModel : BaseViewModel
 
         try
         {
-            await _authService.LoginComGoogleAsync();
+        await _authService.LoginComGoogleAsync();
 
-            // AppShell decide o menu inicial com base no perfil logado.
-            // Importante: com SingleProject/multi-window, a troca de tela
-            // é feita em Windows[0].Page (Application.Current.MainPage não
-            // afeta a Window criada em App.CreateWindow).
-            if (Application.Current?.Windows.Count > 0)
-            {
-                Application.Current.Windows[0].Page = new AppShell();
-            }
+var usuario =
+    await _authService.ObterUsuarioLogadoAsync();
+
+if (usuario is null)
+{
+    MensagemErro =
+        "Não foi possível identificar o usuário logado.";
+    return;
+}
+
+var appShell = new AppShell();
+
+appShell.ConfigurarMenuPorPerfil(usuario);
+
+if (Application.Current?.Windows.Count > 0)
+{
+    Application.Current.Windows[0].Page =
+        appShell;
+}
         }
         catch (Exception ex)
         {

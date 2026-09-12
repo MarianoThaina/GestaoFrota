@@ -26,6 +26,11 @@
                       Icon="payment.png"
                       ContentTemplate="{DataTemplate views:FormasPagamentoPage}" />
 
+        <ShellContent
+                      x:Name="AbaUsuarios"
+                      Title="Usuários"
+                      ContentTemplate="{DataTemplate views:UsuariosPage}" />
+
     </TabBar>
 
 </Shell>

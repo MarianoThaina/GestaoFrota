@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+    xmlns:models="clr-namespace:GestaoFrota.App.Models"
+    x:Class="GestaoFrota.App.Views.UsuariosPage"
+    x:DataType="vm:UsuariosViewModel"
+    Title="Usuários">
+
+    <Grid
+        Padding="16"
+        RowDefinitions="Auto,Auto,*"
+        RowSpacing="12">
+
+        <VerticalStackLayout
+            Grid.Row="0"
+            Spacing="4">
+
+            <Label
+                Text="Gestão de Usuários"
+                FontSize="24"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Gerencie os perfis e acessos dos usuários do sistema."
+                FontSize="13"
+                TextColor="Gray" />
+
+        </VerticalStackLayout>
+
+        <Label
+            Grid.Row="1"
+            Text="{Binding MensagemErro}"
+            TextColor="Red"
+            FontSize="13" />
+
+        <RefreshView
+            Grid.Row="2"
+            IsRefreshing="{Binding Carregando}"
+            Command="{Binding CarregarCommand}">
+
+            <CollectionView
+                ItemsSource="{Binding Usuarios}">
+
+                <CollectionView.EmptyView>
+
+                    <VerticalStackLayout
+                        Padding="20"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                        <Label
+                            Text="Nenhum usuário encontrado."
+                            TextColor="Gray"
+                            HorizontalTextAlignment="Center" />
+
+                    </VerticalStackLayout>
+
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate x:DataType="models:Usuario">
+
+                        <Frame
+                            Padding="14"
+                            Margin="0,5"
+                            CornerRadius="12"
+                            BorderColor="#DCE3EE">
+
+                            <VerticalStackLayout
+                                Spacing="10">
+
+                                <Label
+                                    Text="{Binding Nome}"
+                                    FontSize="18"
+                                    FontAttributes="Bold" />
+
+                                <Label
+                                    Text="{Binding Email}"
+                                    FontSize="13"
+                                    TextColor="Gray" />
+
+                                <HorizontalStackLayout
+                                    Spacing="5">
+
+                                    <Label
+                                        Text="Status:"
+                                        FontAttributes="Bold" />
+
+                                    <Label>
+                                        <Label.Triggers>
+
+                                            <DataTrigger
+                                                TargetType="Label"
+                                                Binding="{Binding Ativo}"
+                                                Value="True">
+
+                                                <Setter
+                                                    Property="Text"
+                                                    Value="Ativo" />
+
+                                                <Setter
+                                                    Property="TextColor"
+                                                    Value="Green" />
+
+                                            </DataTrigger>
+
+                                            <DataTrigger
+                                                TargetType="Label"
+                                                Binding="{Binding Ativo}"
+                                                Value="False">
+
+                                                <Setter
+                                                    Property="Text"
+                                                    Value="Inativo" />
+
+                                                <Setter
+                                                    Property="TextColor"
+                                                    Value="Red" />
+
+                                            </DataTrigger>
+
+                                        </Label.Triggers>
+                                    </Label>
+
+                                </HorizontalStackLayout>
+
+                                <Label
+                                    Text="Perfil do usuário"
+                                    FontAttributes="Bold"
+                                    FontSize="13" />
+
+                                <Picker
+                                    Title="Selecione o perfil"
+                                    ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type vm:UsuariosViewModel}}, Path=PerfisDisponiveis}"
+                                    SelectedItem="{Binding Perfil}" />
+
+                                <Button
+                                    Text="Salvar perfil"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsuariosViewModel}}, Path=SalvarPerfilCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                                <Button
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsuariosViewModel}}, Path=AlterarStatusCommand}"
+                                    CommandParameter="{Binding .}">
+
+                                    <Button.Triggers>
+
+                                        <DataTrigger
+                                            TargetType="Button"
+                                            Binding="{Binding Ativo}"
+                                            Value="True">
+
+                                            <Setter
+                                                Property="Text"
+                                                Value="Desativar usuário" />
+
+                                        </DataTrigger>
+
+                                        <DataTrigger
+                                            TargetType="Button"
+                                            Binding="{Binding Ativo}"
+                                            Value="False">
+
+                                            <Setter
+                                                Property="Text"
+                                                Value="Ativar usuário" />
+
+                                        </DataTrigger>
+
+                                    </Button.Triggers>
+
+                                </Button>
+
+                                <Label
+                                    Text="{Binding UltimoLogin, StringFormat='Último login: {0:dd/MM/yyyy HH:mm}'}"
+                                    FontSize="11"
+                                    TextColor="Gray" />
+
+                            </VerticalStackLayout>
+
+                        </Frame>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>
