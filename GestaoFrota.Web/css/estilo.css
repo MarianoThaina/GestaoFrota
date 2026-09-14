@@ -1,0 +1,943 @@
+/* =========================================================================
+   GESTÃO DE FROTA — FRONT-END WEB
+   Folha de estilo única, compartilhada por todas as telas.
+
+   Os valores do bloco 1 vieram do protótipo (docs/prototipo/css/estilo.css).
+   São o guia de estilos do projeto: nenhuma regra mais abaixo escreve uma
+   cor ou uma margem solta.
+
+   Ordem dos blocos:
+     1. Variáveis
+     2. Reset
+     3. Estrutura da página (barra lateral + conteúdo)
+     4. Componentes (cartão, botão, campo, lista, etiqueta, aviso, diálogo)
+     5. Tela de login
+     6. Telas pequenas
+   ========================================================================= */
+
+
+/* =========================================================================
+   1. VARIÁVEIS
+   ========================================================================= */
+
+:root {
+  --cor-primaria: #0B5FA5;
+  --cor-primaria-texto: #FFFFFF;
+  --cor-primaria-clara: #D3E4FF;
+  --cor-primaria-escura: #001C38;
+
+  --cor-secundaria: #535F70;
+  --cor-secundaria-clara: #D7E3F8;
+
+  --cor-positiva: #2E7D32;
+  --cor-positiva-fundo: #C8E6C9;
+  --cor-negativa: #C62828;
+  --cor-negativa-fundo: #FFCDD2;
+  --cor-alerta: #EF6C00;
+  --cor-alerta-fundo: #FFE0B2;
+
+  --cor-fundo: #FBFCFF;
+  --cor-superficie: #FFFFFF;
+  --cor-superficie-variante: #EEF1F6;
+  --cor-texto: #1A1C1E;
+  --cor-texto-suave: #5A6068;
+  --cor-borda: #DDE2EA;
+
+  --espaco-xs: 4px;
+  --espaco-sm: 8px;
+  --espaco-md: 16px;
+  --espaco-lg: 24px;
+  --espaco-xl: 32px;
+
+  --raio-sm: 8px;
+  --raio-md: 12px;
+  --raio-lg: 16px;
+  --raio-pilula: 999px;
+
+  --sombra-1: 0 1px 2px rgba(16, 28, 43, .08), 0 1px 3px rgba(16, 28, 43, .06);
+  --sombra-2: 0 2px 6px rgba(16, 28, 43, .10), 0 1px 2px rgba(16, 28, 43, .06);
+
+  --fonte: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --largura-lateral: 232px;
+}
+
+
+/* =========================================================================
+   2. RESET
+   ========================================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fonte);
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+
+/* =========================================================================
+   3. ESTRUTURA DA PÁGINA
+   ------------------------------------------------------------------------
+   Desktop: barra lateral fixa à esquerda + conteúdo rolando ao lado.
+   Celular: a lateral vira uma barra de menu fixa embaixo (ver bloco 6).
+   ========================================================================= */
+
+.app {
+  display: grid;
+  grid-template-columns: var(--largura-lateral) 1fr;
+  min-height: 100vh;
+}
+
+/* --- Barra lateral --- */
+
+.lateral {
+  background-color: var(--cor-superficie-variante);
+  border-right: 1px solid var(--cor-borda);
+  display: flex;
+  flex-direction: column;
+  padding: var(--espaco-md) var(--espaco-sm);
+  gap: var(--espaco-md);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-sm);
+}
+
+.marca-icone {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.marca-nome {
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.marca-nome span {
+  display: block;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.menu-secao {
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--cor-texto-suave);
+  padding: var(--espaco-md) var(--espaco-sm) var(--espaco-xs);
+}
+
+.menu a,
+.menu span.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: 10px var(--espaco-sm);
+  border-radius: var(--raio-pilula);
+  color: var(--cor-secundaria);
+  font-size: 14px;
+  transition: background-color .15s;
+}
+
+.menu a:hover {
+  background-color: var(--cor-secundaria-clara);
+}
+
+.menu a.ativo {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  font-weight: 500;
+}
+
+.menu .menu-item-bloqueado {
+  color: var(--cor-texto-suave);
+  opacity: .5;
+  cursor: default;
+}
+
+.menu-rodape {
+  margin-top: auto;
+  padding-top: var(--espaco-md);
+  border-top: 1px solid var(--cor-borda);
+}
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-sm);
+  min-width: 0;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.usuario-dados {
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.usuario-nome {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.usuario-perfil {
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+}
+
+/* --- Conteúdo --- */
+
+.conteudo {
+  padding: var(--espaco-lg);
+  max-width: 1120px;
+  width: 100%;
+}
+
+.topo {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espaco-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--espaco-lg);
+}
+
+.titulo-pagina {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.subtitulo {
+  color: var(--cor-texto-suave);
+  font-size: 14px;
+}
+
+.acoes {
+  display: flex;
+  gap: var(--espaco-sm);
+  flex-wrap: wrap;
+}
+
+
+/* =========================================================================
+   4. COMPONENTES
+   ========================================================================= */
+
+/* --- Cartão --- */
+
+.cartao {
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-1);
+  padding: var(--espaco-md);
+}
+
+.cartao + .cartao {
+  margin-top: var(--espaco-md);
+}
+
+/* --- Botões --- */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-sm);
+  padding: 10px var(--espaco-md);
+  border: 1px solid transparent;
+  border-radius: var(--raio-pilula);
+  background-color: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .15s, border-color .15s;
+}
+
+.botao:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.botao-cheio {
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+}
+
+.botao-cheio:hover:not(:disabled) {
+  background-color: var(--cor-primaria-escura);
+}
+
+.botao-contorno {
+  border-color: var(--cor-borda);
+  color: var(--cor-primaria);
+}
+
+.botao-contorno:hover:not(:disabled) {
+  background-color: var(--cor-primaria-clara);
+}
+
+.botao-texto {
+  color: var(--cor-primaria);
+  padding: var(--espaco-sm);
+}
+
+.botao-texto:hover:not(:disabled) {
+  background-color: var(--cor-primaria-clara);
+}
+
+.botao-perigo {
+  border-color: var(--cor-negativa);
+  color: var(--cor-negativa);
+}
+
+.botao-perigo:hover:not(:disabled) {
+  background-color: var(--cor-negativa-fundo);
+}
+
+/* --- Filtros em pílula --- */
+
+.segmentos {
+  display: flex;
+  gap: var(--espaco-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--espaco-md);
+}
+
+.segmento {
+  padding: var(--espaco-sm) var(--espaco-md);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-superficie);
+  font-size: 13px;
+  color: var(--cor-secundaria);
+  cursor: pointer;
+}
+
+.segmento.ativo {
+  background-color: var(--cor-primaria-clara);
+  border-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  font-weight: 500;
+}
+
+/* --- Lista --- */
+
+.lista {
+  list-style: none;
+}
+
+.lista-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  padding: var(--espaco-md) 0;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.lista-item:last-child {
+  border-bottom: none;
+}
+
+/* O item inteiro abre a edição, como no protótipo. */
+.lista-abrir {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  flex: 1;
+  min-width: 0;
+  padding: var(--espaco-sm);
+  margin: calc(var(--espaco-sm) * -1);
+  border: none;
+  background: none;
+  border-radius: var(--raio-md);
+  text-align: left;
+  cursor: pointer;
+}
+
+.lista-abrir:hover {
+  background-color: var(--cor-superficie-variante);
+}
+
+.lista-abrir:disabled {
+  cursor: default;
+}
+
+.lista-abrir:disabled:hover {
+  background-color: transparent;
+}
+
+.lista-dados {
+  flex: 1;
+  min-width: 0;
+}
+
+.lista-titulo {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  flex-wrap: wrap;
+}
+
+.lista-nota {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.lista-item-inativo .lista-titulo,
+.lista-item-inativo .lista-nota {
+  color: var(--cor-texto-suave);
+}
+
+/* --- Seções dentro da lista ---
+   O protótipo separa Entradas de Saídas com um título antes de cada bloco. */
+
+.lista-secao {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+  margin: var(--espaco-lg) 0 var(--espaco-sm);
+}
+
+.lista-secao:first-child {
+  margin-top: 0;
+}
+
+/* --- Ícone redondo de cada categoria ---
+   Verde para entrada, vermelho para saída. Colore só o ícone, nunca o
+   cartão inteiro, como pede a US11. */
+
+.icone-categoria {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.icone-entrada {
+  background-color: var(--cor-positiva-fundo);
+  color: var(--cor-positiva);
+}
+
+.icone-saida {
+  background-color: var(--cor-negativa-fundo);
+  color: var(--cor-negativa);
+}
+
+.icone-pagamento {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+.lista-item-inativo .icone-categoria {
+  background-color: var(--cor-superficie-variante);
+  color: var(--cor-texto-suave);
+}
+
+/* --- Interruptor ---
+   Um checkbox comum, vestido de chave liga/desliga. */
+
+.interruptor {
+  position: relative;
+  width: 52px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.interruptor input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.interruptor-trilho {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-borda);
+  transition: background-color .2s;
+  pointer-events: none;
+}
+
+.interruptor-trilho::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--cor-superficie);
+  box-shadow: var(--sombra-1);
+  transition: transform .2s;
+}
+
+.interruptor input:checked + .interruptor-trilho {
+  background-color: var(--cor-primaria);
+}
+
+.interruptor input:checked + .interruptor-trilho::after {
+  transform: translateX(20px);
+}
+
+.interruptor input:disabled {
+  cursor: not-allowed;
+}
+
+.interruptor input:disabled + .interruptor-trilho {
+  opacity: .4;
+}
+
+.interruptor input:focus-visible + .interruptor-trilho {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+/* --- Seletor de duas opções (Entrada / Saída no formulário) --- */
+
+.seletor-tipo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  overflow: hidden;
+}
+
+.seletor-tipo button {
+  padding: 10px var(--espaco-sm);
+  border: none;
+  background-color: var(--cor-superficie);
+  font-size: 14px;
+  color: var(--cor-secundaria);
+  cursor: pointer;
+}
+
+.seletor-tipo button.ativo {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+  font-weight: 500;
+}
+
+/* --- Botão flutuante --- */
+
+.botao-flutuante {
+  position: fixed;
+  right: var(--espaco-lg);
+  bottom: var(--espaco-lg);
+  padding: var(--espaco-md) var(--espaco-lg);
+  border: none;
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: var(--sombra-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  z-index: 4;
+}
+
+.botao-flutuante:hover {
+  background-color: var(--cor-primaria-escura);
+}
+
+@media (max-width: 900px) {
+  .botao-flutuante {
+    bottom: 80px;
+  }
+}
+
+/* --- Etiquetas --- */
+
+.etiqueta {
+  display: inline-block;
+  padding: 2px var(--espaco-sm);
+  border-radius: var(--raio-pilula);
+  font-size: 11px;
+  font-weight: 500;
+  background-color: var(--cor-superficie-variante);
+  color: var(--cor-secundaria);
+}
+
+.etiqueta-primaria {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+}
+
+.seletor-perfil {
+  padding: var(--espaco-sm) var(--espaco-md);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-superficie);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.seletor-perfil:disabled {
+  opacity: .6;
+}
+
+@media (max-width: 900px) {
+  .seletor-perfil {
+    max-width: 130px;
+  }
+}
+
+.etiqueta-positiva {
+  background-color: var(--cor-positiva-fundo);
+  color: var(--cor-positiva);
+}
+
+.etiqueta-negativa {
+  background-color: var(--cor-negativa-fundo);
+  color: var(--cor-negativa);
+}
+
+.etiqueta-alerta {
+  background-color: var(--cor-alerta-fundo);
+  color: var(--cor-alerta);
+}
+
+/* --- Avisos --- */
+
+.aviso {
+  padding: var(--espaco-md);
+  border-radius: var(--raio-md);
+  font-size: 14px;
+  margin-bottom: var(--espaco-md);
+}
+
+.aviso-erro {
+  background-color: var(--cor-negativa-fundo);
+  color: var(--cor-negativa);
+}
+
+.aviso-sucesso {
+  background-color: var(--cor-positiva-fundo);
+  color: var(--cor-positiva);
+}
+
+.aviso-alerta {
+  background-color: var(--cor-alerta-fundo);
+  color: var(--cor-alerta);
+}
+
+.aviso-info {
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-primaria-escura);
+}
+
+/* --- Estado vazio e carregando --- */
+
+.vazio {
+  text-align: center;
+  padding: var(--espaco-xl) var(--espaco-md);
+  color: var(--cor-texto-suave);
+}
+
+.vazio strong {
+  display: block;
+  color: var(--cor-texto);
+  margin-bottom: var(--espaco-xs);
+}
+
+/* --- Campos de formulário --- */
+
+.campo {
+  display: block;
+  margin-bottom: var(--espaco-md);
+}
+
+.campo > span {
+  display: block;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  margin-bottom: var(--espaco-xs);
+}
+
+.campo input[type="text"],
+.campo select {
+  width: 100%;
+  padding: 10px var(--espaco-md);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-superficie);
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--cor-primaria);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--cor-primaria-clara);
+}
+
+.linha-interruptor {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  margin-bottom: var(--espaco-md);
+}
+
+/* --- Diálogo --- */
+
+.cobertura {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(16, 28, 43, .45);
+  display: grid;
+  place-items: center;
+  padding: var(--espaco-md);
+  z-index: 10;
+}
+
+.cobertura[hidden] {
+  display: none;
+}
+
+.dialogo {
+  background-color: var(--cor-superficie);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-2);
+  padding: var(--espaco-lg);
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.dialogo h2 {
+  font-size: 20px;
+  margin-bottom: var(--espaco-md);
+}
+
+.dialogo-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--espaco-sm);
+  margin-top: var(--espaco-lg);
+}
+
+
+/* =========================================================================
+   5. TELA DE LOGIN
+   ========================================================================= */
+
+.pagina-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--espaco-md);
+  background-color: var(--cor-superficie-variante);
+}
+
+.cartao-login {
+  background-color: var(--cor-superficie);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-2);
+  padding: var(--espaco-xl);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-marca {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--raio-md);
+  background-color: var(--cor-primaria);
+  color: var(--cor-primaria-texto);
+  display: grid;
+  place-items: center;
+  margin: 0 auto var(--espaco-md);
+}
+
+.cartao-login h1 {
+  font-size: 22px;
+  margin-bottom: var(--espaco-xs);
+}
+
+.cartao-login p {
+  color: var(--cor-texto-suave);
+  font-size: 14px;
+  margin-bottom: var(--espaco-lg);
+}
+
+.area-botao-google {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-sm);
+  min-height: 44px;
+}
+
+.botao-largo {
+  width: 100%;
+}
+
+.nota-login {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+  margin-top: var(--espaco-md);
+}
+
+/* Linha "ou entre como", com o texto no meio. */
+.separador-login {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-md);
+  margin: var(--espaco-lg) 0 var(--espaco-sm);
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+}
+
+.separador-login::before,
+.separador-login::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--cor-borda);
+}
+
+.cartao-login .lista-item {
+  text-align: left;
+}
+
+
+/* =========================================================================
+   6. TELAS PEQUENAS
+   ------------------------------------------------------------------------
+   Abaixo de 900px a barra lateral desce e vira o menu inferior, igual ao
+   protótipo de celular.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .lateral {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-around;
+    border-right: none;
+    border-top: 1px solid var(--cor-borda);
+    background-color: var(--cor-superficie);
+    padding: var(--espaco-sm);
+    gap: 0;
+    z-index: 5;
+  }
+
+  .marca,
+  .menu-secao,
+  .menu-rodape,
+  .menu-item-bloqueado {
+    display: none;
+  }
+
+  .menu {
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    gap: 0;
+  }
+
+  .menu a {
+    flex-direction: column;
+    gap: 2px;
+    font-size: 11px;
+    padding: var(--espaco-sm);
+    border-radius: var(--raio-md);
+    text-align: center;
+  }
+
+  .conteudo {
+    padding: var(--espaco-md);
+    padding-bottom: 88px;
+  }
+
+  .titulo-pagina {
+    font-size: 22px;
+  }
+}

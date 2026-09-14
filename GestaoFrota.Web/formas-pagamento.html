@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formas de pagamento — Gestão de Frota</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <aside class="lateral"></aside>
+
+    <main class="conteudo">
+
+      <header class="topo">
+        <div>
+          <h1 class="titulo-pagina">Formas de pagamento</h1>
+          <p class="subtitulo">Registram como cada lançamento foi pago.</p>
+        </div>
+      </header>
+
+      <div id="aviso" class="aviso" hidden></div>
+
+      <label class="linha-interruptor">
+        <input type="checkbox" id="mostrar-inativas">
+        <span>Mostrar formas desativadas</span>
+      </label>
+
+      <section class="cartao">
+        <ul class="lista" id="lista"></ul>
+      </section>
+
+    </main>
+  </div>
+
+  <button class="botao-flutuante" id="botao-nova" hidden>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M12 5v14M5 12h14"/>
+    </svg>
+    Nova forma
+  </button>
+
+
+  <div class="cobertura" id="dialogo" hidden>
+    <div class="dialogo" role="dialog" aria-modal="true" aria-labelledby="dialogo-titulo">
+      <h2 id="dialogo-titulo">Nova forma de pagamento</h2>
+
+      <div id="dialogo-aviso" class="aviso aviso-erro" hidden></div>
+
+      <label class="campo">
+        <span>Título</span>
+        <input type="text" id="campo-nome" maxlength="100" placeholder="Pix, Boleto, Cartão Corporativo...">
+        <small class="lista-nota">Obrigatório. É o nome que aparece na hora de registrar um lançamento.</small>
+      </label>
+
+      <div class="lista-item">
+        <div class="lista-dados">
+          <div class="lista-titulo">Forma ativa</div>
+          <div class="lista-nota">Disponível para novos lançamentos</div>
+        </div>
+        <label class="interruptor">
+          <input type="checkbox" id="campo-ativo" checked aria-label="Forma ativa">
+          <span class="interruptor-trilho"></span>
+        </label>
+      </div>
+
+      <div class="aviso aviso-alerta" id="nota-soft-delete" hidden>
+        <strong>Esta forma de pagamento não pode ser excluída.</strong>
+        Apagá-la deixaria os lançamentos já registrados sem forma de pagamento.
+        Para tirá-la de circulação, desligue o interruptor acima: ela some dos
+        novos lançamentos e o histórico continua intacto.
+      </div>
+
+      <div class="dialogo-acoes">
+        <button class="botao botao-texto" id="botao-cancelar">Cancelar</button>
+        <button class="botao botao-cheio" id="botao-salvar">Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/formas-pagamento.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Categorias — Gestão de Frota</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- A barra lateral é montada por js/layout.js, conforme o perfil. -->
+    <aside class="lateral"></aside>
+
+    <main class="conteudo">
+
+      <header class="topo">
+        <div>
+          <h1 class="titulo-pagina">Categorias</h1>
+          <p class="subtitulo">Classificam as entradas e saídas dos lançamentos.</p>
+        </div>
+      </header>
+
+      <div id="aviso" class="aviso" hidden></div>
+
+      <div class="segmentos" role="group" aria-label="Filtrar por tipo">
+        <button class="segmento ativo" data-tipo="todos">Todas</button>
+        <button class="segmento" data-tipo="1">Entradas</button>
+        <button class="segmento" data-tipo="2">Saídas</button>
+      </div>
+
+      <label class="linha-interruptor">
+        <input type="checkbox" id="mostrar-inativas">
+        <span>Mostrar categorias desativadas</span>
+      </label>
+
+      <section class="cartao" id="secoes"></section>
+
+    </main>
+  </div>
+
+  <button class="botao-flutuante" id="botao-nova" hidden>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M12 5v14M5 12h14"/>
+    </svg>
+    Nova categoria
+  </button>
+
+
+  <!-- Diálogo de criar e editar -->
+  <div class="cobertura" id="dialogo" hidden>
+    <div class="dialogo" role="dialog" aria-modal="true" aria-labelledby="dialogo-titulo">
+      <h2 id="dialogo-titulo">Nova categoria</h2>
+
+      <div id="dialogo-aviso" class="aviso aviso-erro" hidden></div>
+
+      <label class="campo">
+        <span>Título</span>
+        <input type="text" id="campo-nome" maxlength="100" placeholder="Combustível, Frete, Manutenção...">
+        <small class="lista-nota">Obrigatório. É o nome que aparece nos lançamentos.</small>
+      </label>
+
+      <div class="campo">
+        <span>Tipo</span>
+        <div class="seletor-tipo" id="seletor-tipo" role="group" aria-label="Tipo da categoria">
+          <button type="button" data-tipo="1">Entrada (receita)</button>
+          <button type="button" data-tipo="2" class="ativo">Saída (despesa)</button>
+        </div>
+        <small class="lista-nota">Obrigatório. Define se a categoria soma ou subtrai do saldo.</small>
+      </div>
+
+      <div class="lista-item">
+        <div class="lista-dados">
+          <div class="lista-titulo">Categoria ativa</div>
+          <div class="lista-nota">Disponível para novos lançamentos</div>
+        </div>
+        <label class="interruptor">
+          <input type="checkbox" id="campo-ativo" checked aria-label="Categoria ativa">
+          <span class="interruptor-trilho"></span>
+        </label>
+      </div>
+
+      <div class="aviso aviso-alerta" id="nota-soft-delete" hidden>
+        <strong>Esta categoria não pode ser excluída.</strong>
+        Apagá-la deixaria os lançamentos já registrados sem categoria e quebraria
+        os relatórios. Para tirá-la de circulação, desligue o interruptor acima:
+        ela some dos novos lançamentos e o histórico continua intacto.
+      </div>
+
+      <div class="dialogo-acoes">
+        <button class="botao botao-texto" id="botao-cancelar">Cancelar</button>
+        <button class="botao botao-cheio" id="botao-salvar">Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/categorias.js"></script>
+</body>
+</html>
