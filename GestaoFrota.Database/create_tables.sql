@@ -1,14 +1,3 @@
--- =====================================================================
--- GestaoFrota - Migration completa (Supabase / Postgres)
--- Projeto Extensionista - App Financeiro e Frota Logistica
---
--- PRE-REQUISITO: a tabela public.perfil ja foi criada (com os 4 perfis).
--- Este script cria as outras 11 tabelas, na ordem certa de dependencia.
--- Rode UMA vez no SQL Editor. Se precisar rodar de novo, apague antes
--- as tabelas e os tipos criados aqui.
--- =====================================================================
-
--- Funcao do updated_at (segura para rodar de novo)
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -19,9 +8,35 @@ begin
 end;
 $$;
 
--- ---------------------------------------------------------------------
--- ENUMS (campos de status/tipo com valores fechados)
--- ---------------------------------------------------------------------
+create table if not exists public.perfil (
+  id          uuid primary key default gen_random_uuid(),
+  nome        text not null unique,
+  descricao   text,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+drop trigger if exists trg_perfil_updated_at on public.perfil;
+create trigger trg_perfil_updated_at
+before update on public.perfil
+for each row execute function public.set_updated_at();
+
+alter table public.perfil enable row level security;
+
+drop policy if exists "perfil_select_authenticated" on public.perfil;
+create policy "perfil_select_authenticated"
+on public.perfil
+for select
+to authenticated
+using (true);
+
+insert into public.perfil (nome, descricao) values
+  ('Admin',      'Acesso total ao sistema'),
+  ('Gestor',     'Gerencia frota, viagens, fretes e movimentações'),
+  ('Motorista',  'Acessa as próprias viagens e registra despesas'),
+  ('Financeiro', 'Acessa movimentações, dívidas e parcelas')
+on conflict (nome) do nothing;
+
 create type public.status_veiculo       as enum ('disponivel', 'em_viagem', 'manutencao', 'inativo');
 create type public.status_viagem        as enum ('planejada', 'em_andamento', 'concluida', 'cancelada');
 create type public.status_frete         as enum ('pendente', 'em_transporte', 'entregue', 'cancelado');
@@ -29,10 +44,6 @@ create type public.tipo_categoria       as enum ('receita', 'despesa');
 create type public.status_movimentacao  as enum ('pendente', 'confirmada', 'cancelada');
 create type public.status_divida        as enum ('ativa', 'quitada', 'cancelada');
 create type public.status_parcela       as enum ('pendente', 'paga', 'atrasada', 'cancelada');
-
--- ---------------------------------------------------------------------
--- TABELAS DE CADASTRO
--- ---------------------------------------------------------------------
 
 create table public.usuario (
   id          uuid primary key default gen_random_uuid(),
@@ -97,10 +108,6 @@ create table public.forma_pagamento (
   updated_at  timestamptz not null default now()
 );
 
--- ---------------------------------------------------------------------
--- OPERACAO (viagens e fretes)
--- ---------------------------------------------------------------------
-
 create table public.viagem (
   id                    uuid primary key default gen_random_uuid(),
   veiculo_id            uuid not null references public.veiculo (id) on delete restrict,
@@ -128,10 +135,6 @@ create table public.frete (
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now()
 );
-
--- ---------------------------------------------------------------------
--- FINANCEIRO (nunca apagar fisicamente: sem CASCADE)
--- ---------------------------------------------------------------------
 
 create table public.divida (
   id                  uuid primary key default gen_random_uuid(),
@@ -175,9 +178,6 @@ create table public.parcela (
   constraint parcela_numero_unico_por_divida unique (divida_id, numero_parcela)
 );
 
--- ---------------------------------------------------------------------
--- INDICES (FKs e campos mais filtrados)
--- ---------------------------------------------------------------------
 create index idx_usuario_perfil_id            on public.usuario (perfil_id);
 
 create index idx_viagem_veiculo_id            on public.viagem (veiculo_id);
@@ -200,11 +200,6 @@ create index idx_parcela_divida_id            on public.parcela (divida_id);
 create index idx_parcela_vencimento           on public.parcela (data_vencimento);
 create index idx_parcela_status               on public.parcela (status);
 
--- ---------------------------------------------------------------------
--- TRIGGER updated_at + RLS (todas as tabelas acima)
--- Policy inicial simples: usuario autenticado pode LER.
--- Refinar por Perfil depois.
--- ---------------------------------------------------------------------
 do $$
 declare
   t text;
