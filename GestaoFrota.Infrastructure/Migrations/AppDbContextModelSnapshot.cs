@@ -70,6 +70,9 @@ namespace GestaoFrota.Infrastructure.Migrations
                     b.Property<DateTime>("DataInicio")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DataPrimeiroVencimento")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -85,6 +88,12 @@ namespace GestaoFrota.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<decimal>("ValorParcela")
+                        .HasColumnType("decimal(14,2)");
+
+                    b.Property<decimal?>("ValorQuitacaoAntecipada")
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<decimal>("ValorTotal")
                         .HasColumnType("decimal(14,2)");
@@ -169,6 +178,13 @@ namespace GestaoFrota.Infrastructure.Migrations
                     b.Property<Guid>("CategoriaId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<byte[]>("ComprovanteConteudo")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ComprovanteTipo")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("ComprovanteUrl")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -180,6 +196,12 @@ namespace GestaoFrota.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataPagamento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataVencimento")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
@@ -197,6 +219,11 @@ namespace GestaoFrota.Infrastructure.Migrations
 
                     b.Property<bool>("SincronizadoOffline")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
@@ -226,8 +253,12 @@ namespace GestaoFrota.Infrastructure.Migrations
 
                     b.HasIndex("ViagemId");
 
+                    b.HasIndex("Status", "DataVencimento");
+
                     b.ToTable("Movimentacoes", null, t =>
                         {
+                            t.HasCheckConstraint("CK_Movimentacao_PagoExigeDataPagamento", "[Status] <> 'Pago' OR [DataPagamento] IS NOT NULL");
+
                             t.HasCheckConstraint("CK_Movimentacao_ValorPositivo", "[Valor] > 0");
                         });
                 });

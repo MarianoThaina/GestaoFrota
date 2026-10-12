@@ -13,4 +13,7 @@ public class FormaPagamento
 
     [Indexed]
     public bool PendenteSincronizacao { get; set; }
+
+    /// <summary>Usado pelo Picker para exibir o nome do item.</summary>
+    public override string ToString() => Nome;
 }

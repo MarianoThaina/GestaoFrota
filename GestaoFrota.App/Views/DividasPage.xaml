@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             xmlns:models="clr-namespace:GestaoFrota.App.Models"
+             x:Class="GestaoFrota.App.Views.DividasPage"
+             x:DataType="vm:DividasViewModel"
+             Title="Dívidas e Financiamentos">
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="16" RowSpacing="10">
+
+        <Button Grid.Row="0"
+                Text="+ Novo financiamento"
+                Command="{Binding NovaCommand}"
+                IsVisible="{Binding PodeGerenciar}"
+                BackgroundColor="#0B1D3A"
+                TextColor="White"
+                CornerRadius="24"
+                HeightRequest="48" />
+
+        <Label Grid.Row="1"
+               Text="{Binding MensagemErro}"
+               TextColor="#D93025"
+               FontSize="13"
+               IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding Carregando}"
+                     Command="{Binding CarregarCommand}">
+            <CollectionView x:Name="ListaDividas"
+                            ItemsSource="{Binding Dividas}"
+                            SelectionMode="Single"
+                            SelectionChangedCommand="{Binding AbrirCommand}"
+                            SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
+                <CollectionView.EmptyView>
+                    <Label Text="Nenhuma dívida cadastrada ainda."
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="Gray" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Divida">
+                        <Frame Padding="12" Margin="0,0,0,8" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False">
+                            <VerticalStackLayout Spacing="4">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <Label Grid.Column="0" Text="{Binding Descricao}" FontAttributes="Bold" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding StatusTexto}"
+                                           TextColor="{Binding CorStatus}"
+                                           FontAttributes="Bold"
+                                           FontSize="12" />
+                                </Grid>
+                                <Label Text="{Binding ParcelaTexto}" />
+                                <Label Text="{Binding PrimeiroVencimentoTexto}" FontSize="12" TextColor="Gray" />
+                                <ProgressBar Progress="{Binding Progresso}" ProgressColor="#1E8E3E" />
+                                <Label Text="{Binding ProgressoTexto}" FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding SaldoDevedorTexto}" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>

@@ -43,7 +43,26 @@ builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ---------- Controllers e documentação ----------
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // Padroniza erros de validação no mesmo formato dos demais endpoints
+        // ({ mensagem }), para o app exibir a primeira mensagem ao usuário.
+        options.InvalidModelStateResponseFactory = contexto =>
+        {
+            var mensagens = contexto.ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => string.IsNullOrWhiteSpace(e.ErrorMessage) ? "Dados inválidos." : e.ErrorMessage)
+                .Distinct()
+                .ToList();
+
+            return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new
+            {
+                mensagem = mensagens.FirstOrDefault() ?? "Dados inválidos.",
+                erros = mensagens
+            });
+        };
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -86,6 +105,16 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Aplica as migrations pendentes na inicialização quando
+// Database:MigrateOnStartup = true (útil em ambiente hospedado, onde não há
+// terminal para rodar "dotnet ef database update"). Por padrão fica desligado.
+if (builder.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
+{
+    using var escopo = app.Services.CreateScope();
+    var banco = escopo.ServiceProvider.GetRequiredService<AppDbContext>();
+    banco.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

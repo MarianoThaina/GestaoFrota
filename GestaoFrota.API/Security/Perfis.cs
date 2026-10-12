@@ -14,6 +14,13 @@ public static class Perfis
     /// <summary>Perfis com permissão de gestão financeira.</summary>
     public const string GestaoFinanceira = Administrador + "," + Financeiro;
 
+    /// <summary>
+    /// Perfis que podem consultar o módulo financeiro (movimentações, dívidas,
+    /// saldo e projeção). A escrita continua restrita a <see cref="GestaoFinanceira"/>.
+    /// O OperadorMotorista nunca tem acesso a esses dados.
+    /// </summary>
+    public const string LeituraFinanceira = Administrador + "," + GestorDeFrota + "," + Financeiro;
+
     /// <summary>Perfis com permissão de gestão de frota.</summary>
     public const string GestaoFrota = Administrador + "," + GestorDeFrota;
 

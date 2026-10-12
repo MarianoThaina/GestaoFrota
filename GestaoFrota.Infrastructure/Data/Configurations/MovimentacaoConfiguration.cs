@@ -8,15 +8,30 @@ public class MovimentacaoConfiguration : IEntityTypeConfiguration<Movimentacao>
 {
     public void Configure(EntityTypeBuilder<Movimentacao> builder)
     {
-        builder.ToTable("Movimentacoes", t => t.HasCheckConstraint(
-            "CK_Movimentacao_ValorPositivo",
-            "[Valor] > 0"));
+        builder.ToTable("Movimentacoes", t =>
+        {
+            t.HasCheckConstraint(
+                "CK_Movimentacao_ValorPositivo",
+                "[Valor] > 0");
+
+            // Se está Pago, a data de pagamento é obrigatória (US03).
+            t.HasCheckConstraint(
+                "CK_Movimentacao_PagoExigeDataPagamento",
+                "[Status] <> 'Pago' OR [DataPagamento] IS NOT NULL");
+        });
 
         builder.HasKey(m => m.Id);
 
         builder.Property(m => m.Valor).HasColumnType("decimal(14,2)");
         builder.Property(m => m.Descricao).HasMaxLength(300);
         builder.Property(m => m.ComprovanteUrl).HasMaxLength(500);
+        builder.Property(m => m.ComprovanteConteudo).HasColumnType("varbinary(max)");
+        builder.Property(m => m.ComprovanteTipo).HasMaxLength(100);
+
+        builder.Property(m => m.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .IsRequired();
 
         builder.Property(m => m.Tipo)
             .HasConversion<string>()
@@ -49,5 +64,6 @@ public class MovimentacaoConfiguration : IEntityTypeConfiguration<Movimentacao>
             .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasIndex(m => m.Data);
+        builder.HasIndex(m => new { m.Status, m.DataVencimento });
     }
 }

@@ -34,11 +34,13 @@ public class GoogleAuthService : IAuthService
 {
     private readonly HttpClient _httpClient; // client "público", sem AuthHeaderHandler
     private readonly ITokenStore _tokenStore;
+    private readonly ILocalDatabaseService _localDb;
 
-    public GoogleAuthService(HttpClient httpClient, ITokenStore tokenStore)
+    public GoogleAuthService(HttpClient httpClient, ITokenStore tokenStore, ILocalDatabaseService localDb)
     {
         _httpClient = httpClient;
         _tokenStore = tokenStore;
+        _localDb = localDb;
     }
 
     public async Task<UsuarioLogado> LoginComGoogleAsync()
@@ -121,5 +123,12 @@ public class GoogleAuthService : IAuthService
         }
     }
 
-    public Task LogoutAsync() => _tokenStore.LimparSessaoAsync();
+    public async Task LogoutAsync()
+    {
+        await _tokenStore.LimparSessaoAsync();
+
+        // Dados financeiros em cache não devem ficar acessíveis para o próximo
+        // usuário que entrar neste aparelho (ex.: perfil Motorista).
+        await _localDb.LimparCacheFinanceiroAsync();
+    }
 }

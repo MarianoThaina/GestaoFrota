@@ -205,3 +205,7 @@ Arquivos lidos integralmente: entidades e enums do domínio, `AuthController`,
 Arquivos não lidos em detalhe: `LoginPage.xaml`, `FormasPagamentoPage.xaml`,
 `LocalDatabaseService`, `AuthHeaderHandler`, `JwtTokenService`,
 `ConnectivityService`, os DTOs e as demais configurações do EF Core.
+
+## Atualização (11/10/2026) - núcleo financeiro
+
+Implementados: movimentações (status, vencimento, pagamento, comprovante), dívidas com geração transacional de parcelas, saldo atual e projeção de caixa (API e app), menu Flyout por perfil, plataforma Android do app. Detalhes e roteiro do vídeo no `README.md` da raiz.

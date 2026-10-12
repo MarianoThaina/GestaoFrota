@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             x:Class="GestaoFrota.App.Views.DividaFormPage"
+             x:DataType="vm:DividaFormViewModel"
+             Title="Novo financiamento">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <Label Text="Descrição" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="Ex.: Financiamento caminhão Volvo FH"
+                   MaxLength="200"
+                   Text="{Binding Descricao}" />
+
+            <Label Text="Valor da parcela (R$)" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="0,00" Keyboard="Numeric" Text="{Binding ValorParcelaTexto}" />
+
+            <Label Text="Quantidade de parcelas" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="Ex.: 12" Keyboard="Numeric" MaxLength="3" Text="{Binding NumeroParcelasTexto}" />
+
+            <Label Text="Vencimento da 1ª parcela" FontSize="12" TextColor="Gray" />
+            <DatePicker Date="{Binding DataPrimeiroVencimento}" Format="dd/MM/yyyy" />
+
+            <Label Text="Valor para quitação antecipada (opcional)" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="0,00" Keyboard="Numeric" Text="{Binding ValorQuitacaoTexto}" />
+
+            <Label Text="Categoria das parcelas" FontSize="12" TextColor="Gray" />
+            <Picker Title="Escolha a categoria"
+                    ItemsSource="{Binding Categorias}"
+                    SelectedItem="{Binding CategoriaSelecionada}" />
+
+            <Label Text="Forma de pagamento" FontSize="12" TextColor="Gray" />
+            <Picker Title="Escolha a forma de pagamento"
+                    ItemsSource="{Binding Formas}"
+                    SelectedItem="{Binding FormaSelecionada}" />
+
+            <Frame Padding="12"
+                   CornerRadius="12"
+                   BorderColor="#DCE3EE"
+                   BackgroundColor="#F5F8FF"
+                   HasShadow="False"
+                   IsVisible="{Binding Resumo, Converter={StaticResource StringNotEmptyConverter}}">
+                <Label Text="{Binding Resumo}" FontSize="13" />
+            </Frame>
+
+            <Label Text="{Binding MensagemErro}"
+                   TextColor="#D93025"
+                   FontSize="13"
+                   IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Button Text="Salvar e gerar parcelas"
+                    Command="{Binding SalvarCommand}"
+                    BackgroundColor="#0B1D3A"
+                    TextColor="White"
+                    CornerRadius="24"
+                    HeightRequest="52"
+                    IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
