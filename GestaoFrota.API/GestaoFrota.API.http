@@ -1,4 +1,4 @@
-@GestaoFrota.API_HostAddress = http://localhost:5137
+﻿@GestaoFrota.API_HostAddress = http://localhost:5137
 
 ### Health check
 GET {{GestaoFrota.API_HostAddress}}/api/status
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 {
   "nome": "Combustível",
-  "tipo": "Despesa",
+  "tipo": 2,
   "ativo": true
 }
 
@@ -44,3 +44,83 @@ Content-Type: application/json
   "nome": "Pix",
   "ativo": true
 }
+
+### ---------- Núcleo financeiro (Administrador ou Financeiro) ----------
+### Enums trafegam como número: Tipo 1=Receita 2=Despesa | Status 1=Pendente 2=Pago
+
+### Listar movimentações (filtros opcionais: tipo, status, de, ate, dividaId)
+GET {{GestaoFrota.API_HostAddress}}/api/movimentacoes?status=1
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Criar movimentação pendente
+POST {{GestaoFrota.API_HostAddress}}/api/movimentacoes
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "tipo": 2,
+  "valor": 350.90,
+  "descricao": "Abastecimento caminhão 01",
+  "categoriaId": "00000000-0000-0000-0001-000000000002",
+  "formaPagamentoId": "00000000-0000-0000-0002-000000000001",
+  "dataVencimento": "2026-10-20",
+  "status": 1
+}
+
+### Criar movimentação já paga (exige dataPagamento)
+POST {{GestaoFrota.API_HostAddress}}/api/movimentacoes
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "tipo": 1,
+  "valor": 4200,
+  "descricao": "Frete São Paulo - Curitiba",
+  "categoriaId": "00000000-0000-0000-0001-000000000001",
+  "formaPagamentoId": "00000000-0000-0000-0002-000000000001",
+  "dataVencimento": "2026-10-10",
+  "status": 2,
+  "dataPagamento": "2026-10-10"
+}
+
+### Marcar como paga
+PATCH {{GestaoFrota.API_HostAddress}}/api/movimentacoes/COLE_AQUI_O_ID/pagar
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{ "dataPagamento": "2026-10-11" }
+
+### Estornar (rollback lógico)
+PATCH {{GestaoFrota.API_HostAddress}}/api/movimentacoes/COLE_AQUI_O_ID/estornar
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Baixar comprovante
+GET {{GestaoFrota.API_HostAddress}}/api/movimentacoes/COLE_AQUI_O_ID/comprovante
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Cadastrar financiamento (gera as parcelas pendentes em transação)
+POST {{GestaoFrota.API_HostAddress}}/api/dividas
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "descricao": "Financiamento caminhão Volvo FH",
+  "valorParcela": 3850.00,
+  "numeroParcelas": 12,
+  "dataPrimeiroVencimento": "2026-11-05",
+  "valorQuitacaoAntecipada": 38000.00,
+  "categoriaId": "00000000-0000-0000-0001-000000000006",
+  "formaPagamentoId": "00000000-0000-0000-0002-000000000002"
+}
+
+### Dívida com todas as parcelas
+GET {{GestaoFrota.API_HostAddress}}/api/dividas/COLE_AQUI_O_ID
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Saldo atual (somente Pago/Recebido)
+GET {{GestaoFrota.API_HostAddress}}/api/financeiro/saldo
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Projeção de caixa por mês de vencimento
+GET {{GestaoFrota.API_HostAddress}}/api/financeiro/projecao?meses=12
+Authorization: Bearer COLE_AQUI_O_JWT

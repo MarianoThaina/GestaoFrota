@@ -14,6 +14,13 @@ public interface ILocalDatabaseService
     Task<List<FormaPagamento>> ListarFormasPagamentoAsync();
     Task SalvarFormasPagamentoAsync(IEnumerable<FormaPagamento> formas);
     Task<int> SalvarFormaPagamentoLocalAsync(FormaPagamento forma);
+
+    Task<List<Movimentacao>> ListarMovimentacoesAsync();
+    Task SubstituirMovimentacoesAsync(IEnumerable<Movimentacao> movimentacoes);
+    Task<int> SalvarMovimentacaoLocalAsync(Movimentacao movimentacao);
+
+    /// <summary>Apaga os dados financeiros em cache (chamado no logout).</summary>
+    Task LimparCacheFinanceiroAsync();
 }
 
 /// <summary>
@@ -38,6 +45,7 @@ public class LocalDatabaseService : ILocalDatabaseService
 
         await _conexao.CreateTableAsync<Categoria>();
         await _conexao.CreateTableAsync<FormaPagamento>();
+        await _conexao.CreateTableAsync<Movimentacao>();
 
         return _conexao;
     }
@@ -90,5 +98,37 @@ public class LocalDatabaseService : ILocalDatabaseService
     {
         var conexao = await ObterConexaoAsync();
         return await conexao.InsertOrReplaceAsync(forma);
+    }
+
+    public async Task<List<Movimentacao>> ListarMovimentacoesAsync()
+    {
+        var conexao = await ObterConexaoAsync();
+        return await conexao.Table<Movimentacao>().OrderByDescending(m => m.DataVencimento).ToListAsync();
+    }
+
+    public async Task SubstituirMovimentacoesAsync(IEnumerable<Movimentacao> movimentacoes)
+    {
+        var conexao = await ObterConexaoAsync();
+        await conexao.RunInTransactionAsync(tran =>
+        {
+            // O servidor é a fonte da verdade: troca o cache inteiro de uma vez.
+            tran.DeleteAll<Movimentacao>();
+            foreach (var movimentacao in movimentacoes)
+            {
+                tran.InsertOrReplace(movimentacao);
+            }
+        });
+    }
+
+    public async Task<int> SalvarMovimentacaoLocalAsync(Movimentacao movimentacao)
+    {
+        var conexao = await ObterConexaoAsync();
+        return await conexao.InsertOrReplaceAsync(movimentacao);
+    }
+
+    public async Task LimparCacheFinanceiroAsync()
+    {
+        var conexao = await ObterConexaoAsync();
+        await conexao.DeleteAllAsync<Movimentacao>();
     }
 }

@@ -15,11 +15,37 @@ public class Movimentacao : EntidadeBase
 
     public decimal Valor { get; set; }
 
+    /// <summary>Data do lançamento (quando o registro foi feito).</summary>
     public DateTime Data { get; set; } = DateTime.UtcNow;
 
     public string? Descricao { get; set; }
 
+    /// <summary>
+    /// Pendente ou Pago/Recebido. Só movimentações Pagas entram no saldo
+    /// atual; as Pendentes alimentam a projeção de caixa.
+    /// </summary>
+    public StatusMovimentacao Status { get; set; } = StatusMovimentacao.Pendente;
+
+    /// <summary>Data de vencimento (agrupa a projeção de caixa por mês).</summary>
+    public DateTime DataVencimento { get; set; } = DateTime.UtcNow.Date;
+
+    /// <summary>
+    /// Data em que foi paga/recebida. Obrigatória quando Status = Pago
+    /// (regra validada na API e protegida por check constraint no banco).
+    /// </summary>
+    public DateTime? DataPagamento { get; set; }
+
+    /// <summary>
+    /// URL relativa para baixar o comprovante (ex.: api/movimentacoes/{id}/comprovante).
+    /// O conteúdo da imagem fica em ComprovanteConteudo.
+    /// </summary>
     public string? ComprovanteUrl { get; set; }
+
+    /// <summary>Bytes da imagem do comprovante (câmera ou galeria do dispositivo).</summary>
+    public byte[]? ComprovanteConteudo { get; set; }
+
+    /// <summary>Content-Type da imagem (image/jpeg, image/png...).</summary>
+    public string? ComprovanteTipo { get; set; }
 
     public Guid CategoriaId { get; set; }
     public Categoria? Categoria { get; set; }

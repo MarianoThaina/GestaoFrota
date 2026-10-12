@@ -11,12 +11,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .UseMauiApp<App>()
-            .ConfigureFonts(fonts =>
-            {
-                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            });
+            .UseMauiApp<App>();
 
 #if DEBUG
         builder.Logging.AddDebug();
@@ -45,6 +40,9 @@ public static class MauiProgram
         builder.Services.AddScoped<ICategoriaService, CategoriaService>();
         builder.Services.AddScoped<IFormaPagamentoService, FormaPagamentoService>();
         builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+        builder.Services.AddScoped<IMovimentacaoService, MovimentacaoService>();
+        builder.Services.AddScoped<IDividaService, DividaService>();
+        builder.Services.AddScoped<IFinanceiroService, FinanceiroService>();
 
         // ---------- ViewModels ----------
         builder.Services.AddTransient<LoginViewModel>();
@@ -52,6 +50,12 @@ public static class MauiProgram
         builder.Services.AddTransient<CategoriasViewModel>();
         builder.Services.AddTransient<FormasPagamentoViewModel>();
         builder.Services.AddTransient<UsuariosViewModel>();
+        builder.Services.AddTransient<MovimentacoesViewModel>();
+        builder.Services.AddTransient<MovimentacaoFormViewModel>();
+        builder.Services.AddTransient<ComprovanteViewModel>();
+        builder.Services.AddTransient<DividasViewModel>();
+        builder.Services.AddTransient<DividaFormViewModel>();
+        builder.Services.AddTransient<DividaDetalheViewModel>();
 
         // ---------- Páginas ----------
         builder.Services.AddTransient<LoginPage>();
@@ -59,6 +63,12 @@ public static class MauiProgram
         builder.Services.AddTransient<FormasPagamentoPage>();
         builder.Services.AddTransient<DashboardPage>();
         builder.Services.AddTransient<UsuariosPage>();
+        builder.Services.AddTransient<MovimentacoesPage>();
+        builder.Services.AddTransient<MovimentacaoFormPage>();
+        builder.Services.AddTransient<ComprovantePage>();
+        builder.Services.AddTransient<DividasPage>();
+        builder.Services.AddTransient<DividaFormPage>();
+        builder.Services.AddTransient<DividaDetalhePage>();
 
         return builder.Build();
     }

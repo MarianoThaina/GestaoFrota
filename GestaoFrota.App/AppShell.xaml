@@ -3,34 +3,50 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:GestaoFrota.App.Views"
        x:Class="GestaoFrota.App.AppShell"
-       Title="Gestão de Frota">
+       Title="Gestão de Frota"
+       FlyoutBehavior="Flyout"
+       FlyoutBackgroundColor="#0B1D3A"
+       Shell.ForegroundColor="White"
+       Shell.TitleColor="White"
+       Shell.BackgroundColor="#0B1D3A">
 
-    <TabBar>
+    <!--
+        Navegação por menu lateral (Flyout/Drawer): comporta os 6 módulos do
+        Administrador e permite esconder, por perfil, tudo o que o Motorista
+        não pode usar (ver AppShell.xaml.cs > ConfigurarMenuPorPerfil).
+        A restrição de escrita (RBAC) também é sempre validada no backend.
+    -->
+    <Shell.FlyoutHeader>
+        <VerticalStackLayout Padding="20,36,20,16" Spacing="2" BackgroundColor="#0B1D3A">
+            <Label x:Name="LblNomeUsuario" Text="Gestão de Frota" TextColor="White" FontSize="18" FontAttributes="Bold" />
+            <Label x:Name="LblPerfilUsuario" Text="" TextColor="#9FB3D1" FontSize="13" />
+        </VerticalStackLayout>
+    </Shell.FlyoutHeader>
 
-        <ShellContent Title="Início"
-                      Icon="home.png"
-                      ContentTemplate="{DataTemplate views:DashboardPage}" />
+    <FlyoutItem x:Name="MenuInicio" Title="Início">
+        <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" />
+    </FlyoutItem>
 
-        <!--
-            Categorias e Formas de Pagamento ficam sempre visíveis no menu;
-            a restrição de escrita (RBAC) acontece dentro de cada página
-            (PodeGerenciar) e é sempre validada de novo no backend.
-        -->
-        <ShellContent x:Name="AbaCategorias"
-                      Title="Categorias"
-                      Icon="category.png"
-                      ContentTemplate="{DataTemplate views:CategoriasPage}" />
+    <FlyoutItem x:Name="MenuMovimentacoes" Title="Movimentações">
+        <ShellContent ContentTemplate="{DataTemplate views:MovimentacoesPage}" />
+    </FlyoutItem>
 
-        <ShellContent x:Name="AbaFormasPagamento"
-                      Title="Pagamento"
-                      Icon="payment.png"
-                      ContentTemplate="{DataTemplate views:FormasPagamentoPage}" />
+    <FlyoutItem x:Name="MenuDividas" Title="Dívidas e Financiamentos">
+        <ShellContent ContentTemplate="{DataTemplate views:DividasPage}" />
+    </FlyoutItem>
 
-        <ShellContent
-                      x:Name="AbaUsuarios"
-                      Title="Usuários"
-                      ContentTemplate="{DataTemplate views:UsuariosPage}" />
+    <FlyoutItem x:Name="MenuCategorias" Title="Categorias">
+        <ShellContent ContentTemplate="{DataTemplate views:CategoriasPage}" />
+    </FlyoutItem>
 
-    </TabBar>
+    <FlyoutItem x:Name="MenuFormasPagamento" Title="Formas de Pagamento">
+        <ShellContent ContentTemplate="{DataTemplate views:FormasPagamentoPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem x:Name="MenuUsuarios" Title="Usuários">
+        <ShellContent ContentTemplate="{DataTemplate views:UsuariosPage}" />
+    </FlyoutItem>
+
+    <MenuItem Text="Sair" Clicked="OnSairClicked" />
 
 </Shell>

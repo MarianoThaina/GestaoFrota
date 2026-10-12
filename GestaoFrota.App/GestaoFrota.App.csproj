@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <!--
-      Este arquivo assume um projeto gerado via:
-        dotnet new maui -n GestaoFrota.App
-      Rode o comando acima primeiro (ele cria as pastas Platforms/, Resources/AppIcon,
-      Resources/Splash, MainActivity, Info.plist, etc. automaticamente para
-      Android/iOS/MacCatalyst/Windows) e depois substitua/mescle este csproj e as
-      pastas Models/Services/ViewModels/Views por cima dos arquivos gerados.
+      O alvo Android já acompanha o repositório (Platforms/Android e Resources/),
+      então o app roda no emulador sem precisar de "dotnet new maui".
+      iOS/MacCatalyst/Windows só compilam em macOS/Windows e exigem as pastas
+      Platforms/<plataforma> geradas por "dotnet new maui" (não usadas na entrega).
     -->
-    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>net10.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('osx'))">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
@@ -23,7 +22,15 @@
     <ApplicationId>com.suaempresa.gestaofrota</ApplicationId>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
+
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Ícone e splash (SVG simples, trocáveis) -->
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#0B1D3A" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0B1D3A" BaseSize="128,128" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- MVVM -->
@@ -32,6 +39,9 @@
     <!-- Persistência local (offline-first) -->
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.10" />
+
+    <!-- Logging em DEBUG (usado em MauiProgram) -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 
     <!-- Serialização -->
     <PackageReference Include="System.Text.Json" Version="9.0.0" />

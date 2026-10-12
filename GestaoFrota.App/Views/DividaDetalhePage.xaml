@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             xmlns:models="clr-namespace:GestaoFrota.App.Models"
+             x:Class="GestaoFrota.App.Views.DividaDetalhePage"
+             x:DataType="vm:DividaDetalheViewModel"
+             Title="Parcelas do financiamento">
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="16" RowSpacing="10">
+
+        <Frame Grid.Row="0"
+               Padding="12"
+               CornerRadius="12"
+               BorderColor="#DCE3EE"
+               HasShadow="False"
+               IsVisible="{Binding Divida, Converter={StaticResource NotNullToBoolConverter}}">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding Divida.Descricao}" FontAttributes="Bold" FontSize="16" />
+                <Label Text="{Binding Divida.ParcelaTexto}" />
+                <Label Text="{Binding Divida.ProgressoTexto}" FontSize="12" TextColor="Gray" />
+                <Label Text="{Binding Divida.SaldoDevedorTexto}" FontSize="12" TextColor="Gray" />
+                <Label Text="{Binding Divida.QuitacaoTexto}" FontSize="12" TextColor="Gray" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <Label Grid.Row="1"
+               Text="{Binding MensagemErro}"
+               TextColor="#D93025"
+               FontSize="13"
+               IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding Carregando}"
+                     Command="{Binding CarregarCommand}">
+            <CollectionView ItemsSource="{Binding Parcelas}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Movimentacao">
+                        <Grid Padding="4,8" ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto, Auto" ColumnSpacing="8">
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Descricao}" FontAttributes="Bold" FontSize="13" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding ValorFormatado}" TextColor="{Binding CorValor}" FontAttributes="Bold" />
+                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding VencimentoTexto}" FontSize="12" TextColor="Gray" />
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding StatusTexto}" TextColor="{Binding CorStatus}" FontSize="12" FontAttributes="Bold" />
+                            <Button Grid.Row="2" Grid.ColumnSpan="2"
+                                    Text="Marcar parcela como paga"
+                                    FontSize="12"
+                                    HeightRequest="34"
+                                    BackgroundColor="#1E8E3E"
+                                    TextColor="White"
+                                    CornerRadius="17"
+                                    HorizontalOptions="Start"
+                                    IsVisible="{Binding PodePagar}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PagarParcelaCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>

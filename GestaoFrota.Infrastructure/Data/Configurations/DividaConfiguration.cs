@@ -14,13 +14,14 @@ public class DividaConfiguration : IEntityTypeConfiguration<Divida>
 
         builder.Property(d => d.Descricao).IsRequired().HasMaxLength(200);
         builder.Property(d => d.ValorTotal).HasColumnType("decimal(14,2)");
+        builder.Property(d => d.ValorParcela).HasColumnType("decimal(14,2)");
+        builder.Property(d => d.ValorQuitacaoAntecipada).HasColumnType("decimal(14,2)");
 
         builder.Property(d => d.Status)
             .HasConversion<string>()
             .HasMaxLength(30)
             .IsRequired();
 
-        builder.Ignore(d => d.ValorParcela);
         builder.Ignore(d => d.SaldoDevedor);
     }
 }
