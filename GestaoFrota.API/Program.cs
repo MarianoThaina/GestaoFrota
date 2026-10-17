@@ -117,7 +117,9 @@ if (builder.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Swagger fica ativo em Development ou quando Swagger:Enabled = true
+// (útil para testar a API hospedada; deixe desligado em produção real).
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Swagger:Enabled"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -131,5 +133,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// A raiz não tem controller; redireciona para o endpoint de status
+// para não exibir "HTTP 404" ao abrir o endereço da API no navegador.
+app.MapGet("/", () => Results.Redirect("/api/status")).ExcludeFromDescription();
 
 app.Run();
