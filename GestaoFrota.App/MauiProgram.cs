@@ -43,6 +43,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IMovimentacaoService, MovimentacaoService>();
         builder.Services.AddScoped<IDividaService, DividaService>();
         builder.Services.AddScoped<IFinanceiroService, FinanceiroService>();
+        builder.Services.AddScoped<IRelatorioService, RelatorioService>();
 
         // ---------- ViewModels ----------
         builder.Services.AddTransient<LoginViewModel>();
@@ -56,6 +57,7 @@ public static class MauiProgram
         builder.Services.AddTransient<DividasViewModel>();
         builder.Services.AddTransient<DividaFormViewModel>();
         builder.Services.AddTransient<DividaDetalheViewModel>();
+        builder.Services.AddTransient<RelatoriosViewModel>();
 
         // ---------- Páginas ----------
         builder.Services.AddTransient<LoginPage>();
@@ -69,6 +71,7 @@ public static class MauiProgram
         builder.Services.AddTransient<DividasPage>();
         builder.Services.AddTransient<DividaFormPage>();
         builder.Services.AddTransient<DividaDetalhePage>();
+        builder.Services.AddTransient<RelatoriosPage>();
 
         return builder.Build();
     }

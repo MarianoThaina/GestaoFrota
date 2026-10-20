@@ -128,6 +128,8 @@ Enums trafegam como número (Tipo: 1 Receita, 2 Despesa; Status: 1 Pendente, 2 P
 | POST/GET/DELETE | `/api/movimentacoes/{id}/comprovante` | escrita: Adm/Fin; leitura: Adm/Gestor/Fin |
 | GET/POST | `/api/dividas`, `/api/dividas/{id}` | leitura: Adm/Gestor/Fin; POST: Adm/Fin |
 | GET | `/api/financeiro/saldo`, `/api/financeiro/projecao?meses=12` | Administrador, Gestor, Financeiro |
+| GET | `/api/relatorios/resumo?meses=6` (fluxo mensal, despesas por categoria, indicadores) | Administrador, Gestor, Financeiro |
+| GET | `/api/relatorios/exportar?meses=6` (CSV do período) | Administrador, Gestor, Financeiro |
 
 O Motorista recebe **403** em todos esses endpoints.
 
@@ -136,7 +138,9 @@ O Motorista recebe **403** em todos esses endpoints.
 - **Offline-first mantido:** categorias e formas continuam em cache SQLite; o histórico de movimentações também fica em cache para consulta offline. Lançar, pagar, estornar, cadastrar dívida e consultar saldo exigem conexão (o app avisa em vez de fingir que salvou).
 - **Navegação Flyout (menu lateral):** comporta os 6 módulos do Administrador sem estourar a barra inferior e permite ocultar por perfil tudo o que o Motorista não pode usar.
 - **Comprovante no banco** (`varbinary(max)`): evita perder arquivos em hospedagens gratuitas com disco efêmero.
-- **Regras de cálculo isoladas** em `GestaoFrota.Domain/Services/CalculadoraFinanceira.cs`, sem dependência de banco.
+- **Regras de cálculo isoladas** em `GestaoFrota.Domain/Services/CalculadoraFinanceira.cs` e `CalculadoraRelatorios.cs`, sem dependência de banco.
+- **Gráficos sem biblioteca externa:** colunas e rosca da tela de Relatórios são desenhadas com o `GraphicsView` do próprio MAUI (`GestaoFrota.App/Controls/`), o que mantém o app sem dependência nova e com o desenho legível linha a linha.
+- **Relatórios agrupados por vencimento:** o período (3, 6 ou 12 meses, incluindo o atual) usa a data de vencimento como competência, igual ao filtro da lista de movimentações. Pagos e pendentes entram; estornadas nunca. A exportação (US14) sai em CSV com `;` e BOM UTF-8, que o Excel em português abre sem configuração.
 
 ## Repositório
 

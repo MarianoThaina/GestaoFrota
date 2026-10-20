@@ -21,6 +21,7 @@ public partial class AppShell : Shell
         // Até o perfil ser conhecido, nada além do Início fica visível.
         MenuMovimentacoes.IsVisible = false;
         MenuDividas.IsVisible = false;
+        MenuRelatorios.IsVisible = false;
         MenuCategorias.IsVisible = false;
         MenuFormasPagamento.IsVisible = false;
         MenuUsuarios.IsVisible = false;
@@ -43,6 +44,7 @@ public partial class AppShell : Shell
 
         MenuMovimentacoes.IsVisible = podeVerFinanceiro;
         MenuDividas.IsVisible = podeVerFinanceiro;
+        MenuRelatorios.IsVisible = podeVerFinanceiro;
         MenuCategorias.IsVisible = podeVerFinanceiro;
         MenuFormasPagamento.IsVisible = podeVerFinanceiro;
         MenuUsuarios.IsVisible = perfil == PerfilUsuario.Administrador;
