@@ -142,10 +142,10 @@ permissão de escrita.
 | US08 | Viagens e hodômetro | Entidade criada, com a distância calculada. Tela não iniciada |
 | US09 | Vínculo financeiro com viagem | `Movimentacao.ViagemId` existe. Campo de litros pendente |
 | US10 | Estatísticas de rota e veículo | Não iniciado |
-| US11 | Painel de indicadores | `DashboardPage` existe como tela de boas-vindas. Indicadores previstos para a Sprint 7 |
-| US12 | Gráficos de fluxo de caixa | Não iniciado |
+| US11 | Painel de indicadores | Implementado em `RelatoriosPage` (resultado do período, entradas, saídas, a receber e a pagar no mês, pendentes em atraso, maior despesa, variação de saídas). O Início mantém saldo e projeção |
+| US12 | Gráficos de fluxo de caixa | Implementado: colunas de entradas x saídas por mês e rosca de despesas por categoria, desenhados com `GraphicsView` (sem biblioteca externa). Dados de `GET /api/relatorios/resumo` |
 | US13 | Ranking de eficiência | Não iniciado |
-| US14 | Exportação de relatório | Não iniciado |
+| US14 | Exportação de relatório | Implementado em CSV (`GET /api/relatorios/exportar`), compartilhado pelo app via folha de compartilhamento do sistema. PDF não iniciado |
 | US15 | Login com Google | Fluxo implementado nas duas pontas. **Falta** o Client ID de produção (ver abaixo) |
 | US16 | Perfis de usuário | Quatro perfis definidos, API de gestão pronta. **Faltam** a tela no app e o estado "Aguardando Aprovação" |
 | US17 | Navegação contextual | Autorização aplicada dentro das páginas. A adaptação do menu por perfil ainda não foi implementada |
@@ -209,3 +209,23 @@ Arquivos não lidos em detalhe: `LoginPage.xaml`, `FormasPagamentoPage.xaml`,
 ## Atualização (11/10/2026) - núcleo financeiro
 
 Implementados: movimentações (status, vencimento, pagamento, comprovante), dívidas com geração transacional de parcelas, saldo atual e projeção de caixa (API e app), menu Flyout por perfil, plataforma Android do app. Detalhes e roteiro do vídeo no `README.md` da raiz.
+
+## Atualização (20/10/2026) - relatórios
+
+Implementados: `RelatoriosController` (`GET /api/relatorios/resumo?meses=N` e
+`GET /api/relatorios/exportar?meses=N`), a regra de agregação pura em
+`GestaoFrota.Domain/Services/CalculadoraRelatorios.cs` e a tela `RelatoriosPage`
+no app (seletor de 3/6/12 meses, indicadores, gráfico de colunas, rosca por
+categoria, exportação CSV). O item "Relatórios" entra no menu só para
+Administrador, Gestor de Frota e Financeiro.
+
+Período = os últimos N meses incluindo o atual, agrupado pela **data de
+vencimento** (competência), igual ao filtro da lista de movimentações.
+Pagos e pendentes entram; estornadas nunca.
+
+Fora desta etapa: ranking de rotas e eficiência por veículo (US10 e US13)
+seguem bloqueados pela ausência de endpoints de frota; a tela mostra o bloco
+como "aguardando módulo de frota" em vez de dado falso.
+
+Escrito sem SDK .NET disponível na máquina de autoria: **não compilado**.
+Validar com `dotnet build` nos projetos API e App antes do merge.

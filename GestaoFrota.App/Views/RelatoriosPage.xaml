@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             xmlns:models="clr-namespace:GestaoFrota.App.Models"
+             x:Class="GestaoFrota.App.Views.RelatoriosPage"
+             x:DataType="vm:RelatoriosViewModel"
+             Title="Relatórios">
+
+    <ContentPage.Resources>
+        <!-- Botões do seletor de período: o selecionado fica azul-marinho, os outros claros -->
+        <Style x:Key="Segmento" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#EEF2F8" />
+            <Setter Property="TextColor" Value="#0B1D3A" />
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="HeightRequest" Value="36" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style x:Key="Cartao" TargetType="Frame">
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="BorderColor" Value="#DCE3EE" />
+            <Setter Property="HasShadow" Value="False" />
+        </Style>
+        <Style x:Key="CartaoIndicador" TargetType="Frame" BasedOn="{StaticResource Cartao}">
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="CornerRadius" Value="12" />
+        </Style>
+        <Style x:Key="TituloSecao" TargetType="Label">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="TextColor" Value="#0B1D3A" />
+        </Style>
+        <Style x:Key="RotuloIndicador" TargetType="Label">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="TextColor" Value="Gray" />
+        </Style>
+    </ContentPage.Resources>
+
+    <RefreshView IsRefreshing="{Binding Carregando}" Command="{Binding CarregarCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="14">
+
+                <!-- Seletor de período (3 / 6 / 12 meses, incluindo o atual) -->
+                <Grid ColumnDefinitions="*, *, *" ColumnSpacing="8">
+                    <Button Grid.Column="0" Text="3 meses"
+                            Command="{Binding SelecionarPeriodoCommand}" CommandParameter="3"
+                            Style="{StaticResource Segmento}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding Periodo3Selecionado}" Value="True">
+                                <Setter Property="BackgroundColor" Value="#0B1D3A" />
+                                <Setter Property="TextColor" Value="White" />
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Grid.Column="1" Text="6 meses"
+                            Command="{Binding SelecionarPeriodoCommand}" CommandParameter="6"
+                            Style="{StaticResource Segmento}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding Periodo6Selecionado}" Value="True">
+                                <Setter Property="BackgroundColor" Value="#0B1D3A" />
+                                <Setter Property="TextColor" Value="White" />
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Grid.Column="2" Text="1 ano"
+                            Command="{Binding SelecionarPeriodoCommand}" CommandParameter="12"
+                            Style="{StaticResource Segmento}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding Periodo12Selecionado}" Value="True">
+                                <Setter Property="BackgroundColor" Value="#0B1D3A" />
+                                <Setter Property="TextColor" Value="White" />
+                                <Setter Property="FontAttributes" Value="Bold" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+
+                <Label Text="{Binding PeriodoTexto, StringFormat='Período: {0} · agrupado por vencimento'}"
+                       FontSize="12"
+                       TextColor="Gray" />
+
+                <Label Text="{Binding MensagemErro}"
+                       TextColor="#D93025"
+                       FontSize="13"
+                       IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+                <Label Text="Nenhuma movimentação no período. Lance receitas e despesas para ver os relatórios."
+                       TextColor="Gray"
+                       HorizontalTextAlignment="Center"
+                       Padding="0,12"
+                       IsVisible="{Binding SemDados}" />
+
+                <!-- ===== US11: painel de indicadores ===== -->
+                <Frame Style="{StaticResource Cartao}" BackgroundColor="#F5F8FF">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Resultado do período (entradas - saídas)" Style="{StaticResource RotuloIndicador}" FontSize="12" />
+                        <Label Text="{Binding Indicadores.ResultadoTexto}"
+                               TextColor="{Binding Indicadores.CorResultado}"
+                               FontSize="28"
+                               FontAttributes="Bold" />
+                        <Label Text="{Binding Indicadores.QuantidadeLancamentos, StringFormat='{0} lançamentos no período'}"
+                               Style="{StaticResource RotuloIndicador}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto" ColumnSpacing="8" RowSpacing="8">
+                    <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource CartaoIndicador}">
+                        <VerticalStackLayout>
+                            <Label Text="Entradas no período" Style="{StaticResource RotuloIndicador}" />
+                            <Label Text="{Binding Indicadores.TotalEntradasTexto}" TextColor="#1E8E3E" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Row="0" Grid.Column="1" Style="{StaticResource CartaoIndicador}">
+                        <VerticalStackLayout>
+                            <Label Text="Saídas no período" Style="{StaticResource RotuloIndicador}" />
+                            <Label Text="{Binding Indicadores.TotalSaidasTexto}" TextColor="#D93025" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Row="1" Grid.Column="0" Style="{StaticResource CartaoIndicador}">
+                        <VerticalStackLayout>
+                            <Label Text="A receber neste mês" Style="{StaticResource RotuloIndicador}" />
+                            <Label Text="{Binding Indicadores.AReceberTexto}" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Row="1" Grid.Column="1" Style="{StaticResource CartaoIndicador}">
+                        <VerticalStackLayout>
+                            <Label Text="A pagar neste mês" Style="{StaticResource RotuloIndicador}" />
+                            <Label Text="{Binding Indicadores.APagarTexto}" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Row="2" Grid.Column="0" Style="{StaticResource CartaoIndicador}">
+                        <VerticalStackLayout>
+                            <Label Text="Pendentes em atraso" Style="{StaticResource RotuloIndicador}" />
+                            <Label Text="{Binding Indicadores.EmAtrasoTexto}" FontAttributes="Bold">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Indicadores.TemAtraso}" Value="True">
+                                        <Setter Property="TextColor" Value="#D93025" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Row="2" Grid.Column="1" Style="{StaticResource CartaoIndicador}">
+                        <VerticalStackLayout>
+                            <Label Text="Maior despesa" Style="{StaticResource RotuloIndicador}" />
+                            <Label Text="{Binding Indicadores.MaiorDespesaTexto}" FontAttributes="Bold" FontSize="13" LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </Grid>
+
+                <Label Text="{Binding Indicadores.VariacaoTexto, StringFormat='Saídas do mês: {0}'}"
+                       TextColor="{Binding Indicadores.CorVariacao}"
+                       FontSize="12" />
+
+                <!-- ===== US12: gráfico de colunas ===== -->
+                <Frame Style="{StaticResource Cartao}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Entradas e saídas por mês" Style="{StaticResource TituloSecao}" />
+
+                        <GraphicsView Drawable="{Binding GraficoColunas}" HeightRequest="200" />
+
+                        <HorizontalStackLayout Spacing="16" HorizontalOptions="Center">
+                            <HorizontalStackLayout Spacing="6">
+                                <BoxView Color="#1E8E3E" WidthRequest="10" HeightRequest="10" CornerRadius="5" VerticalOptions="Center" />
+                                <Label Text="Entradas" FontSize="12" TextColor="Gray" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="6">
+                                <BoxView Color="#D93025" WidthRequest="10" HeightRequest="10" CornerRadius="5" VerticalOptions="Center" />
+                                <Label Text="Saídas" FontSize="12" TextColor="Gray" />
+                            </HorizontalStackLayout>
+                        </HorizontalStackLayout>
+
+                        <!-- Valores mês a mês, para quem prefere ler o número -->
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Fluxo}" Spacing="4" Margin="0,6,0,0">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:FluxoMensal">
+                                    <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="8">
+                                        <Label Grid.Column="0" Text="{Binding MesTexto}" FontSize="12" FontAttributes="Bold" WidthRequest="64" />
+                                        <HorizontalStackLayout Grid.Column="1" Spacing="10">
+                                            <Label Text="{Binding EntradasTexto}" FontSize="12" TextColor="#1E8E3E" />
+                                            <Label Text="{Binding SaidasTexto}" FontSize="12" TextColor="#D93025" />
+                                        </HorizontalStackLayout>
+                                        <Label Grid.Column="2" Text="{Binding SaldoDoMesTexto}" TextColor="{Binding CorSaldo}" FontSize="12" FontAttributes="Bold" HorizontalOptions="End" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- ===== US12: rosca de despesas por categoria ===== -->
+                <Frame Style="{StaticResource Cartao}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Despesas por categoria" Style="{StaticResource TituloSecao}" />
+
+                        <Label Text="Nenhuma despesa no período."
+                               TextColor="Gray"
+                               IsVisible="{Binding SemDespesas}" />
+
+                        <Grid ColumnDefinitions="150, *" ColumnSpacing="12"
+                              IsVisible="{Binding SemDespesas, Converter={StaticResource InverseBoolConverter}}">
+                            <GraphicsView Grid.Column="0" Drawable="{Binding GraficoRosca}" WidthRequest="150" HeightRequest="150" />
+
+                            <VerticalStackLayout Grid.Column="1" BindableLayout.ItemsSource="{Binding Categorias}" Spacing="8" VerticalOptions="Center">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:DespesaCategoria">
+                                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="8">
+                                            <BoxView Grid.Column="0" Color="{Binding Cor}" WidthRequest="12" HeightRequest="12" CornerRadius="3" VerticalOptions="Center" />
+                                            <VerticalStackLayout Grid.Column="1">
+                                                <Label Text="{Binding Categoria}" FontSize="13" LineBreakMode="TailTruncation" />
+                                                <Label Text="{Binding TotalTexto}" FontSize="11" TextColor="Gray" />
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="2" Text="{Binding PercentualTexto}" FontSize="13" FontAttributes="Bold" VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- ===== US10/US13: aguardam o módulo de frota (sem endpoint de viagens ainda) ===== -->
+                <Frame Style="{StaticResource Cartao}" Opacity="0.7">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Rotas mais lucrativas e eficiência por veículo" Style="{StaticResource TituloSecao}" />
+                        <Label Text="Disponível quando o módulo de frota (veículos, rotas e viagens) estiver na API. Os cálculos de rentabilidade por viagem e km/l dependem desses cadastros."
+                               FontSize="12"
+                               TextColor="Gray" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- ===== US14: exportação ===== -->
+                <Button Text="Exportar período em CSV"
+                        Command="{Binding ExportarCommand}"
+                        BackgroundColor="#0B1D3A"
+                        TextColor="White"
+                        CornerRadius="24"
+                        HeightRequest="48"
+                        IsEnabled="{Binding Exportando, Converter={StaticResource InverseBoolConverter}}" />
+
+                <Label Text="{Binding MensagemExportacao}"
+                       FontSize="12"
+                       TextColor="Gray"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="{Binding MensagemExportacao, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+</ContentPage>

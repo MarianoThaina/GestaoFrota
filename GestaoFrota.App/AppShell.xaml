@@ -35,6 +35,10 @@
         <ShellContent ContentTemplate="{DataTemplate views:DividasPage}" />
     </FlyoutItem>
 
+    <FlyoutItem x:Name="MenuRelatorios" Title="Relatórios">
+        <ShellContent ContentTemplate="{DataTemplate views:RelatoriosPage}" />
+    </FlyoutItem>
+
     <FlyoutItem x:Name="MenuCategorias" Title="Categorias">
         <ShellContent ContentTemplate="{DataTemplate views:CategoriasPage}" />
     </FlyoutItem>

@@ -124,3 +124,12 @@ Authorization: Bearer COLE_AQUI_O_JWT
 ### Projeção de caixa por mês de vencimento
 GET {{GestaoFrota.API_HostAddress}}/api/financeiro/projecao?meses=12
 Authorization: Bearer COLE_AQUI_O_JWT
+
+### ---------- Relatórios (Administrador, Gestor de Frota ou Financeiro) ----------
+### Resumo: fluxo mensal, despesas por categoria e indicadores dos últimos N meses
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/resumo?meses=6
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Exportar CSV do período (abre direto no Excel)
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/exportar?meses=6
+Authorization: Bearer COLE_AQUI_O_JWT
