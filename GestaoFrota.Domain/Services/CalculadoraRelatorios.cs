@@ -69,9 +69,23 @@ public static class CalculadoraRelatorios
         IEnumerable<LancamentoRelatorio> lancamentos,
         DateTime hoje,
         int meses)
+        => FluxoPorMes(lancamentos, InicioDoPeriodo(hoje, meses), FimDoPeriodo(hoje));
+
+    /// <summary>
+    /// Mesmo cálculo com período explícito: <paramref name="inicio"/> inclusivo e
+    /// <paramref name="fim"/> exclusivo, em qualquer dia (filtro por mês, ano ou
+    /// período livre da US11/US12). Os meses do gráfico vão do mês de início
+    /// até o mês que contém o último dia do período.
+    /// </summary>
+    public static IReadOnlyList<FluxoMensal> FluxoPorMes(
+        IEnumerable<LancamentoRelatorio> lancamentos,
+        DateTime inicio,
+        DateTime fim)
     {
-        var inicio = InicioDoPeriodo(hoje, meses);
-        var fim = FimDoPeriodo(hoje);
+        if (fim <= inicio)
+        {
+            return Array.Empty<FluxoMensal>();
+        }
 
         var porMes = lancamentos
             .Where(l => l.DataReferencia >= inicio && l.DataReferencia < fim)
@@ -79,8 +93,9 @@ public static class CalculadoraRelatorios
             .ToDictionary(g => g.Key, g => g.ToList());
 
         var resultado = new List<FluxoMensal>();
+        var primeiroMes = new DateTime(inicio.Year, inicio.Month, 1);
 
-        for (var mes = inicio; mes < fim; mes = mes.AddMonths(1))
+        for (var mes = primeiroMes; mes < fim; mes = mes.AddMonths(1))
         {
             decimal entradas = 0m, saidas = 0m, entradasPagas = 0m, saidasPagas = 0m;
 
@@ -118,10 +133,14 @@ public static class CalculadoraRelatorios
         IEnumerable<LancamentoRelatorio> lancamentos,
         DateTime hoje,
         int meses)
-    {
-        var inicio = InicioDoPeriodo(hoje, meses);
-        var fim = FimDoPeriodo(hoje);
+        => DespesasPorCategoria(lancamentos, InicioDoPeriodo(hoje, meses), FimDoPeriodo(hoje));
 
+    /// <summary>Mesmo cálculo com período explícito (início inclusivo, fim exclusivo).</summary>
+    public static IReadOnlyList<DespesaPorCategoria> DespesasPorCategoria(
+        IEnumerable<LancamentoRelatorio> lancamentos,
+        DateTime inicio,
+        DateTime fim)
+    {
         var despesas = lancamentos
             .Where(l => l.Tipo == TipoMovimentacao.Despesa
                         && l.DataReferencia >= inicio
@@ -154,11 +173,23 @@ public static class CalculadoraRelatorios
         IEnumerable<LancamentoRelatorio> lancamentos,
         DateTime hoje,
         int meses)
+        => Indicadores(lancamentos, hoje, InicioDoPeriodo(hoje, meses), FimDoPeriodo(hoje));
+
+    /// <summary>
+    /// Mesmo cálculo com período explícito. Os totais e a maior despesa seguem
+    /// o período; "a receber/a pagar no mês", "em atraso" e a variação de
+    /// saídas continuam olhando o mês de <paramref name="hoje"/>, porque são
+    /// indicadores do momento, não do filtro.
+    /// </summary>
+    public static IndicadoresPeriodo Indicadores(
+        IEnumerable<LancamentoRelatorio> lancamentos,
+        DateTime hoje,
+        DateTime inicio,
+        DateTime fim)
     {
         var lista = lancamentos.ToList();
-        var inicio = InicioDoPeriodo(hoje, meses);
-        var fim = FimDoPeriodo(hoje);
         var mesAtual = new DateTime(hoje.Year, hoje.Month, 1);
+        var fimMesAtual = mesAtual.AddMonths(1);
         var mesAnterior = mesAtual.AddMonths(-1);
 
         var periodo = lista.Where(l => l.DataReferencia >= inicio && l.DataReferencia < fim).ToList();
@@ -166,7 +197,7 @@ public static class CalculadoraRelatorios
         var totalEntradas = periodo.Where(l => l.Tipo == TipoMovimentacao.Receita).Sum(l => l.Valor);
         var totalSaidas = periodo.Where(l => l.Tipo == TipoMovimentacao.Despesa).Sum(l => l.Valor);
 
-        var noMes = lista.Where(l => l.DataReferencia >= mesAtual && l.DataReferencia < fim).ToList();
+        var noMes = lista.Where(l => l.DataReferencia >= mesAtual && l.DataReferencia < fimMesAtual).ToList();
 
         var aReceber = noMes
             .Where(l => l.Status == StatusMovimentacao.Pendente && l.Tipo == TipoMovimentacao.Receita)
