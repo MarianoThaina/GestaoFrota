@@ -133,3 +133,115 @@ Authorization: Bearer COLE_AQUI_O_JWT
 ### Exportar CSV do período (abre direto no Excel)
 GET {{GestaoFrota.API_HostAddress}}/api/relatorios/exportar?meses=6
 Authorization: Bearer COLE_AQUI_O_JWT
+
+### Estatísticas de rota e veículo + ranking (US10/US13): viagens iniciadas no período e lançamentos vinculados
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/frota?meses=6
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### ---------- Frota (US06, US06-b, US07, US08) ----------
+### Enums: StatusVeiculo 1=Disponivel 2=EmViagem 3=EmManutencao | StatusViagem 1=EmAndamento 2=Concluida 3=Cancelada
+
+### Listar veículos (todos os perfis; filtros opcionais: status, ativo)
+GET {{GestaoFrota.API_HostAddress}}/api/veiculos?ativo=true
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Cadastrar veículo (Administrador ou Gestor de Frota). Placa antiga ou Mercosul; é normalizada e única
+POST {{GestaoFrota.API_HostAddress}}/api/veiculos
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "placa": "RTA-9F12",
+  "marca": "Volvo",
+  "modelo": "FH 460",
+  "ano": 2021,
+  "capacidadeCargaToneladas": 32,
+  "kmAtual": 184320
+}
+
+### Cadastrar rota (Administrador ou Gestor de Frota)
+POST {{GestaoFrota.API_HostAddress}}/api/rotas
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "nome": "SP - Curitiba",
+  "origem": "São Paulo/SP",
+  "destino": "Curitiba/PR",
+  "distanciaEstimadaKm": 408
+}
+
+### Listar rotas ativas
+GET {{GestaoFrota.API_HostAddress}}/api/rotas?ativa=true
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Abrir viagem (Motorista abre para si; gestor pode informar motoristaId). "id" é opcional: o app manda o Guid gerado offline
+POST {{GestaoFrota.API_HostAddress}}/api/viagens
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "veiculoId": "COLE_AQUI_O_ID_DO_VEICULO",
+  "rotaId": "COLE_AQUI_O_ID_DA_ROTA",
+  "hodometroInicial": 184320,
+  "observacoes": "Carga refrigerada"
+}
+
+### Listar viagens (Motorista só vê as próprias; filtros: status, veiculoId, motoristaId, rotaId, de, ate)
+GET {{GestaoFrota.API_HostAddress}}/api/viagens?status=1
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Encerrar viagem: hodômetro final > inicial, senão 400. Grava a quilometragem rodada e atualiza o veículo
+PATCH {{GestaoFrota.API_HostAddress}}/api/viagens/COLE_AQUI_O_ID/encerrar
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{ "hodometroFinal": 184735 }
+
+### Cancelar viagem em andamento (Administrador ou Gestor de Frota)
+PATCH {{GestaoFrota.API_HostAddress}}/api/viagens/COLE_AQUI_O_ID/cancelar
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Usuários que podem ser motorista (Administrador ou Gestor de Frota)
+GET {{GestaoFrota.API_HostAddress}}/api/viagens/motoristas
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Registrar manutenção: veículo vai para "Em manutenção" e a despesa é lançada automaticamente (transação)
+POST {{GestaoFrota.API_HostAddress}}/api/manutencoes
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "veiculoId": "COLE_AQUI_O_ID_DO_VEICULO",
+  "data": "2026-10-21",
+  "descricao": "Revisão de freios e troca de pastilhas",
+  "valorTotal": 5400.00,
+  "formaPagamentoId": "00000000-0000-0000-0002-000000000002",
+  "pago": false
+}
+
+### Manutenções abertas de um veículo
+GET {{GestaoFrota.API_HostAddress}}/api/manutencoes?veiculoId=COLE_AQUI_O_ID_DO_VEICULO&abertas=true
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Concluir manutenção: veículo volta a "Disponível"
+PATCH {{GestaoFrota.API_HostAddress}}/api/manutencoes/COLE_AQUI_O_ID/concluir
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Despesa de combustível vinculada à viagem, com litros (US09)
+POST {{GestaoFrota.API_HostAddress}}/api/movimentacoes
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{
+  "tipo": 2,
+  "valor": 2230.50,
+  "descricao": "Abastecimento posto Graal km 120",
+  "categoriaId": "00000000-0000-0000-0001-000000000002",
+  "formaPagamentoId": "00000000-0000-0000-0002-000000000004",
+  "dataVencimento": "2026-10-21",
+  "status": 2,
+  "dataPagamento": "2026-10-21",
+  "viagemId": "COLE_AQUI_O_ID_DA_VIAGEM",
+  "quantidadeLitros": 372.5
+}

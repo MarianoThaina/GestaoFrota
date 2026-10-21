@@ -56,6 +56,12 @@ public class Movimentacao
 
     public bool Estornada { get; set; }
 
+    /// <summary>Viagem vinculada (US09), quando houver.</summary>
+    public Guid? ViagemId { get; set; }
+
+    /// <summary>Litros abastecidos (US09), só em despesas de combustível.</summary>
+    public decimal? QuantidadeLitros { get; set; }
+
     // ---------- Apresentação ----------
 
     [Ignore]
@@ -89,7 +95,13 @@ public class Movimentacao
 
     [Ignore]
     public string DetalheTexto =>
-        string.Join(" · ", new[] { CategoriaNome, FormaPagamentoNome }.Where(s => !string.IsNullOrWhiteSpace(s)));
+        string.Join(" · ", new[]
+        {
+            CategoriaNome,
+            FormaPagamentoNome,
+            QuantidadeLitros.HasValue ? $"{QuantidadeLitros.Value.ToString("N1", Formatacao.PtBr)} L" : null,
+            ViagemId.HasValue ? "vinculada a viagem" : null
+        }.Where(s => !string.IsNullOrWhiteSpace(s)));
 
     [Ignore]
     public bool PodePagar => Status == StatusMovimentacao.Pendente && !Estornada;

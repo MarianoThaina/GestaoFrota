@@ -19,6 +19,18 @@
 
                 <Label Text="{Binding Usuario.Perfil, StringFormat='Perfil: {0}'}" FontSize="14" TextColor="Gray" />
 
+                <!-- US11: veículos em viagem (Administrador, Gestor de Frota e Motorista; lê o cache, funciona offline) -->
+                <Frame Padding="16" CornerRadius="16" BorderColor="#DCE3EE" HasShadow="False" IsVisible="{Binding MostrarFrota}">
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Text="Veículos em viagem" FontSize="12" TextColor="Gray" />
+                            <Label Text="{Binding VeiculosEmViagemTexto}" FontSize="26" FontAttributes="Bold" TextColor="#0B1D3A" />
+                            <Label Text="{Binding VeiculosDetalheTexto}" FontSize="12" TextColor="Gray" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="1" Text="🚚" FontSize="32" VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+
                 <!-- Painel financeiro: somente Administrador, Gestor de Frota e Financeiro -->
                 <VerticalStackLayout Spacing="12" IsVisible="{Binding MostrarFinanceiro}">
 

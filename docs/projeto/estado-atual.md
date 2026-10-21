@@ -136,20 +136,20 @@ permissão de escrita.
 | US03 | Registro de movimentações | Entidade criada. **Faltam** campos de status e datas (ver `pendencias-do-modelo.md`). Tela não iniciada |
 | US04 | Dívidas e parcelamentos | Entidade criada. Regra de geração automática das parcelas e tela não iniciadas |
 | US05 | Motor de saldo e previsão | Não iniciado. **Depende** dos campos da US03 |
-| US06 | Cadastro de frota | Entidade criada. Tela não iniciada |
-| US06-b | Registro de manutenção | Entidade específica ainda não existe |
-| US07 | Rotas | Entidade criada. Tela não iniciada |
-| US08 | Viagens e hodômetro | Entidade criada, com a distância calculada. Tela não iniciada |
-| US09 | Vínculo financeiro com viagem | `Movimentacao.ViagemId` existe. Campo de litros pendente |
-| US10 | Estatísticas de rota e veículo | Não iniciado |
-| US11 | Painel de indicadores | Implementado em `RelatoriosPage` (resultado do período, entradas, saídas, a receber e a pagar no mês, pendentes em atraso, maior despesa, variação de saídas). O Início mantém saldo e projeção |
+| US06 | Cadastro de frota | Implementado: `VeiculosController` (placa antiga/Mercosul validada, normalizada e única; capacidade de carga) e `FrotaPage` + `VeiculoFormPage` no app |
+| US06-b | Registro de manutenção | Implementado: entidade `Manutencao`, `ManutencoesController` (gera a despesa e põe o veículo "Em manutenção" na mesma transação; `concluir` devolve a "Disponível") e `ManutencaoFormPage` |
+| US07 | Rotas | Implementado: `RotasController` e `RotasPage` (criar, editar inline, desativar) |
+| US08 | Viagens e hodômetro | Implementado: `ViagensController` (abrir, encerrar com `final > inicial`, cancelar; quilometragem rodada **gravada**; Motorista só vê as próprias), `ViagensPage`, `ViagemFormPage` e `EncerrarViagemPage`. Abrir e encerrar funcionam **offline** com fila de reenvio idempotente |
+| US09 | Vínculo financeiro com viagem | Implementado na API (`viagemId` e `quantidadeLitros` em `POST/PUT /api/movimentacoes`) e no formulário do app (picker de viagem; litros aparecem na categoria de combustível) |
+| US10 | Estatísticas de rota e veículo | Implementado: `GET /api/relatorios/frota` com `CalculadoraFrota` (rentabilidade, custo/km, km/l por rota e por veículo, a partir das viagens do período e dos lançamentos vinculados) e bloco "Frota no período" em `RelatoriosPage` |
+| US11 | Painel de indicadores | Implementado em `RelatoriosPage` (resultado do período, entradas, saídas, a receber e a pagar no mês, pendentes em atraso, maior despesa, variação de saídas). O Início mantém saldo e projeção e ganhou o card **Veículos em viagem** (lê o cache, funciona offline). **Falta** o filtro por mês, ano e período livre |
 | US12 | Gráficos de fluxo de caixa | Implementado: colunas de entradas x saídas por mês e rosca de despesas por categoria, desenhados com `GraphicsView` (sem biblioteca externa). Dados de `GET /api/relatorios/resumo` |
-| US13 | Ranking de eficiência | Não iniciado |
+| US13 | Ranking de eficiência | Implementado: top 3 rotas mais lucrativas e top 3 veículos por menor custo/km, no mesmo endpoint e na mesma tela da US10 |
 | US14 | Exportação de relatório | Implementado em CSV (`GET /api/relatorios/exportar`), compartilhado pelo app via folha de compartilhamento do sistema. PDF não iniciado |
 | US15 | Login com Google | Fluxo implementado nas duas pontas. **Falta** o Client ID de produção (ver abaixo) |
 | US16 | Perfis de usuário | Quatro perfis definidos, API de gestão pronta. **Faltam** a tela no app e o estado "Aguardando Aprovação" |
-| US17 | Navegação contextual | Autorização aplicada dentro das páginas. A adaptação do menu por perfil ainda não foi implementada |
-| US18 | Segurança de rotas | Implementado na API com `[Authorize(Roles = ...)]` |
+| US17 | Navegação contextual | Menu por perfil implementado (`AppShell.ConfigurarMenuPorPerfil`). O Motorista vê Viagens e Frota (consulta) e **abre direto em Viagens** |
+| US18 | Segurança de rotas | Implementado na API com `[Authorize(Roles = ...)]`. O Motorista só recebe as próprias viagens em `GET /api/viagens` (filtro no servidor, não só na tela) |
 
 ---
 
@@ -229,3 +229,30 @@ como "aguardando módulo de frota" em vez de dado falso.
 
 Escrito sem SDK .NET disponível na máquina de autoria: **não compilado**.
 Validar com `dotnet build` nos projetos API e App antes do merge.
+
+## Atualização (21/10/2026) - módulo de frota
+
+Implementados (Sprints 5 e 6 do roadmap): migration `20261021120000_ModuloFrota`
+(capacidade de carga no veículo, `QuilometragemRodadaKm` na viagem,
+`QuantidadeLitros` na movimentação e a tabela `Manutencoes`),
+`VeiculosController`, `RotasController`, `ViagensController` e
+`ManutencoesController`, regras puras em `Domain/Services/ValidadorPlaca.cs` e
+`RegrasViagem.cs`, e no app as telas Frota, Veículo, Rotas, Viagens, Abrir
+viagem, Encerrar viagem e Registrar manutenção, com os itens de menu por perfil.
+Detalhes, decisões e roteiro de teste em `docs/projeto/PR-frota.md`.
+
+Resolvidos de `pendencias-do-modelo.md`: itens 2 (litros), 4 (Manutenção),
+5 (capacidade de carga) e 6 (quilometragem persistida).
+
+Na mesma branch, em seguida: US10 e US13 (`CalculadoraFrota`,
+`GET /api/relatorios/frota`, blocos "Frota no período" e ranking em
+`RelatoriosPage`, card "Veículos em viagem" no Início).
+
+Continuam fora: item 7 (situação do usuário com três estados, frente de
+autenticação), item 8 (decisão Frete × Movimentação, do time; as estatísticas
+ignoram `Frete.ValorFrete`), filtros por mês/ano/período livre e toque nos
+gráficos (US11/US12), fila offline para o financeiro, Client ID real do Google
+e o script PostgreSQL em `GestaoFrota.Database/`.
+
+Escrito sem SDK .NET na máquina de autoria: **não compilado**. Validar com
+`dotnet build` nos projetos API e App e `dotnet ef database update` antes do merge.

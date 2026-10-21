@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             xmlns:models="clr-namespace:GestaoFrota.App.Models"
+             x:Class="GestaoFrota.App.Views.RotasPage"
+             x:DataType="vm:RotasViewModel"
+             Title="Rotas">
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Padding="16" RowSpacing="12">
+
+        <!-- Formulário de criação: só Administrador/Gestor de Frota (RBAC) -->
+        <Frame Grid.Row="0"
+               IsVisible="{Binding PodeGerenciar}"
+               Padding="12"
+               CornerRadius="12"
+               BorderColor="#DCE3EE">
+            <VerticalStackLayout Spacing="8">
+                <Entry Placeholder="Nome da rota (ex.: SP → Curitiba)" MaxLength="150" Text="{Binding NovoNome}" />
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                    <Entry Grid.Column="0" Placeholder="Origem" MaxLength="150" Text="{Binding NovaOrigem}" />
+                    <Entry Grid.Column="1" Placeholder="Destino" MaxLength="150" Text="{Binding NovoDestino}" />
+                </Grid>
+                <Entry Placeholder="Distância estimada (km)" Keyboard="Numeric" Text="{Binding NovaDistanciaTexto}" />
+                <Button Text="Adicionar rota" Command="{Binding AdicionarCommand}" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Formulário de edição: aparece só quando uma rota foi selecionada -->
+        <Frame Grid.Row="1"
+               IsVisible="{Binding RotaEmEdicao, Converter={StaticResource NotNullToBoolConverter}}"
+               Padding="12"
+               CornerRadius="12"
+               BorderColor="#DCE3EE"
+               BackgroundColor="#F5F8FF">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Editando rota" FontAttributes="Bold" FontSize="12" TextColor="Gray" />
+                <Entry Placeholder="Nome da rota" MaxLength="150" Text="{Binding EdicaoNome}" />
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                    <Entry Grid.Column="0" Placeholder="Origem" MaxLength="150" Text="{Binding EdicaoOrigem}" />
+                    <Entry Grid.Column="1" Placeholder="Destino" MaxLength="150" Text="{Binding EdicaoDestino}" />
+                </Grid>
+                <Entry Placeholder="Distância estimada (km)" Keyboard="Numeric" Text="{Binding EdicaoDistanciaTexto}" />
+                <HorizontalStackLayout Spacing="8">
+                    <Button Text="Salvar" Command="{Binding SalvarEdicaoCommand}" />
+                    <Button Text="Cancelar" Command="{Binding CancelarEdicaoCommand}" BackgroundColor="Gray" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Frame>
+
+        <Label Grid.Row="2"
+               Text="{Binding MensagemErro}"
+               TextColor="#D93025"
+               FontSize="13"
+               IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+        <RefreshView Grid.Row="3"
+                     IsRefreshing="{Binding Carregando}"
+                     Command="{Binding CarregarCommand}">
+            <CollectionView ItemsSource="{Binding Rotas}">
+                <CollectionView.EmptyView>
+                    <Label Text="Nenhuma rota cadastrada ainda."
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="Gray" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Rota">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Editar"
+                                               BackgroundColor="#2C6CE0"
+                                               IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeGerenciar}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IniciarEdicaoCommand}"
+                                               CommandParameter="{Binding .}" />
+                                    <SwipeItem Text="Desativar"
+                                               BackgroundColor="#D9534F"
+                                               IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeDesativar}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DesativarCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Grid Padding="12,10" ColumnDefinitions="*, Auto" Opacity="{Binding Ativa, Converter={StaticResource BoolToOpacityConverter}}">
+                                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                    <Label Text="{Binding Nome}" FontAttributes="Bold" />
+                                    <Label Text="{Binding TrajetoTexto}" FontSize="12" TextColor="Gray" />
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="{Binding DistanciaTexto}" FontSize="12" TextColor="Gray" />
+                                        <Label Text="· inativa"
+                                               FontSize="12"
+                                               TextColor="#D9534F"
+                                               IsVisible="{Binding Ativa, Converter={StaticResource InverseBoolConverter}}" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>

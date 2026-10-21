@@ -10,6 +10,9 @@ public interface IRelatorioService
 
     /// <summary>CSV das movimentações do período (US14), pronto para compartilhar.</summary>
     Task<ArquivoExportado> ExportarCsvAsync(int meses);
+
+    /// <summary>Estatísticas de rota e veículo e ranking (US10/US13) das viagens do período.</summary>
+    Task<EstatisticasFrota> ObterFrotaAsync(int meses);
 }
 
 /// <summary>
@@ -51,6 +54,16 @@ public class RelatorioService : IRelatorioService
         var tipo = resposta.Content.Headers.ContentType?.MediaType ?? "text/csv";
 
         return new ArquivoExportado(nome, conteudo, tipo);
+    }
+
+    public async Task<EstatisticasFrota> ObterFrotaAsync(int meses)
+    {
+        ExigirConexao();
+
+        var resposta = await _httpClient.GetAsync($"relatorios/frota?meses={meses}");
+        await resposta.GarantirSucessoAsync();
+
+        return await resposta.Content.ReadFromJsonAsync<EstatisticasFrota>() ?? new EstatisticasFrota();
     }
 
     private void ExigirConexao()

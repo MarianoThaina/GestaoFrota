@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             x:Class="GestaoFrota.App.Views.VeiculoFormPage"
+             x:DataType="vm:VeiculoFormViewModel"
+             Title="{Binding Titulo}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <Label Text="Placa" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="ABC-1234 ou ABC1D23"
+                   MaxLength="8"
+                   Text="{Binding PlacaTexto}" />
+            <Label Text="Formato antigo (ABC-1234) ou Mercosul (ABC1D23). Precisa ser única na frota."
+                   FontSize="11"
+                   TextColor="Gray" />
+
+            <Label Text="Marca" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="Ex.: Volvo" MaxLength="100" Text="{Binding Marca}" />
+
+            <Label Text="Modelo" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="Ex.: FH 460" MaxLength="100" Text="{Binding Modelo}" />
+
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="Ano de fabricação" FontSize="12" TextColor="Gray" />
+                    <Entry Placeholder="2021" Keyboard="Numeric" MaxLength="4" Text="{Binding AnoTexto}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="Capacidade de carga (t)" FontSize="12" TextColor="Gray" />
+                    <Entry Placeholder="32" Keyboard="Numeric" Text="{Binding CapacidadeTexto}" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <Label Text="Hodômetro atual (km)" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="184.320" Keyboard="Numeric" Text="{Binding KmAtualTexto}" />
+
+            <Grid ColumnDefinitions="*, Auto" IsVisible="{Binding Edicao}">
+                <Label Grid.Column="0" Text="Veículo ativo" VerticalOptions="Center" FontAttributes="Bold" />
+                <Switch Grid.Column="1" IsToggled="{Binding Ativo}" />
+            </Grid>
+
+            <Label Text="{Binding MensagemErro}"
+                   TextColor="#D93025"
+                   FontSize="13"
+                   IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Button Text="Salvar veículo"
+                    Command="{Binding SalvarCommand}"
+                    BackgroundColor="#0B1D3A"
+                    TextColor="White"
+                    CornerRadius="24"
+                    HeightRequest="52"
+                    IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

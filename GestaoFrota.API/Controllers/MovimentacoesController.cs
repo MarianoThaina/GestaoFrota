@@ -40,7 +40,8 @@ public class MovimentacoesController : ControllerBase
         new MovimentacaoResponse(
             m.Id, m.Tipo, m.Valor, m.Descricao, m.Status, m.Data, m.DataVencimento, m.DataPagamento,
             m.CategoriaId, m.Categoria!.Nome, m.FormaPagamentoId, m.FormaPagamento!.Nome,
-            m.DividaId, m.ComprovanteUrl != null, m.ComprovanteUrl, m.Estornada, m.UsuarioId);
+            m.DividaId, m.ComprovanteUrl != null, m.ComprovanteUrl, m.Estornada, m.UsuarioId,
+            m.ViagemId, m.QuantidadeLitros);
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MovimentacaoResponse>>> Listar(
@@ -49,6 +50,7 @@ public class MovimentacoesController : ControllerBase
         [FromQuery] DateTime? de,
         [FromQuery] DateTime? ate,
         [FromQuery] Guid? dividaId,
+        [FromQuery] Guid? viagemId,
         [FromQuery] int limite = 200)
     {
         limite = Math.Clamp(limite, 1, 1000);
@@ -60,6 +62,7 @@ public class MovimentacoesController : ControllerBase
         if (de.HasValue) query = query.Where(m => m.DataVencimento >= de.Value.Date);
         if (ate.HasValue) query = query.Where(m => m.DataVencimento <= ate.Value.Date);
         if (dividaId.HasValue) query = query.Where(m => m.DividaId == dividaId.Value);
+        if (viagemId.HasValue) query = query.Where(m => m.ViagemId == viagemId.Value);
 
         var lista = await query
             .OrderByDescending(m => m.DataVencimento)
@@ -93,7 +96,8 @@ public class MovimentacoesController : ControllerBase
             return Unauthorized();
         }
 
-        var erro = await ValidarReferenciasAsync(request.Tipo, request.CategoriaId!.Value, request.FormaPagamentoId!.Value);
+        var erro = await ValidarReferenciasAsync(request.Tipo, request.CategoriaId!.Value, request.FormaPagamentoId!.Value)
+                   ?? await ValidarViagemAsync(request.ViagemId);
         if (erro is not null)
         {
             return BadRequest(new { mensagem = erro });
@@ -111,6 +115,8 @@ public class MovimentacoesController : ControllerBase
             CategoriaId = request.CategoriaId.Value,
             FormaPagamentoId = request.FormaPagamentoId.Value,
             UsuarioId = usuarioId,
+            ViagemId = request.ViagemId,
+            QuantidadeLitros = request.QuantidadeLitros is { } litros ? Math.Round(litros, 2) : null,
             SincronizadoOffline = false
         };
 
@@ -145,7 +151,8 @@ public class MovimentacoesController : ControllerBase
             return BadRequest(new { mensagem = "O tipo de uma parcela de dívida não pode ser alterado." });
         }
 
-        var erro = await ValidarReferenciasAsync(request.Tipo, request.CategoriaId!.Value, request.FormaPagamentoId!.Value);
+        var erro = await ValidarReferenciasAsync(request.Tipo, request.CategoriaId!.Value, request.FormaPagamentoId!.Value)
+                   ?? await ValidarViagemAsync(request.ViagemId);
         if (erro is not null)
         {
             return BadRequest(new { mensagem = erro });
@@ -159,6 +166,8 @@ public class MovimentacoesController : ControllerBase
         movimentacao.DataPagamento = request.Status == StatusMovimentacao.Pago ? request.DataPagamento!.Value.Date : null;
         movimentacao.CategoriaId = request.CategoriaId.Value;
         movimentacao.FormaPagamentoId = request.FormaPagamentoId.Value;
+        movimentacao.ViagemId = request.ViagemId;
+        movimentacao.QuantidadeLitros = request.QuantidadeLitros is { } litros ? Math.Round(litros, 2) : null;
 
         await _context.SaveChangesAsync();
         await RecalcularDividaAsync(movimentacao.DividaId);
@@ -341,6 +350,29 @@ public class MovimentacoesController : ControllerBase
         }
 
         return null;
+    }
+
+    /// <summary>Vínculo opcional com viagem (US09): precisa existir e não estar cancelada.</summary>
+    private async Task<string?> ValidarViagemAsync(Guid? viagemId)
+    {
+        if (!viagemId.HasValue)
+        {
+            return null;
+        }
+
+        var viagem = await _context.Viagens.AsNoTracking()
+            .Where(v => v.Id == viagemId.Value)
+            .Select(v => new { v.Status })
+            .FirstOrDefaultAsync();
+
+        if (viagem is null)
+        {
+            return "Viagem não encontrada.";
+        }
+
+        return viagem.Status == StatusViagem.Cancelada
+            ? "Não é possível vincular lançamentos a uma viagem cancelada."
+            : null;
     }
 
     private async Task RecalcularDividaAsync(Guid? dividaId)

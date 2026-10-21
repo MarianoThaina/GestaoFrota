@@ -27,6 +27,7 @@ public class MovimentacaoConfiguration : IEntityTypeConfiguration<Movimentacao>
         builder.Property(m => m.ComprovanteUrl).HasMaxLength(500);
         builder.Property(m => m.ComprovanteConteudo).HasColumnType("varbinary(max)");
         builder.Property(m => m.ComprovanteTipo).HasMaxLength(100);
+        builder.Property(m => m.QuantidadeLitros).HasColumnType("decimal(10,2)");
 
         builder.Property(m => m.Status)
             .HasConversion<string>()
