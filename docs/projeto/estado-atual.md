@@ -250,9 +250,19 @@ Na mesma branch, em seguida: US10 e US13 (`CalculadoraFrota`,
 
 Continuam fora: item 7 (situação do usuário com três estados, frente de
 autenticação), item 8 (decisão Frete × Movimentação, do time; as estatísticas
-ignoram `Frete.ValorFrete`), filtros por mês/ano/período livre e toque nos
-gráficos (US11/US12), fila offline para o financeiro, Client ID real do Google
-e o script PostgreSQL em `GestaoFrota.Database/`.
+ignoram `Frete.ValorFrete`), fila offline para o financeiro, Client ID real do
+Google e o script PostgreSQL em `GestaoFrota.Database/`.
+
+## Atualização (21/10/2026) - filtros e toque nos relatórios
+
+`PeriodoRelatorio` na API resolve `meses`, `tudo`, `ano`, `ano+mes` e `de/ate`
+para os três endpoints de relatórios; `CalculadoraRelatorios` ganhou as
+sobrecargas com período explícito (as de `hoje, meses` continuam e delegam).
+No app, `FiltroPeriodo` vira query string, a tela tem atalhos de 3/6/12/24
+meses e "Tudo" mais o painel "Personalizar" (mês/ano, ano, período livre), e o
+toque nos dois gráficos mostra o valor exato (geometria em
+`GraficoColunasDrawable.IndiceNoToque` e `GraficoRoscaDrawable.IndiceNoToque`).
+Fecha o que faltava nas US11 e US12 segundo o levantamento de 20/10.
 
 Escrito sem SDK .NET na máquina de autoria: **não compilado**. Validar com
 `dotnet build` nos projetos API e App e `dotnet ef database update` antes do merge.
