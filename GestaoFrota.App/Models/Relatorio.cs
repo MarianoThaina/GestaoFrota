@@ -85,12 +85,28 @@ public class RelatorioResumo
     public int Meses { get; set; }
     public DateTime PeriodoInicio { get; set; }
     public DateTime PeriodoFim { get; set; }
+    public string PeriodoRotulo { get; set; } = string.Empty;
     public IndicadoresRelatorio Indicadores { get; set; } = new();
     public List<FluxoMensal> FluxoMensal { get; set; } = new();
     public List<DespesaCategoria> DespesasPorCategoria { get; set; } = new();
     public DateTime GeradoEm { get; set; }
 
-    public string PeriodoTexto => $"{Formatacao.MesAno(PeriodoInicio.Year, PeriodoInicio.Month)} a {Formatacao.MesAno(PeriodoFim.Year, PeriodoFim.Month)}";
+    /// <summary>Meses inteiros aparecem como "Mai/2026 a Out/2026"; dias quebrados, como datas completas.</summary>
+    public string PeriodoTexto
+    {
+        get
+        {
+            var alinhadoAoMes = PeriodoInicio.Day == 1 && PeriodoFim.AddDays(1).Day == 1;
+            if (!alinhadoAoMes)
+            {
+                return $"{Formatacao.Data(PeriodoInicio)} a {Formatacao.Data(PeriodoFim)}";
+            }
+
+            var inicio = Formatacao.MesAno(PeriodoInicio.Year, PeriodoInicio.Month);
+            var fim = Formatacao.MesAno(PeriodoFim.Year, PeriodoFim.Month);
+            return inicio == fim ? inicio : $"{inicio} a {fim}";
+        }
+    }
 }
 
 /// <summary>Rota agregada pelas viagens do período (US10/US13).</summary>
