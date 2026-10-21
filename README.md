@@ -10,8 +10,21 @@ GestaoFrota.Infrastructure  AppDbContext, configurações EF e migrations
 GestaoFrota.API             controllers REST, JWT, RBAC, Swagger
 GestaoFrota.App             app .NET MAUI (Android) - MVVM, SQLite offline, menu por perfil
 GestaoFrota.Web             páginas web de cadastro (Categorias, Formas, Usuários)
+GestaoFrota.Tests           testes xUnit das regras puras do domínio (só referencia o Domain)
 docs/                       protótipo HTML e documentação do projeto
 ```
+
+## Testes
+
+```bash
+dotnet test
+```
+
+Cobre as regras de negócio que não dependem de banco nem de tela: parcelas e
+projeção de caixa (`CalculadoraFinanceira`), indicadores, fluxo mensal e
+despesas por categoria (`CalculadoraRelatorios`), rentabilidade, custo/km, km/l
+e ranking (`CalculadoraFrota`), placa antiga/Mercosul (`ValidadorPlaca`) e
+hodômetro (`RegrasViagem`). Cada arquivo de teste nomeia a user story que prova.
 
 ## O que foi implementado nesta etapa
 
@@ -183,4 +196,4 @@ Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 
 - Imagens maiores que 5 MB são recusadas (sem compressão automática).
 - A quitação antecipada é armazenada e exibida, mas ainda não há operação que quite a dívida em um único pagamento.
 - A fila offline cobre só viagens (abrir e encerrar). Categorias criadas offline continuam marcadas como pendentes sem rotina de reenvio.
-- `GestaoFrota.Database/create_tables.sql` está em PostgreSQL enquanto a API usa SQL Server; o schema real é o das migrations.
+- `GestaoFrota.Database/create_tables.sql` é o rascunho PostgreSQL da Sprint 1 e não é executado; o schema real é o das migrations (ver o README daquela pasta).
