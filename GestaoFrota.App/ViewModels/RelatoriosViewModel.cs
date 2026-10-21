@@ -63,8 +63,24 @@ public partial class RelatoriosViewModel : BaseViewModel
     [ObservableProperty]
     private string? mensagemExportacao;
 
+    // ---------- US10 / US13 ----------
+
+    [ObservableProperty]
+    private EstatisticasFrota frota = new();
+
+    [ObservableProperty]
+    private bool semViagens;
+
+    [ObservableProperty]
+    private bool semRanking;
+
+    [ObservableProperty]
+    private string? mensagemFrota;
+
     public ObservableCollection<FluxoMensal> Fluxo { get; } = new();
     public ObservableCollection<DespesaCategoria> Categorias { get; } = new();
+    public ObservableCollection<EstatisticaRota> TopRotas { get; } = new();
+    public ObservableCollection<EstatisticaVeiculo> TopVeiculos { get; } = new();
 
     public bool Periodo3Selecionado => Meses == 3;
     public bool Periodo6Selecionado => Meses == 6;
@@ -102,6 +118,42 @@ public partial class RelatoriosViewModel : BaseViewModel
         finally
         {
             Carregando = false;
+        }
+
+        // US10/US13 em chamada separada: uma falha aqui não derruba o financeiro.
+        await CarregarFrotaAsync();
+    }
+
+    private async Task CarregarFrotaAsync()
+    {
+        MensagemFrota = null;
+
+        try
+        {
+            var frota = await _relatorioService.ObterFrotaAsync(Meses);
+            Frota = frota;
+
+            TopRotas.Clear();
+            for (var i = 0; i < frota.RotasMaisLucrativas.Count; i++)
+            {
+                frota.RotasMaisLucrativas[i].Posicao = i + 1;
+                TopRotas.Add(frota.RotasMaisLucrativas[i]);
+            }
+
+            TopVeiculos.Clear();
+            for (var i = 0; i < frota.VeiculosMaisEficientes.Count; i++)
+            {
+                frota.VeiculosMaisEficientes[i].Posicao = i + 1;
+                TopVeiculos.Add(frota.VeiculosMaisEficientes[i]);
+            }
+
+            SemViagens = frota.TotalViagens == 0;
+            SemRanking = TopRotas.Count == 0 && TopVeiculos.Count == 0;
+        }
+        catch (Exception ex)
+        {
+            MensagemFrota = ErrosUi.Mensagem(ex, "Não foi possível carregar as estatísticas de frota.");
+            System.Diagnostics.Debug.WriteLine(ex);
         }
     }
 

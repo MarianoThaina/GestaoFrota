@@ -134,6 +134,10 @@ Authorization: Bearer COLE_AQUI_O_JWT
 GET {{GestaoFrota.API_HostAddress}}/api/relatorios/exportar?meses=6
 Authorization: Bearer COLE_AQUI_O_JWT
 
+### Estatísticas de rota e veículo + ranking (US10/US13): viagens iniciadas no período e lançamentos vinculados
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/frota?meses=6
+Authorization: Bearer COLE_AQUI_O_JWT
+
 ### ---------- Frota (US06, US06-b, US07, US08) ----------
 ### Enums: StatusVeiculo 1=Disponivel 2=EmViagem 3=EmManutencao | StatusViagem 1=EmAndamento 2=Concluida 3=Cancelada
 

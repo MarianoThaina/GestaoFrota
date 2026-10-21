@@ -156,6 +156,8 @@ Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 
 
 `POST /api/movimentacoes` aceita agora `viagemId` e `quantidadeLitros` (US09); `GET /api/movimentacoes?viagemId=` filtra por viagem.
 
+| GET | `/api/relatorios/frota?meses=6` (US10/US13: rentabilidade, custo/km e km/l por rota e por veículo; top 3 rotas lucrativas e top 3 veículos eficientes; veículos em viagem) | Administrador, Gestor, Financeiro |
+
 ## Decisões de projeto
 
 - **Offline-first mantido:** categorias e formas continuam em cache SQLite; o histórico de movimentações também fica em cache para consulta offline. Lançar, pagar, estornar, cadastrar dívida e consultar saldo exigem conexão (o app avisa em vez de fingir que salvou).
@@ -167,6 +169,7 @@ Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 
 - **Viagem é a única escrita offline-first (US08):** o `Id` da viagem nasce no aparelho (Guid), então abrir e encerrar funcionam sem rede: o registro fica no SQLite com `AberturaPendente`/`EncerramentoPendente` e o `ViagemService` reenvia ao abrir a tela de Viagens com conexão. A API trata o reenvio como idempotente (mesmo `Id` devolve a viagem existente; mesmo hodômetro final devolve 200). Veículos e rotas ficam em cache para o motorista escolher sem internet. Manutenção e lançamentos continuam exigindo conexão porque mexem no caixa.
 - **Quilometragem rodada gravada, não calculada:** no encerramento a API valida `final > inicial` (também protegido por check constraint), grava `QuilometragemRodadaKm` e atualiza o `KmAtual` do veículo. Assim os relatórios da US10 somam direto no banco.
 - **Manutenção gera a despesa no mesmo commit (US06-b):** manutenção, movimentação de saída na categoria "Manutenção" e status do veículo entram numa transação; se algo falhar, nada é salvo. A categoria padrão é a semeada pela `InitialCreate`; o cliente pode informar outra.
+- **Estatísticas contam pelo vínculo (US09 → US10):** rentabilidade de uma viagem = entradas vinculadas − saídas vinculadas; custo/km = saídas vinculadas ÷ km rodados; km/l = km rodados ÷ litros dos abastecimentos vinculados. Viagens canceladas ficam de fora; em andamento entram só no financeiro (sem km ainda). O ranking (US13) ordena rotas por rentabilidade total e veículos por menor custo/km, e omite veículo sem km no período em vez de mostrar custo zero. `Frete.ValorFrete` **não** entra na conta, para não somar a receita duas vezes; o time ainda precisa decidir o papel desse campo.
 - **Placa normalizada:** guardada em maiúscula e sem hífen (`ValidadorPlaca` no domínio), para o índice único não aceitar "ABC-1234" e "ABC1234" como placas diferentes. O app mostra "ABC-1234" para a antiga e "ABC1D23" para a Mercosul.
 
 ## Repositório

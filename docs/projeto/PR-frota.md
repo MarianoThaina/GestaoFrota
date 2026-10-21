@@ -1,7 +1,8 @@
-# Módulo de frota (US06, US06-b, US07, US08, US09)
+# Módulo de frota (US06, US06-b, US07, US08, US09) + estatísticas (US10, US13)
 
 Fecha o maior buraco apontado no levantamento de 20/10: não existia controller
-nem tela de Veículos, Rotas ou Viagens. Cobre as Sprints 5 e 6 do roadmap.
+nem tela de Veículos, Rotas ou Viagens. Cobre as Sprints 5 e 6 do roadmap e,
+como a frota destravou os cálculos, também a US10 e a US13 da Sprint 7.
 
 ## O que entra
 
@@ -34,6 +35,12 @@ nem tela de Veículos, Rotas ou Viagens. Cobre as Sprints 5 e 6 do roadmap.
 - `MovimentacaoFormPage`: picker "Vincular à viagem" e campo de litros quando a categoria é de combustível.
 - Cache SQLite de veículos, rotas e viagens. **Fila offline só para viagens**: abrir e encerrar sem rede gravam `AberturaPendente`/`EncerramentoPendente`; `ViagemService.SincronizarPendentesAsync` reenvia ao abrir a tela com conexão e guarda a mensagem da API em `ErroSincronizacao` quando o servidor recusa (ex.: veículo já estava em viagem).
 
+**Estatísticas e ranking (US10, US13)**
+- `CalculadoraFrota` no domínio (pura): resultado por viagem, agregação por rota e por veículo, top 3 rotas lucrativas e top 3 veículos por menor custo/km. Fórmulas do documento: rentabilidade = entradas vinculadas − saídas vinculadas; custo/km = saídas ÷ km rodados; km/l = km ÷ litros. Canceladas ficam de fora; em andamento entram só no financeiro.
+- `GET /api/relatorios/frota?meses=N`: viagens iniciadas no período, lançamentos vinculados, contagem de veículos em viagem, listas por rota e por veículo e os dois rankings.
+- `RelatoriosPage`: o bloco "aguardando módulo de frota" virou "Frota no período" (veículos em viagem, rentabilidade das viagens, resumo) mais "Rotas mais lucrativas" e "Veículos mais eficientes", carregados em chamada separada para uma falha não derrubar o financeiro.
+- `DashboardPage`: card "Veículos em viagem" (US11) contando pelo cache de veículos, visível para Administrador, Gestor e Motorista e funcionando offline.
+
 **Docs**: `README.md` (endpoints e decisões), `estado-atual.md`, `.http` com exemplos.
 
 ## Decisões
@@ -57,6 +64,8 @@ nem tela de Veículos, Rotas ou Viagens. Cobre as Sprints 5 e 6 do roadmap.
 8. Emulador como Motorista: o app abre na tela *Viagens*; *Frota* aparece sem botões de gestão; *Rotas* e módulos financeiros não aparecem.
 9. Offline (modo avião no emulador) como Motorista: abrir viagem → alerta "Viagem aberta no aparelho", cartão "Aberta · aguardando envio". Encerrar → "Encerrada · aguardando envio". Voltar a rede, puxar para atualizar → os dois somem da fila e o cartão passa a "Concluída" com o rodado do servidor.
 10. *Movimentações* > *Nova*: escolher categoria "Combustível" → aparece o campo de litros; escolher uma viagem no picker; salvar; na lista o detalhe mostra "372,5 L · vinculada a viagem".
+11. Com uma viagem concluída de 415 km, uma receita de R$ 4.200 e um abastecimento de R$ 2.230,50 com 372,5 L vinculados a ela: `GET /api/relatorios/frota?meses=1` → `rotasMaisLucrativas[0].rentabilidade` = 1969,50; `veiculosMaisEficientes[0].custoPorKm` = 5,37 (2230,50 ÷ 415) e `kmPorLitro` = 1,11 (415 ÷ 372,5). Uma viagem cancelada com lançamentos não muda nenhum número.
+12. *Relatórios* no emulador: o bloco "Frota no período" mostra "1 de N" veículos em viagem enquanto houver viagem aberta, e os rankings listam a rota e o veículo do passo 11. *Início*: o card "Veículos em viagem" mostra o mesmo número, também logado como Motorista e em modo avião.
 
 ## O que não foi conferido pelo autor
 

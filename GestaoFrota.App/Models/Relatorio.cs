@@ -93,5 +93,84 @@ public class RelatorioResumo
     public string PeriodoTexto => $"{Formatacao.MesAno(PeriodoInicio.Year, PeriodoInicio.Month)} a {Formatacao.MesAno(PeriodoFim.Year, PeriodoFim.Month)}";
 }
 
+/// <summary>Rota agregada pelas viagens do período (US10/US13).</summary>
+public class EstatisticaRota
+{
+    public Guid RotaId { get; set; }
+    public string Nome { get; set; } = string.Empty;
+    public string Origem { get; set; } = string.Empty;
+    public string Destino { get; set; } = string.Empty;
+    public int Viagens { get; set; }
+    public decimal Receitas { get; set; }
+    public decimal Despesas { get; set; }
+    public decimal Rentabilidade { get; set; }
+    public decimal KmRodados { get; set; }
+    public decimal? CustoPorKm { get; set; }
+    public decimal RentabilidadeMediaPorViagem { get; set; }
+
+    /// <summary>Posição no ranking (1, 2, 3), preenchida pelo ViewModel.</summary>
+    public int Posicao { get; set; }
+
+    public string PosicaoTexto => $"{Posicao}º";
+    public string TrajetoTexto => $"{Origem} → {Destino}";
+    public string RentabilidadeTexto => Formatacao.Moeda(Rentabilidade);
+    public Color CorRentabilidade => Rentabilidade >= 0 ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+    public string DetalheTexto =>
+        $"{Viagens} {(Viagens == 1 ? "viagem" : "viagens")} · {Formatacao.Km(KmRodados)} · " +
+        (CustoPorKm.HasValue ? $"{Formatacao.Moeda(CustoPorKm.Value)}/km" : "custo/km indisponível");
+}
+
+/// <summary>Veículo agregado pelas viagens do período (US10/US13).</summary>
+public class EstatisticaVeiculo
+{
+    public Guid VeiculoId { get; set; }
+    public string Placa { get; set; } = string.Empty;
+    public string PlacaFormatada { get; set; } = string.Empty;
+    public string Descricao { get; set; } = string.Empty;
+    public int Viagens { get; set; }
+    public decimal KmRodados { get; set; }
+    public decimal Receitas { get; set; }
+    public decimal Despesas { get; set; }
+    public decimal? CustoPorKm { get; set; }
+    public decimal Litros { get; set; }
+    public decimal? KmPorLitro { get; set; }
+
+    public int Posicao { get; set; }
+
+    public string PosicaoTexto => $"{Posicao}º";
+    public string CustoPorKmTexto => CustoPorKm.HasValue ? $"{Formatacao.Moeda(CustoPorKm.Value)}/km" : "—";
+    public string KmPorLitroTexto => KmPorLitro.HasValue
+        ? $"{KmPorLitro.Value.ToString("N2", Formatacao.PtBr)} km/L"
+        : "sem abastecimento vinculado";
+    public string DetalheTexto =>
+        $"{Viagens} {(Viagens == 1 ? "viagem" : "viagens")} · {Formatacao.Km(KmRodados)} · {KmPorLitroTexto}";
+}
+
+/// <summary>Resposta de GET /api/relatorios/frota.</summary>
+public class EstatisticasFrota
+{
+    public int Meses { get; set; }
+    public DateTime PeriodoInicio { get; set; }
+    public DateTime PeriodoFim { get; set; }
+    public int VeiculosEmViagem { get; set; }
+    public int VeiculosAtivos { get; set; }
+    public int TotalViagens { get; set; }
+    public int ViagensConcluidas { get; set; }
+    public decimal KmRodados { get; set; }
+    public decimal ReceitasVinculadas { get; set; }
+    public decimal DespesasVinculadas { get; set; }
+    public List<EstatisticaRota> Rotas { get; set; } = new();
+    public List<EstatisticaVeiculo> Veiculos { get; set; } = new();
+    public List<EstatisticaRota> RotasMaisLucrativas { get; set; } = new();
+    public List<EstatisticaVeiculo> VeiculosMaisEficientes { get; set; } = new();
+    public DateTime GeradoEm { get; set; }
+
+    public string ResumoTexto =>
+        $"{TotalViagens} {(TotalViagens == 1 ? "viagem" : "viagens")} no período ({ViagensConcluidas} concluídas) · {Formatacao.Km(KmRodados)} rodados";
+    public string RentabilidadeTexto => Formatacao.Moeda(ReceitasVinculadas - DespesasVinculadas);
+    public Color CorRentabilidade => ReceitasVinculadas - DespesasVinculadas >= 0 ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+    public string VeiculosEmViagemTexto => $"{VeiculosEmViagem} de {VeiculosAtivos}";
+}
+
 /// <summary>Arquivo devolvido por GET /api/relatorios/exportar.</summary>
 public record ArquivoExportado(string NomeArquivo, byte[] Conteudo, string ContentType);
