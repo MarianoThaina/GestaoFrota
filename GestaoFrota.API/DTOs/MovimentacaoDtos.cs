@@ -21,12 +21,15 @@ public record MovimentacaoResponse(
     bool TemComprovante,
     string? ComprovanteUrl,
     bool Estornada,
-    Guid UsuarioId)
+    Guid UsuarioId,
+    Guid? ViagemId,
+    decimal? QuantidadeLitros)
 {
     public static MovimentacaoResponse De(Movimentacao m) => new(
         m.Id, m.Tipo, m.Valor, m.Descricao, m.Status, m.Data, m.DataVencimento, m.DataPagamento,
         m.CategoriaId, m.Categoria?.Nome, m.FormaPagamentoId, m.FormaPagamento?.Nome,
-        m.DividaId, m.ComprovanteUrl is not null, m.ComprovanteUrl, m.Estornada, m.UsuarioId);
+        m.DividaId, m.ComprovanteUrl is not null, m.ComprovanteUrl, m.Estornada, m.UsuarioId,
+        m.ViagemId, m.QuantidadeLitros);
 }
 
 public class MovimentacaoRequest : IValidatableObject
@@ -56,6 +59,13 @@ public class MovimentacaoRequest : IValidatableObject
     /// <summary>Obrigatória quando Status = Pago.</summary>
     public DateTime? DataPagamento { get; set; }
 
+    /// <summary>Opcional (US09): viagem à qual a receita/despesa pertence.</summary>
+    public Guid? ViagemId { get; set; }
+
+    /// <summary>Opcional (US09): litros abastecidos, em lançamentos de combustível.</summary>
+    [Range(0.01, 999999, ErrorMessage = "A quantidade de litros deve ser maior que zero.")]
+    public decimal? QuantidadeLitros { get; set; }
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (!Enum.IsDefined(Tipo))
@@ -79,6 +89,12 @@ public class MovimentacaoRequest : IValidatableObject
         {
             yield return new ValidationResult(
                 "A data do pagamento não pode estar no futuro.", new[] { nameof(DataPagamento) });
+        }
+
+        if (QuantidadeLitros.HasValue && Tipo != TipoMovimentacao.Despesa)
+        {
+            yield return new ValidationResult(
+                "Litros só fazem sentido em uma despesa de combustível.", new[] { nameof(QuantidadeLitros) });
         }
     }
 }

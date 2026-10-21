@@ -11,10 +11,11 @@
        Shell.BackgroundColor="#0B1D3A">
 
     <!--
-        Navegação por menu lateral (Flyout/Drawer): comporta os 6 módulos do
-        Administrador e permite esconder, por perfil, tudo o que o Motorista
-        não pode usar (ver AppShell.xaml.cs > ConfigurarMenuPorPerfil).
-        A restrição de escrita (RBAC) também é sempre validada no backend.
+        Navegação por menu lateral (Flyout/Drawer): comporta os módulos do
+        Administrador e permite esconder, por perfil, tudo o que cada um não
+        pode usar (ver AppShell.xaml.cs > ConfigurarMenuPorPerfil).
+        O Motorista vê Início, Viagens e Frota (só consulta) e abre direto em
+        Viagens (US17). A restrição de escrita (RBAC) é sempre validada no backend.
     -->
     <Shell.FlyoutHeader>
         <VerticalStackLayout Padding="20,36,20,16" Spacing="2" BackgroundColor="#0B1D3A">
@@ -25,6 +26,18 @@
 
     <FlyoutItem x:Name="MenuInicio" Title="Início">
         <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem x:Name="MenuViagens" Title="Viagens">
+        <ShellContent ContentTemplate="{DataTemplate views:ViagensPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem x:Name="MenuFrota" Title="Frota">
+        <ShellContent ContentTemplate="{DataTemplate views:FrotaPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem x:Name="MenuRotas" Title="Rotas">
+        <ShellContent ContentTemplate="{DataTemplate views:RotasPage}" />
     </FlyoutItem>
 
     <FlyoutItem x:Name="MenuMovimentacoes" Title="Movimentações">

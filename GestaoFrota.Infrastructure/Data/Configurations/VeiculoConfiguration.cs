@@ -27,6 +27,9 @@ public class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
         builder.Property(v => v.KmAtual)
             .HasColumnType("decimal(12,2)");
 
+        builder.Property(v => v.CapacidadeCargaToneladas)
+            .HasColumnType("decimal(10,2)");
+
         builder.Property(v => v.Status)
             .HasConversion<string>()
             .HasMaxLength(20)

@@ -56,8 +56,15 @@ public class Movimentacao : EntidadeBase
     public Guid UsuarioId { get; set; }
     public Usuario? Usuario { get; set; }
 
+    /// <summary>Vínculo com a viagem (US09): frete recebido, abastecimento, pedágio...</summary>
     public Guid? ViagemId { get; set; }
     public Viagem? Viagem { get; set; }
+
+    /// <summary>
+    /// Litros abastecidos (US09). Preenchido só em lançamentos de combustível;
+    /// é o denominador do km/l por viagem (US10).
+    /// </summary>
+    public decimal? QuantidadeLitros { get; set; }
 
     public Guid? DividaId { get; set; }
     public Divida? Divida { get; set; }

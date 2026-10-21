@@ -16,6 +16,7 @@ public class ViagemConfiguration : IEntityTypeConfiguration<Viagem>
 
         builder.Property(v => v.HodometroInicial).HasColumnType("decimal(12,2)");
         builder.Property(v => v.HodometroFinal).HasColumnType("decimal(12,2)");
+        builder.Property(v => v.QuilometragemRodadaKm).HasColumnType("decimal(12,2)");
 
         builder.Property(v => v.Status)
             .HasConversion<string>()
@@ -24,7 +25,8 @@ public class ViagemConfiguration : IEntityTypeConfiguration<Viagem>
 
         builder.Property(v => v.Observacoes).HasMaxLength(500);
 
-        builder.Ignore(v => v.DistanciaPercorridaKm);
+        // "Existe viagem em andamento para este veículo?" é a consulta mais frequente.
+        builder.HasIndex(v => new { v.VeiculoId, v.Status });
 
         builder.HasOne(v => v.Veiculo)
             .WithMany(veic => veic.Viagens)

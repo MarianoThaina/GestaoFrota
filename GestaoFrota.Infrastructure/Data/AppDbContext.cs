@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Rota> Rotas => Set<Rota>();
     public DbSet<Viagem> Viagens => Set<Viagem>();
     public DbSet<Frete> Fretes => Set<Frete>();
+    public DbSet<Manutencao> Manutencoes => Set<Manutencao>();
     public DbSet<Categoria> Categorias => Set<Categoria>();
     public DbSet<FormaPagamento> FormasPagamento => Set<FormaPagamento>();
     public DbSet<Divida> Dividas => Set<Divida>();

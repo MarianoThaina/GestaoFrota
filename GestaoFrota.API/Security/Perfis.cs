@@ -21,8 +21,17 @@ public static class Perfis
     /// </summary>
     public const string LeituraFinanceira = Administrador + "," + GestorDeFrota + "," + Financeiro;
 
-    /// <summary>Perfis com permissão de gestão de frota.</summary>
+    /// <summary>
+    /// Perfis com permissão de gestão de frota: cadastrar veículos e rotas,
+    /// registrar manutenção, abrir/cancelar viagem de qualquer motorista.
+    /// </summary>
     public const string GestaoFrota = Administrador + "," + GestorDeFrota;
+
+    /// <summary>
+    /// Perfis que operam viagens: os gestores e o próprio Motorista, que abre
+    /// e encerra as viagens dele (e só vê as dele, filtrado no controller).
+    /// </summary>
+    public const string OperacaoViagens = Administrador + "," + GestorDeFrota + "," + OperadorMotorista;
 
     /// <summary>Todos os perfis com acesso autenticado padrão.</summary>
     public const string Todos = Administrador + "," + GestorDeFrota + "," + Financeiro + "," + OperadorMotorista;

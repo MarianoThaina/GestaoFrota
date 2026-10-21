@@ -169,6 +169,50 @@ namespace GestaoFrota.Infrastructure.Migrations
                     b.ToTable("Fretes", (string)null);
                 });
 
+            modelBuilder.Entity("GestaoFrota.Domain.Entities.Manutencao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataAtualizacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataConclusao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<Guid?>("MovimentacaoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("ValorTotal")
+                        .HasColumnType("decimal(14,2)");
+
+                    b.Property<Guid>("VeiculoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovimentacaoId");
+
+                    b.HasIndex("VeiculoId");
+
+                    b.ToTable("Manutencoes", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Manutencao_ValorPositivo", "[ValorTotal] > 0");
+                        });
+                });
+
             modelBuilder.Entity("GestaoFrota.Domain.Entities.Movimentacao", b =>
                 {
                     b.Property<Guid>("Id")
@@ -216,6 +260,9 @@ namespace GestaoFrota.Infrastructure.Migrations
 
                     b.Property<Guid>("FormaPagamentoId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("QuantidadeLitros")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<bool>("SincronizadoOffline")
                         .HasColumnType("bit");
@@ -365,6 +412,9 @@ namespace GestaoFrota.Infrastructure.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("CapacidadeCargaToneladas")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("datetime2");
 
@@ -439,6 +489,9 @@ namespace GestaoFrota.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<decimal?>("QuilometragemRodadaKm")
+                        .HasColumnType("decimal(12,2)");
+
                     b.Property<Guid>("RotaId")
                         .HasColumnType("uniqueidentifier");
 
@@ -461,6 +514,8 @@ namespace GestaoFrota.Infrastructure.Migrations
 
                     b.HasIndex("VeiculoId");
 
+                    b.HasIndex("VeiculoId", "Status");
+
                     b.ToTable("Viagens", null, t =>
                         {
                             t.HasCheckConstraint("CK_Viagem_HodometroFinalMaiorQueInicial", "[HodometroFinal] IS NULL OR [HodometroFinal] > [HodometroInicial]");
@@ -476,6 +531,24 @@ namespace GestaoFrota.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Viagem");
+                });
+
+            modelBuilder.Entity("GestaoFrota.Domain.Entities.Manutencao", b =>
+                {
+                    b.HasOne("GestaoFrota.Domain.Entities.Movimentacao", "Movimentacao")
+                        .WithMany()
+                        .HasForeignKey("MovimentacaoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("GestaoFrota.Domain.Entities.Veiculo", "Veiculo")
+                        .WithMany("Manutencoes")
+                        .HasForeignKey("VeiculoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Movimentacao");
+
+                    b.Navigation("Veiculo");
                 });
 
             modelBuilder.Entity("GestaoFrota.Domain.Entities.Movimentacao", b =>
@@ -575,6 +648,8 @@ namespace GestaoFrota.Infrastructure.Migrations
 
             modelBuilder.Entity("GestaoFrota.Domain.Entities.Veiculo", b =>
                 {
+                    b.Navigation("Manutencoes");
+
                     b.Navigation("Viagens");
                 });
 
