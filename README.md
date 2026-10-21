@@ -72,10 +72,10 @@ dotnet ef database update -p GestaoFrota.Infrastructure -s GestaoFrota.API
 
 Isso cria o schema e semeia as categorias padrão (Frete, Combustível, Pedágio, Manutenção, Salários, Financiamento) e as formas de pagamento (Pix, Boleto, Transferência TED, Cartão Corporativo).
 
-A migration `20261011120000_FinanceiroCore` foi escrita à mão a partir do snapshot. Se preferir gerar a sua, apague-a (e reverta as mudanças do `AppDbContextModelSnapshot` se já a aplicou) e rode:
+As migrations `20261011120000_FinanceiroCore` e `20261021120000_ModuloFrota` foram escritas à mão a partir do snapshot. Se preferir gerar a sua, apague-a (e reverta as mudanças do `AppDbContextModelSnapshot` se já a aplicou) e rode:
 
 ```bash
-dotnet ef migrations add FinanceiroCore -p GestaoFrota.Infrastructure -s GestaoFrota.API
+dotnet ef migrations add ModuloFrota -p GestaoFrota.Infrastructure -s GestaoFrota.API
 ```
 
 Em ambiente hospedado, sem terminal, defina `Database__MigrateOnStartup=true` para aplicar as migrations ao iniciar a API.
@@ -133,6 +133,29 @@ Enums trafegam como número (Tipo: 1 Receita, 2 Despesa; Status: 1 Pendente, 2 P
 
 O Motorista recebe **403** em todos esses endpoints.
 
+### Frota (US06, US06-b, US07, US08, US09)
+
+Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 EmAndamento, 2 Concluida, 3 Cancelada.
+
+| Método | Rota | Perfis |
+|---|---|---|
+| GET | `/api/veiculos`, `/api/veiculos/{id}` (filtros `status`, `ativo`) | todos |
+| POST/PUT | `/api/veiculos` (placa antiga ou Mercosul, normalizada e única; capacidade de carga em t) | Administrador, Gestor |
+| DELETE | `/api/veiculos/{id}` (desativação lógica; recusa veículo em viagem) | Administrador |
+| GET | `/api/rotas`, `/api/rotas/{id}` (filtro `ativa`) | todos |
+| POST/PUT | `/api/rotas` | Administrador, Gestor |
+| DELETE | `/api/rotas/{id}` (desativação lógica) | Administrador |
+| GET | `/api/viagens` (filtros `status`, `veiculoId`, `motoristaId`, `rotaId`, `de`, `ate`) | todos; o **Motorista só recebe as próprias** |
+| GET | `/api/viagens/motoristas` (usuários que podem dirigir) | Administrador, Gestor |
+| POST | `/api/viagens` (abrir; `id` opcional gerado no aparelho, reenvio idempotente) | Administrador, Gestor, Motorista (só para si) |
+| PATCH | `/api/viagens/{id}/encerrar` (hodômetro final > inicial, senão 400; grava km rodada) | Administrador, Gestor, o motorista da viagem |
+| PATCH | `/api/viagens/{id}/cancelar` | Administrador, Gestor |
+| GET | `/api/manutencoes`, `/api/manutencoes/{id}` (filtros `veiculoId`, `abertas`) | Administrador, Gestor, Financeiro |
+| POST | `/api/manutencoes` (gera a despesa e põe o veículo em manutenção, em transação) | Administrador, Gestor |
+| PATCH | `/api/manutencoes/{id}/concluir` (veículo volta a Disponível) | Administrador, Gestor |
+
+`POST /api/movimentacoes` aceita agora `viagemId` e `quantidadeLitros` (US09); `GET /api/movimentacoes?viagemId=` filtra por viagem.
+
 ## Decisões de projeto
 
 - **Offline-first mantido:** categorias e formas continuam em cache SQLite; o histórico de movimentações também fica em cache para consulta offline. Lançar, pagar, estornar, cadastrar dívida e consultar saldo exigem conexão (o app avisa em vez de fingir que salvou).
@@ -141,6 +164,10 @@ O Motorista recebe **403** em todos esses endpoints.
 - **Regras de cálculo isoladas** em `GestaoFrota.Domain/Services/CalculadoraFinanceira.cs` e `CalculadoraRelatorios.cs`, sem dependência de banco.
 - **Gráficos sem biblioteca externa:** colunas e rosca da tela de Relatórios são desenhadas com o `GraphicsView` do próprio MAUI (`GestaoFrota.App/Controls/`), o que mantém o app sem dependência nova e com o desenho legível linha a linha.
 - **Relatórios agrupados por vencimento:** o período (3, 6 ou 12 meses, incluindo o atual) usa a data de vencimento como competência, igual ao filtro da lista de movimentações. Pagos e pendentes entram; estornadas nunca. A exportação (US14) sai em CSV com `;` e BOM UTF-8, que o Excel em português abre sem configuração.
+- **Viagem é a única escrita offline-first (US08):** o `Id` da viagem nasce no aparelho (Guid), então abrir e encerrar funcionam sem rede: o registro fica no SQLite com `AberturaPendente`/`EncerramentoPendente` e o `ViagemService` reenvia ao abrir a tela de Viagens com conexão. A API trata o reenvio como idempotente (mesmo `Id` devolve a viagem existente; mesmo hodômetro final devolve 200). Veículos e rotas ficam em cache para o motorista escolher sem internet. Manutenção e lançamentos continuam exigindo conexão porque mexem no caixa.
+- **Quilometragem rodada gravada, não calculada:** no encerramento a API valida `final > inicial` (também protegido por check constraint), grava `QuilometragemRodadaKm` e atualiza o `KmAtual` do veículo. Assim os relatórios da US10 somam direto no banco.
+- **Manutenção gera a despesa no mesmo commit (US06-b):** manutenção, movimentação de saída na categoria "Manutenção" e status do veículo entram numa transação; se algo falhar, nada é salvo. A categoria padrão é a semeada pela `InitialCreate`; o cliente pode informar outra.
+- **Placa normalizada:** guardada em maiúscula e sem hífen (`ValidadorPlaca` no domínio), para o índice único não aceitar "ABC-1234" e "ABC1234" como placas diferentes. O app mostra "ABC-1234" para a antiga e "ABC1D23" para a Mercosul.
 
 ## Repositório
 
@@ -152,3 +179,5 @@ O Motorista recebe **403** em todos esses endpoints.
 - O código desta etapa foi escrito sem acesso a um SDK .NET/emulador; faça `dotnet build` e um teste completo no emulador antes de gravar o vídeo.
 - Imagens maiores que 5 MB são recusadas (sem compressão automática).
 - A quitação antecipada é armazenada e exibida, mas ainda não há operação que quite a dívida em um único pagamento.
+- A fila offline cobre só viagens (abrir e encerrar). Categorias criadas offline continuam marcadas como pendentes sem rotina de reenvio.
+- `GestaoFrota.Database/create_tables.sql` está em PostgreSQL enquanto a API usa SQL Server; o schema real é o das migrations.
