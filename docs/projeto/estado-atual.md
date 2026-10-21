@@ -146,8 +146,8 @@ permissão de escrita.
 | US12 | Gráficos de fluxo de caixa | Implementado: colunas de entradas x saídas por mês e rosca de despesas por categoria, desenhados com `GraphicsView` (sem biblioteca externa). Dados de `GET /api/relatorios/resumo` |
 | US13 | Ranking de eficiência | Implementado: top 3 rotas mais lucrativas e top 3 veículos por menor custo/km, no mesmo endpoint e na mesma tela da US10 |
 | US14 | Exportação de relatório | Implementado em CSV (`GET /api/relatorios/exportar`), compartilhado pelo app via folha de compartilhamento do sistema. PDF não iniciado |
-| US15 | Login com Google | Fluxo implementado nas duas pontas. **Falta** o Client ID de produção (ver abaixo) |
-| US16 | Perfis de usuário | Quatro perfis definidos, API de gestão pronta. **Faltam** a tela no app e o estado "Aguardando Aprovação" |
+| US15 | Login com Google | Fluxo implementado nas duas pontas; a tela de login mostra a mensagem da API quando o cadastro aguarda aprovação ou foi desativado. **Falta** o Client ID de produção (ver abaixo) |
+| US16 | Perfis de usuário | Implementado: quatro perfis, três situações (`SituacaoUsuario`: Aguardando Aprovação, Ativo, Inativo), cadastro novo bloqueado até aprovação, `PUT /api/usuarios/{id}/aprovar`, tela *Usuários* com aviso de pendentes e botão Aprovar. Primeiro usuário da base entra como Administrador (bootstrap) |
 | US17 | Navegação contextual | Menu por perfil implementado (`AppShell.ConfigurarMenuPorPerfil`). O Motorista vê Viagens e Frota (consulta) e **abre direto em Viagens** |
 | US18 | Segurança de rotas | Implementado na API com `[Authorize(Roles = ...)]`. O Motorista só recebe as próprias viagens em `GET /api/viagens` (filtro no servidor, não só na tela) |
 
@@ -248,11 +248,22 @@ Na mesma branch, em seguida: US10 e US13 (`CalculadoraFrota`,
 `GET /api/relatorios/frota`, blocos "Frota no período" e ranking em
 `RelatoriosPage`, card "Veículos em viagem" no Início).
 
-Continuam fora: item 7 (situação do usuário com três estados, frente de
-autenticação), item 8 (decisão Frete × Movimentação, do time; as estatísticas
+Continuam fora: item 8 (decisão Frete × Movimentação, do time; as estatísticas
 ignoram `Frete.ValorFrete`), filtros por mês/ano/período livre e toque nos
-gráficos (US11/US12), fila offline para o financeiro, Client ID real do Google
-e o script PostgreSQL em `GestaoFrota.Database/`.
+gráficos (US11/US12, em PR separado), fila offline para o financeiro, Client ID
+real do Google e o script PostgreSQL em `GestaoFrota.Database/`.
+
+## Atualização (21/10/2026) - aprovação de usuários (US16)
+
+Resolvido o item 7 de `pendencias-do-modelo.md`: `SituacaoUsuario` com três
+estados no lugar do booleano `Ativo` (migration `20261021130000_SituacaoUsuario`
+converte os registros existentes). `AuthController` grava o usuário novo como
+"Aguardando Aprovação" e responde 403 sem token; o primeiro usuário da base e os
+e-mails de `Authentication:AdministradoresIniciais` entram como Administrador
+ativo. `UsuariosController` ganhou `aprovar`, `situacao` e o filtro por situação;
+a tela *Usuários* mostra os pendentes primeiro com o botão *Aprovar cadastro*.
+`GET /auth/me` devolve 403 para quem deixou de estar ativo e o app encerra a
+sessão salva.
 
 Escrito sem SDK .NET na máquina de autoria: **não compilado**. Validar com
 `dotnet build` nos projetos API e App e `dotnet ef database update` antes do merge.

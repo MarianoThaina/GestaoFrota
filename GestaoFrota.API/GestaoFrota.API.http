@@ -16,6 +16,25 @@ Content-Type: application/json
 GET {{GestaoFrota.API_HostAddress}}/api/auth/me
 Authorization: Bearer COLE_AQUI_O_JWT
 
+### ---------- Usuários (US16, só Administrador) ----------
+### Listar (pendentes de aprovação primeiro). Situacao: 1=AguardandoAprovacao 2=Ativo 3=Inativo
+GET {{GestaoFrota.API_HostAddress}}/api/usuarios?situacao=1
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Aprovar cadastro pendente definindo o perfil (1=Administrador 2=GestorDeFrota 3=Financeiro 4=OperadorMotorista)
+PUT {{GestaoFrota.API_HostAddress}}/api/usuarios/COLE_AQUI_O_ID/aprovar
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{ "perfil": 4 }
+
+### Desativar (3) ou reativar (2)
+PUT {{GestaoFrota.API_HostAddress}}/api/usuarios/COLE_AQUI_O_ID/situacao
+Authorization: Bearer COLE_AQUI_O_JWT
+Content-Type: application/json
+
+{ "situacao": 3 }
+
 ### Listar categorias
 GET {{GestaoFrota.API_HostAddress}}/api/categorias
 Authorization: Bearer COLE_AQUI_O_JWT

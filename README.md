@@ -62,7 +62,7 @@ No app, edite `GestaoFrota.App/Services/AppConfig.cs`:
 2. Registre o esquema de redirecionamento `com.suaempresa.gestaofrota://oauth2redirect` (igual a `AppConfig.GoogleRedirectUri` e ao `WebAuthenticationCallbackActivity`).
 3. Use o mesmo Client ID no app e na API (a API valida a audiência do `id_token`).
 
-Não há confirmação de e-mail própria: quem autentica é o Google, que já entrega o e-mail verificado dentro do `id_token`. Contas novas entram como **Motorista** (`OperadorMotorista`) e só um Administrador promove perfis.
+Não há confirmação de e-mail própria: quem autentica é o Google, que já entrega o e-mail verificado dentro do `id_token`. Contas novas ficam **Aguardando Aprovação** (US16): o login responde 403 com a mensagem e nenhum token até um Administrador liberar o acesso em *Usuários*, definindo o perfil. Exceções que entram direto como Administrador ativo: o **primeiro usuário da base** (bootstrap) e os e-mails listados em `Authentication:AdministradoresIniciais` (ou `Authentication__AdministradoresIniciais__0` por variável de ambiente).
 
 ## Banco de dados
 
@@ -94,15 +94,16 @@ dotnet build -t:Run -f net10.0-android
 
 ### Criar os perfis para a demonstração
 
-1. Entre no app com a conta que será **Administrador** (cria o usuário automaticamente como Motorista).
-2. Promova-a direto no banco, uma única vez:
+1. Entre no app com a conta que será **Administrador**: por ser o primeiro usuário da base, ela já entra ativa como Administrador (não precisa de SQL).
+2. Entre com uma segunda conta Google: a tela de login mostra "Seu cadastro foi recebido e aguarda liberação por um administrador" e não entra.
+3. Volte com o Administrador: *Usuários* mostra o aviso de cadastro pendente; escolha o perfil (ex.: **Motorista**) e toque em *Aprovar cadastro*.
+4. A segunda conta entra agora com o menu restrito. Daí em diante, o Administrador altera perfis, desativa e reativa em *Usuários*.
 
-   ```sql
-   UPDATE Usuarios SET Perfil = 'Administrador' WHERE Email = 'seu-email@gmail.com';
-   ```
-   (A coluna `Perfil` guarda o nome do enum como texto: `Administrador`, `GestorDeFrota`, `Financeiro` ou `OperadorMotorista`.)
-3. Entre com uma segunda conta Google: ela fica como **Motorista**. Use-a para mostrar o menu restrito.
-4. Daí em diante, o Administrador altera perfis em *Usuários* dentro do app.
+Se precisar promover alguém por fora do app (a coluna `Perfil` guarda o nome do enum como texto, e `Situacao` guarda `AguardandoAprovacao`, `Ativo` ou `Inativo`):
+
+```sql
+UPDATE Usuarios SET Perfil = 'Administrador', Situacao = 'Ativo' WHERE Email = 'seu-email@gmail.com';
+```
 
 ## Roteiro do vídeo (emulador Android)
 
@@ -158,6 +159,16 @@ Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 
 
 | GET | `/api/relatorios/frota?meses=6` (US10/US13: rentabilidade, custo/km e km/l por rota e por veículo; top 3 rotas lucrativas e top 3 veículos eficientes; veículos em viagem) | Administrador, Gestor, Financeiro |
 
+### Usuários (US16)
+
+| Método | Rota | Perfis |
+|---|---|---|
+| GET | `/api/usuarios` (pendentes primeiro; filtro `situacao`), `/api/usuarios/pendentes/quantidade` | Administrador |
+| PUT | `/api/usuarios/{id}/aprovar` (`{ perfil? }`: libera o cadastro) | Administrador |
+| PUT | `/api/usuarios/{id}/perfil`, `/api/usuarios/{id}/situacao` (`{ situacao }`), `/api/usuarios/{id}/status` (compatibilidade, `{ ativo }`) | Administrador |
+
+Um Administrador não consegue desativar o próprio acesso nem tirar o próprio perfil de Administrador.
+
 ## Decisões de projeto
 
 - **Offline-first mantido:** categorias e formas continuam em cache SQLite; o histórico de movimentações também fica em cache para consulta offline. Lançar, pagar, estornar, cadastrar dívida e consultar saldo exigem conexão (o app avisa em vez de fingir que salvou).
@@ -170,6 +181,7 @@ Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 
 - **Quilometragem rodada gravada, não calculada:** no encerramento a API valida `final > inicial` (também protegido por check constraint), grava `QuilometragemRodadaKm` e atualiza o `KmAtual` do veículo. Assim os relatórios da US10 somam direto no banco.
 - **Manutenção gera a despesa no mesmo commit (US06-b):** manutenção, movimentação de saída na categoria "Manutenção" e status do veículo entram numa transação; se algo falhar, nada é salvo. A categoria padrão é a semeada pela `InitialCreate`; o cliente pode informar outra.
 - **Estatísticas contam pelo vínculo (US09 → US10):** rentabilidade de uma viagem = entradas vinculadas − saídas vinculadas; custo/km = saídas vinculadas ÷ km rodados; km/l = km rodados ÷ litros dos abastecimentos vinculados. Viagens canceladas ficam de fora; em andamento entram só no financeiro (sem km ainda). O ranking (US13) ordena rotas por rentabilidade total e veículos por menor custo/km, e omite veículo sem km no período em vez de mostrar custo zero. `Frete.ValorFrete` **não** entra na conta, para não somar a receita duas vezes; o time ainda precisa decidir o papel desse campo.
+- **Aprovação de cadastro sem SQL (US16):** o primeiro usuário da base vira Administrador ativo sozinho, porque sem isso ninguém poderia aprovar ninguém. Os demais nascem "Aguardando Aprovação"; a API devolve 403 com a mensagem e o app mostra na tela de login. `GET /auth/me` também devolve 403 para quem deixou de estar ativo, e o app encerra a sessão salva. A migration converte o `Ativo` antigo em `Ativo`/`Inativo`, então ninguém que já entrava fica bloqueado.
 - **Placa normalizada:** guardada em maiúscula e sem hífen (`ValidadorPlaca` no domínio), para o índice único não aceitar "ABC-1234" e "ABC1234" como placas diferentes. O app mostra "ABC-1234" para a antiga e "ABC1D23" para a Mercosul.
 
 ## Repositório
