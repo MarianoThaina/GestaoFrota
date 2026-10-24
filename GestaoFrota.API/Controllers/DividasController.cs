@@ -56,7 +56,8 @@ public class DividasController : ControllerBase
             .Select(m => new MovimentacaoResponse(
                 m.Id, m.Tipo, m.Valor, m.Descricao, m.Status, m.Data, m.DataVencimento, m.DataPagamento,
                 m.CategoriaId, m.Categoria!.Nome, m.FormaPagamentoId, m.FormaPagamento!.Nome,
-                m.DividaId, m.ComprovanteUrl != null, m.ComprovanteUrl, m.Estornada, m.UsuarioId))
+                m.DividaId, m.ComprovanteUrl != null, m.ComprovanteUrl, m.Estornada, m.UsuarioId,
+                m.ViagemId, m.QuantidadeLitros))
             .ToListAsync();
 
         return Ok(new DividaDetalheResponse(DividaResponse.De(divida), parcelas));

@@ -14,6 +14,12 @@ public class NovaMovimentacao
     public DateTime DataVencimento { get; set; }
     public bool Pago { get; set; }
     public DateTime? DataPagamento { get; set; }
+
+    /// <summary>Opcional (US09): viagem à qual o lançamento pertence.</summary>
+    public Guid? ViagemId { get; set; }
+
+    /// <summary>Opcional (US09): litros, em despesas de combustível.</summary>
+    public decimal? QuantidadeLitros { get; set; }
 }
 
 public interface IMovimentacaoService
@@ -84,7 +90,9 @@ public class MovimentacaoService : IMovimentacaoService
             formaPagamentoId = dados.FormaPagamentoId,
             dataVencimento = dados.DataVencimento.Date,
             status = dados.Pago ? StatusMovimentacao.Pago : StatusMovimentacao.Pendente,
-            dataPagamento = dados.Pago ? dados.DataPagamento?.Date : null
+            dataPagamento = dados.Pago ? dados.DataPagamento?.Date : null,
+            viagemId = dados.ViagemId,
+            quantidadeLitros = dados.QuantidadeLitros
         });
 
         await resposta.GarantirSucessoAsync();

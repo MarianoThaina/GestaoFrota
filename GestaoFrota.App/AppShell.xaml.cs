@@ -18,7 +18,16 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(Rotas.DividaForm, typeof(DividaFormPage));
         Routing.RegisterRoute(Rotas.DividaDetalhe, typeof(DividaDetalhePage));
 
+        // Módulo de frota (US06, US06-b, US08)
+        Routing.RegisterRoute(Rotas.VeiculoForm, typeof(VeiculoFormPage));
+        Routing.RegisterRoute(Rotas.ManutencaoForm, typeof(ManutencaoFormPage));
+        Routing.RegisterRoute(Rotas.ViagemForm, typeof(ViagemFormPage));
+        Routing.RegisterRoute(Rotas.EncerrarViagem, typeof(EncerrarViagemPage));
+
         // Até o perfil ser conhecido, nada além do Início fica visível.
+        MenuViagens.IsVisible = false;
+        MenuFrota.IsVisible = false;
+        MenuRotas.IsVisible = false;
         MenuMovimentacoes.IsVisible = false;
         MenuDividas.IsVisible = false;
         MenuRelatorios.IsVisible = false;
@@ -29,10 +38,12 @@ public partial class AppShell : Shell
 
     /// <summary>
     /// Adapta o menu por perfil (US17, RBAC):
-    /// Administrador vê tudo; Financeiro e Gestor de Frota veem os módulos
-    /// financeiros e os cadastros base (o Gestor só consulta; escrever exige
-    /// Administrador/Financeiro, validado em cada tela e na API); o Motorista
-    /// vê apenas o Início — os módulos financeiros nem aparecem no menu.
+    /// - Administrador vê tudo.
+    /// - Gestor de Frota vê frota, rotas, viagens e consulta o financeiro.
+    /// - Financeiro vê os módulos financeiros e os cadastros base.
+    /// - Motorista vê Viagens (abre direto nela) e a Frota só para consulta;
+    ///   os módulos financeiros nem aparecem no menu.
+    /// Escrever exige o perfil certo, validado em cada tela e na API.
     /// </summary>
     public void ConfigurarMenuPorPerfil(UsuarioLogado? usuario)
     {
@@ -41,6 +52,14 @@ public partial class AppShell : Shell
         var podeVerFinanceiro = perfil is PerfilUsuario.Administrador
             or PerfilUsuario.GestorDeFrota
             or PerfilUsuario.Financeiro;
+
+        var podeVerFrota = perfil is PerfilUsuario.Administrador
+            or PerfilUsuario.GestorDeFrota
+            or PerfilUsuario.OperadorMotorista;
+
+        MenuViagens.IsVisible = podeVerFrota;
+        MenuFrota.IsVisible = podeVerFrota;
+        MenuRotas.IsVisible = perfil is PerfilUsuario.Administrador or PerfilUsuario.GestorDeFrota;
 
         MenuMovimentacoes.IsVisible = podeVerFinanceiro;
         MenuDividas.IsVisible = podeVerFinanceiro;
@@ -51,6 +70,12 @@ public partial class AppShell : Shell
 
         LblNomeUsuario.Text = usuario?.Nome ?? "Gestão de Frota";
         LblPerfilUsuario.Text = perfil.HasValue ? NomeDoPerfil(perfil.Value) : string.Empty;
+
+        // US17: o Motorista abre o app direto na tela de Viagens.
+        if (perfil == PerfilUsuario.OperadorMotorista)
+        {
+            CurrentItem = MenuViagens;
+        }
     }
 
     private static string NomeDoPerfil(PerfilUsuario perfil) => perfil switch

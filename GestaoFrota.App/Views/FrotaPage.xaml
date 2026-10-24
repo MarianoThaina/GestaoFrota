@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             xmlns:models="clr-namespace:GestaoFrota.App.Models"
+             x:Class="GestaoFrota.App.Views.FrotaPage"
+             x:DataType="vm:FrotaViewModel"
+             Title="Frota">
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Padding="16" RowSpacing="10">
+
+        <!-- Novo veículo: só Administrador/Gestor de Frota (RBAC) -->
+        <Button Grid.Row="0"
+                Text="+ Novo veículo"
+                Command="{Binding NovoCommand}"
+                IsVisible="{Binding PodeGerenciar}"
+                BackgroundColor="#0B1D3A"
+                TextColor="White"
+                CornerRadius="24"
+                HeightRequest="48" />
+
+        <Picker Grid.Row="1"
+                Title="Situação"
+                ItemsSource="{Binding OpcoesFiltro}"
+                SelectedItem="{Binding Filtro}" />
+
+        <VerticalStackLayout Grid.Row="2" Spacing="2">
+            <Label Text="{Binding ResumoLista}" FontSize="12" TextColor="Gray" />
+            <Label Text="{Binding MensagemErro}"
+                   TextColor="#D93025"
+                   FontSize="13"
+                   IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+        </VerticalStackLayout>
+
+        <RefreshView Grid.Row="3"
+                     IsRefreshing="{Binding Carregando}"
+                     Command="{Binding CarregarCommand}">
+            <CollectionView ItemsSource="{Binding Itens}">
+                <CollectionView.EmptyView>
+                    <Label Text="Nenhum veículo cadastrado ainda."
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           TextColor="Gray" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Veiculo">
+                        <Frame Padding="12" Margin="0,0,0,8" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False"
+                               Opacity="{Binding Ativo, Converter={StaticResource BoolToOpacityConverter}}">
+                            <VerticalStackLayout Spacing="6">
+
+                                <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="8">
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="#0B1D3A"
+                                            Padding="8,3"
+                                            StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="6" />
+                                        </Border.StrokeShape>
+                                        <Label Text="{Binding PlacaTexto}"
+                                               TextColor="White"
+                                               FontAttributes="Bold"
+                                               FontFamily="monospace"
+                                               FontSize="13" />
+                                    </Border>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Titulo}"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label Grid.Column="2"
+                                           Text="{Binding StatusTexto}"
+                                           TextColor="{Binding CorStatus}"
+                                           FontAttributes="Bold"
+                                           FontSize="12"
+                                           VerticalOptions="Center" />
+                                </Grid>
+
+                                <Label Text="{Binding DetalheTexto}" FontSize="12" TextColor="Gray" />
+
+                                <Label Text="{Binding ManutencaoTexto}"
+                                       FontSize="12"
+                                       TextColor="#B8860B"
+                                       IsVisible="{Binding TemManutencao}" />
+
+                                <!-- Ações de gestão: só Administrador/Gestor de Frota -->
+                                <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeGerenciar}">
+                                    <Button Text="Editar"
+                                            FontSize="12"
+                                            HeightRequest="36"
+                                            Padding="12,0"
+                                            Margin="0,0,8,8"
+                                            BackgroundColor="#2C6CE0"
+                                            TextColor="White"
+                                            CornerRadius="18"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditarCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Text="Registrar manutenção"
+                                            FontSize="12"
+                                            HeightRequest="36"
+                                            Padding="12,0"
+                                            Margin="0,0,8,8"
+                                            BackgroundColor="#E8710A"
+                                            TextColor="White"
+                                            CornerRadius="18"
+                                            IsVisible="{Binding PodeRegistrarManutencao}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RegistrarManutencaoCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Text="Concluir manutenção"
+                                            FontSize="12"
+                                            HeightRequest="36"
+                                            Padding="12,0"
+                                            Margin="0,0,8,8"
+                                            BackgroundColor="#1E8E3E"
+                                            TextColor="White"
+                                            CornerRadius="18"
+                                            IsVisible="{Binding EmManutencao}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ConcluirManutencaoCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Text="Desativar"
+                                            FontSize="12"
+                                            HeightRequest="36"
+                                            Padding="12,0"
+                                            Margin="0,0,8,8"
+                                            BackgroundColor="#D9534F"
+                                            TextColor="White"
+                                            CornerRadius="18"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeDesativar}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DesativarCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </FlexLayout>
+
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>

@@ -19,6 +19,7 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
     private readonly IMovimentacaoService _movimentacaoService;
     private readonly ICategoriaService _categoriaService;
     private readonly IFormaPagamentoService _formaPagamentoService;
+    private readonly IViagemService _viagemService;
 
     private List<Categoria> _todasCategorias = new();
 
@@ -27,6 +28,22 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
     public ObservableCollection<Categoria> Categorias { get; } = new();
 
     public ObservableCollection<FormaPagamento> Formas { get; } = new();
+
+    /// <summary>Viagens não canceladas, para o vínculo opcional da US09.</summary>
+    public ObservableCollection<Viagem> Viagens { get; } = new();
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TemViagemVinculada))]
+    private Viagem? viagemSelecionada;
+
+    public bool TemViagemVinculada => ViagemSelecionada is not null;
+
+    /// <summary>Campo de litros aparece só em despesa de combustível (US09).</summary>
+    [ObservableProperty]
+    private bool mostrarLitros;
+
+    [ObservableProperty]
+    private string litrosTexto = string.Empty;
 
     [ObservableProperty]
     private TipoMovimentacao tipo = TipoMovimentacao.Despesa;
@@ -70,11 +87,13 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
     public MovimentacaoFormViewModel(
         IMovimentacaoService movimentacaoService,
         ICategoriaService categoriaService,
-        IFormaPagamentoService formaPagamentoService)
+        IFormaPagamentoService formaPagamentoService,
+        IViagemService viagemService)
     {
         _movimentacaoService = movimentacaoService;
         _categoriaService = categoriaService;
         _formaPagamentoService = formaPagamentoService;
+        _viagemService = viagemService;
     }
 
     partial void OnTipoChanged(TipoMovimentacao value)
@@ -82,6 +101,20 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
         OnPropertyChanged(nameof(RotuloPago));
         FiltrarCategorias();
     }
+
+    partial void OnCategoriaSelecionadaChanged(Categoria? value)
+    {
+        MostrarLitros = Tipo == TipoMovimentacao.Despesa
+            && value?.Nome.Contains("combust", StringComparison.OrdinalIgnoreCase) == true;
+
+        if (!MostrarLitros)
+        {
+            LitrosTexto = string.Empty;
+        }
+    }
+
+    [RelayCommand]
+    private void LimparViagem() => ViagemSelecionada = null;
 
     [RelayCommand]
     private async Task CarregarAsync()
@@ -99,6 +132,17 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
             foreach (var forma in formas)
             {
                 Formas.Add(forma);
+            }
+
+            // Vínculo com viagem (US09): em andamento primeiro, depois as recentes.
+            var viagens = (await _viagemService.ListarAsync())
+                .Where(v => v.Status != StatusViagem.Cancelada && !v.PendenteSincronizacao)
+                .Take(50)
+                .ToList();
+            Viagens.Clear();
+            foreach (var viagem in viagens)
+            {
+                Viagens.Add(viagem);
             }
         }
         catch (Exception ex)
@@ -221,7 +265,7 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
             return;
         }
 
-        MensagemErro = Validar(out var valor);
+        MensagemErro = Validar(out var valor, out var litros);
         if (MensagemErro is not null)
         {
             return;
@@ -240,7 +284,9 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
                 FormaPagamentoId = FormaSelecionada!.Id,
                 DataVencimento = DataVencimento.Date,
                 Pago = Pago,
-                DataPagamento = Pago ? DataPagamento.Date : null
+                DataPagamento = Pago ? DataPagamento.Date : null,
+                ViagemId = ViagemSelecionada?.Id,
+                QuantidadeLitros = litros
             });
 
             if (ComprovanteCaminho is not null)
@@ -272,9 +318,20 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
     }
 
     /// <summary>Validações de entrada (valores negativos e inconsistências). Retorna a mensagem de erro ou null.</summary>
-    private string? Validar(out decimal valor)
+    private string? Validar(out decimal valor, out decimal? litros)
     {
         valor = 0m;
+        litros = null;
+
+        if (MostrarLitros && !string.IsNullOrWhiteSpace(LitrosTexto))
+        {
+            if (!ParserMoeda.TentarConverter(LitrosTexto, out var quantidade) || quantidade <= 0m)
+            {
+                return "Informe a quantidade de litros (ex.: 372,5) ou deixe em branco.";
+            }
+
+            litros = quantidade;
+        }
 
         if (string.IsNullOrWhiteSpace(Descricao))
         {

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             x:Class="GestaoFrota.App.Views.ViagemFormPage"
+             x:DataType="vm:ViagemFormViewModel"
+             Title="Abrir viagem">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <Frame IsVisible="{Binding Offline}"
+                   Padding="12"
+                   CornerRadius="12"
+                   BorderColor="#F5D48A"
+                   BackgroundColor="#FFF8E1"
+                   HasShadow="False">
+                <Label Text="Sem conexão. A viagem será salva no aparelho e enviada quando a rede voltar."
+                       FontSize="12"
+                       TextColor="#7A5A00" />
+            </Frame>
+
+            <Label Text="Veículo (somente disponíveis)" FontSize="12" TextColor="Gray" />
+            <Picker Title="Escolha o veículo"
+                    ItemsSource="{Binding Veiculos}"
+                    SelectedItem="{Binding VeiculoSelecionado}" />
+
+            <Label Text="Rota" FontSize="12" TextColor="Gray" />
+            <Picker Title="Escolha a rota"
+                    ItemsSource="{Binding Rotas}"
+                    SelectedItem="{Binding RotaSelecionada}" />
+
+            <!-- Só gestores escolhem o motorista; o Motorista abre sempre para si -->
+            <VerticalStackLayout Spacing="4" IsVisible="{Binding PodeEscolherMotorista}">
+                <Label Text="Motorista" FontSize="12" TextColor="Gray" />
+                <Picker Title="Escolha o motorista"
+                        ItemsSource="{Binding Motoristas}"
+                        SelectedItem="{Binding MotoristaSelecionado}" />
+            </VerticalStackLayout>
+
+            <Label Text="Hodômetro inicial (km)" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="184.320" Keyboard="Numeric" Text="{Binding HodometroInicialTexto}" />
+            <Label Text="{Binding DicaHodometro}"
+                   FontSize="11"
+                   TextColor="Gray"
+                   IsVisible="{Binding DicaHodometro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Label Text="Observações (opcional)" FontSize="12" TextColor="Gray" />
+            <Editor Placeholder="Ex.: carga refrigerada, entrega até 18h"
+                    MaxLength="500"
+                    AutoSize="TextChanges"
+                    HeightRequest="80"
+                    Text="{Binding Observacoes}" />
+
+            <Label Text="{Binding MensagemErro}"
+                   TextColor="#D93025"
+                   FontSize="13"
+                   IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Button Text="Abrir viagem"
+                    Command="{Binding SalvarCommand}"
+                    BackgroundColor="#0B1D3A"
+                    TextColor="White"
+                    CornerRadius="24"
+                    HeightRequest="52"
+                    IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             x:Class="GestaoFrota.App.Views.EncerrarViagemPage"
+             x:DataType="vm:EncerrarViagemViewModel"
+             Title="Encerrar viagem">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <Frame IsVisible="{Binding Offline}"
+                   Padding="12"
+                   CornerRadius="12"
+                   BorderColor="#F5D48A"
+                   BackgroundColor="#FFF8E1"
+                   HasShadow="False">
+                <Label Text="Sem conexão. O encerramento fica salvo no aparelho e é enviado quando a rede voltar."
+                       FontSize="12"
+                       TextColor="#7A5A00" />
+            </Frame>
+
+            <!-- Resumo da viagem -->
+            <Frame Padding="14" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False"
+                   IsVisible="{Binding Viagem, Converter={StaticResource NotNullToBoolConverter}}">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{Binding Viagem.TrajetoTexto}" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding Viagem.VeiculoTexto}" FontSize="12" TextColor="Gray" />
+                    <Label Text="{Binding Viagem.DataTexto}" FontSize="12" TextColor="Gray" />
+                    <Frame Padding="10" Margin="0,8,0,0" CornerRadius="8" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
+                        <VerticalStackLayout>
+                            <Label Text="Hodômetro inicial registrado" FontSize="10" TextColor="Gray" />
+                            <Label Text="{Binding Viagem.HodometroInicialTexto}" FontAttributes="Bold" FontSize="18" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label Text="Hodômetro final (km)" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="184.735" Keyboard="Numeric" Text="{Binding HodometroFinalTexto}" />
+
+            <!-- A validação crítica da US08, mostrada enquanto digita -->
+            <Label Text="O hodômetro final deve ser maior que o inicial."
+                   FontSize="12"
+                   TextColor="#D93025"
+                   IsVisible="{Binding HodometroInvalido}" />
+            <Label Text="{Binding PreviaRodado}"
+                   FontSize="13"
+                   FontAttributes="Bold"
+                   TextColor="#1E8E3E"
+                   IsVisible="{Binding PreviaRodado, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Label Text="Observações (opcional)" FontSize="12" TextColor="Gray" />
+            <Editor Placeholder="Ex.: entrega concluída sem ocorrências"
+                    MaxLength="500"
+                    AutoSize="TextChanges"
+                    HeightRequest="80"
+                    Text="{Binding Observacoes}" />
+
+            <Frame Padding="12" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
+                <Label Text="Ao confirmar, o sistema calcula e salva a quilometragem rodada sozinho. Você não precisa fazer a conta."
+                       FontSize="12"
+                       TextColor="Gray" />
+            </Frame>
+
+            <Label Text="{Binding MensagemErro}"
+                   TextColor="#D93025"
+                   FontSize="13"
+                   IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Button Text="Confirmar encerramento"
+                    Command="{Binding ConfirmarCommand}"
+                    BackgroundColor="#0B1D3A"
+                    TextColor="White"
+                    CornerRadius="24"
+                    HeightRequest="52"
+                    IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+
+            <Button Text="Cancelar"
+                    Command="{Binding VoltarCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="#0B1D3A" />
+
+            <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

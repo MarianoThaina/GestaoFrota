@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GestaoFrota.App.ViewModels"
+             x:Class="GestaoFrota.App.Views.ManutencaoFormPage"
+             x:DataType="vm:ManutencaoFormViewModel"
+             Title="Registrar manutenção">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <Frame Padding="14" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False"
+                   IsVisible="{Binding Veiculo, Converter={StaticResource NotNullToBoolConverter}}">
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Veículo" FontSize="10" TextColor="Gray" />
+                    <Label Text="{Binding Veiculo.Titulo}" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding Veiculo.PlacaTexto}" FontSize="12" TextColor="Gray" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label Text="Data da manutenção" FontSize="12" TextColor="Gray" />
+            <DatePicker Date="{Binding Data}" MaximumDate="{Binding DataMaxima}" Format="dd/MM/yyyy" />
+
+            <Label Text="Descrição do serviço" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="Ex.: Revisão de freios e troca de pastilhas"
+                   MaxLength="300"
+                   Text="{Binding Descricao}" />
+
+            <Label Text="Valor total (R$)" FontSize="12" TextColor="Gray" />
+            <Entry Placeholder="5.400,00" Keyboard="Numeric" Text="{Binding ValorTexto}" />
+
+            <Label Text="Forma de pagamento da despesa" FontSize="12" TextColor="Gray" />
+            <Picker Title="Escolha a forma de pagamento"
+                    ItemsSource="{Binding Formas}"
+                    SelectedItem="{Binding FormaSelecionada}" />
+
+            <Grid ColumnDefinitions="*, Auto">
+                <Label Grid.Column="0" Text="Já pago" VerticalOptions="Center" FontAttributes="Bold" />
+                <Switch Grid.Column="1" IsToggled="{Binding Pago}" />
+            </Grid>
+
+            <VerticalStackLayout IsVisible="{Binding Pago}" Spacing="4">
+                <Label Text="Data do pagamento" FontSize="12" TextColor="Gray" />
+                <DatePicker Date="{Binding DataPagamento}" MaximumDate="{Binding DataMaxima}" Format="dd/MM/yyyy" />
+            </VerticalStackLayout>
+
+            <Frame Padding="12" CornerRadius="12" BorderColor="#F5D48A" HasShadow="False" BackgroundColor="#FFF8E1">
+                <Label Text="Ao salvar, o veículo passa a 'Em manutenção' e uma despesa na categoria Manutenção é lançada no caixa automaticamente."
+                       FontSize="12"
+                       TextColor="#7A5A00" />
+            </Frame>
+
+            <Label Text="{Binding MensagemErro}"
+                   TextColor="#D93025"
+                   FontSize="13"
+                   IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Button Text="Salvar manutenção"
+                    Command="{Binding SalvarCommand}"
+                    BackgroundColor="#0B1D3A"
+                    TextColor="White"
+                    CornerRadius="24"
+                    HeightRequest="52"
+                    IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+
+            <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

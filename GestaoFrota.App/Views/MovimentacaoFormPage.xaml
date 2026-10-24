@@ -28,10 +28,35 @@
                     ItemsSource="{Binding Categorias}"
                     SelectedItem="{Binding CategoriaSelecionada}" />
 
+            <!-- Litros (US09): só em despesa de combustível; alimenta o km/l da US10 -->
+            <VerticalStackLayout IsVisible="{Binding MostrarLitros}" Spacing="4">
+                <Label Text="Litros abastecidos (opcional)" FontSize="12" TextColor="Gray" />
+                <Entry Placeholder="372,5" Keyboard="Numeric" Text="{Binding LitrosTexto}" />
+            </VerticalStackLayout>
+
             <Label Text="Forma de pagamento" FontSize="12" TextColor="Gray" />
             <Picker Title="Escolha a forma de pagamento"
                     ItemsSource="{Binding Formas}"
                     SelectedItem="{Binding FormaSelecionada}" />
+
+            <!-- Vínculo com viagem (US09): permite calcular o custo por km da viagem -->
+            <Label Text="Vincular à viagem (opcional)" FontSize="12" TextColor="Gray" />
+            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="8">
+                <Picker Grid.Column="0"
+                        Title="Nenhuma viagem"
+                        ItemsSource="{Binding Viagens}"
+                        SelectedItem="{Binding ViagemSelecionada}" />
+                <Button Grid.Column="1"
+                        Text="Limpar"
+                        FontSize="12"
+                        BackgroundColor="Gray"
+                        TextColor="White"
+                        IsVisible="{Binding TemViagemVinculada}"
+                        Command="{Binding LimparViagemCommand}" />
+            </Grid>
+            <Label Text="Vincular permite calcular o custo por quilômetro da viagem."
+                   FontSize="11"
+                   TextColor="Gray" />
 
             <Label Text="Data de vencimento" FontSize="12" TextColor="Gray" />
             <DatePicker Date="{Binding DataVencimento}" Format="dd/MM/yyyy" />

@@ -19,6 +19,7 @@ public partial class DashboardViewModel : BaseViewModel
 {
     private readonly IAuthService _authService;
     private readonly IFinanceiroService _financeiroService;
+    private readonly IVeiculoService _veiculoService;
     private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
@@ -27,6 +28,16 @@ public partial class DashboardViewModel : BaseViewModel
     /// <summary>Administrador, Gestor de Frota e Financeiro enxergam o painel financeiro.</summary>
     [ObservableProperty]
     private bool mostrarFinanceiro;
+
+    /// <summary>Card "Veículos em viagem" (US11): Administrador, Gestor de Frota e Motorista.</summary>
+    [ObservableProperty]
+    private bool mostrarFrota;
+
+    [ObservableProperty]
+    private string veiculosEmViagemTexto = "—";
+
+    [ObservableProperty]
+    private string veiculosDetalheTexto = string.Empty;
 
     [ObservableProperty]
     private SaldoResumo? saldo;
@@ -42,10 +53,12 @@ public partial class DashboardViewModel : BaseViewModel
     public DashboardViewModel(
         IAuthService authService,
         IFinanceiroService financeiroService,
+        IVeiculoService veiculoService,
         IServiceProvider serviceProvider)
     {
         _authService = authService;
         _financeiroService = financeiroService;
+        _veiculoService = veiculoService;
         _serviceProvider = serviceProvider;
     }
 
@@ -56,6 +69,15 @@ public partial class DashboardViewModel : BaseViewModel
         MostrarFinanceiro = Usuario?.Perfil is PerfilUsuario.Administrador
             or PerfilUsuario.GestorDeFrota
             or PerfilUsuario.Financeiro;
+
+        MostrarFrota = Usuario?.Perfil is PerfilUsuario.Administrador
+            or PerfilUsuario.GestorDeFrota
+            or PerfilUsuario.OperadorMotorista;
+
+        if (MostrarFrota)
+        {
+            await CarregarFrotaAsync();
+        }
 
         if (!MostrarFinanceiro)
         {
@@ -88,6 +110,31 @@ public partial class DashboardViewModel : BaseViewModel
         finally
         {
             Carregando = false;
+        }
+    }
+
+    /// <summary>
+    /// Conta pelo cache de veículos (funciona offline e para o Motorista, que
+    /// não acessa os relatórios financeiros).
+    /// </summary>
+    private async Task CarregarFrotaAsync()
+    {
+        try
+        {
+            var veiculos = (await _veiculoService.ListarAsync()).Where(v => v.Ativo).ToList();
+            var emViagem = veiculos.Count(v => v.Status == StatusVeiculo.EmViagem);
+            var emManutencao = veiculos.Count(v => v.Status == StatusVeiculo.EmManutencao);
+
+            VeiculosEmViagemTexto = $"{emViagem} de {veiculos.Count}";
+            VeiculosDetalheTexto = veiculos.Count == 0
+                ? "Nenhum veículo cadastrado"
+                : $"{veiculos.Count - emViagem - emManutencao} disponíveis · {emManutencao} em manutenção";
+        }
+        catch (Exception ex)
+        {
+            VeiculosEmViagemTexto = "—";
+            VeiculosDetalheTexto = "Não foi possível consultar a frota.";
+            System.Diagnostics.Debug.WriteLine(ex);
         }
     }
 

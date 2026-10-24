@@ -17,6 +17,7 @@ namespace GestaoFrota.API.Controllers;
 /// atual", agrupado pela data de vencimento, como a listagem de movimentações.
 /// Movimentações estornadas nunca entram. Leitura: Administrador, Gestor de
 /// Frota e Financeiro; o Motorista recebe 403.
+/// Inclui também as estatísticas de frota (US10/US13) em GET /api/relatorios/frota.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -76,6 +77,65 @@ public class RelatoriosController : ControllerBase
 
         return Ok(new RelatorioResumoResponse(
             meses, inicio, fim.AddDays(-1), indicadores, fluxo, categorias, hoje));
+    }
+
+    /// <summary>
+    /// Estatísticas de rota e veículo (US10) e ranking de eficiência (US13):
+    /// viagens iniciadas no período, com as movimentações vinculadas a elas
+    /// (US09). Rentabilidade = entradas − saídas vinculadas; custo/km = saídas
+    /// ÷ km rodados; km/l = km rodados ÷ litros. Canceladas ficam de fora.
+    /// </summary>
+    [HttpGet("frota")]
+    public async Task<ActionResult<EstatisticasFrotaResponse>> ObterFrota([FromQuery] int meses = MesesPadrao)
+    {
+        meses = Math.Clamp(meses, 1, MesesMaximo);
+        var hoje = DateTime.UtcNow;
+        var inicio = CalculadoraRelatorios.InicioDoPeriodo(hoje, meses);
+        var fim = CalculadoraRelatorios.FimDoPeriodo(hoje);
+
+        var viagens = await _context.Viagens.AsNoTracking()
+            .Where(v => v.Status != StatusViagem.Cancelada && v.DataInicio >= inicio && v.DataInicio < fim)
+            .Select(v => new ViagemEstatistica(
+                v.Id,
+                v.RotaId, v.Rota!.Nome, v.Rota.Origem, v.Rota.Destino,
+                v.VeiculoId, v.Veiculo!.Placa, v.Veiculo.Marca + " " + v.Veiculo.Modelo,
+                v.Status, v.QuilometragemRodadaKm))
+            .ToListAsync();
+
+        var ids = viagens.Select(v => v.ViagemId).ToList();
+
+        var lancamentos = await _context.Movimentacoes.AsNoTracking()
+            .Where(m => !m.Estornada && m.ViagemId != null && ids.Contains(m.ViagemId.Value))
+            .Select(m => new LancamentoViagem(m.ViagemId!.Value, m.Tipo, m.Valor, m.QuantidadeLitros))
+            .ToListAsync();
+
+        var rotas = CalculadoraFrota.PorRota(viagens, lancamentos);
+        var veiculos = CalculadoraFrota.PorVeiculo(viagens, lancamentos);
+
+        var veiculosEmViagem = await _context.Veiculos.CountAsync(v => v.Ativo && v.Status == StatusVeiculo.EmViagem);
+        var veiculosAtivos = await _context.Veiculos.CountAsync(v => v.Ativo);
+
+        static EstatisticaRotaResponse MapearRota(EstatisticaRota r) => new(
+            r.RotaId, r.Nome, r.Origem, r.Destino, r.Viagens, r.Receitas, r.Despesas, r.Rentabilidade,
+            r.KmRodados, r.CustoPorKm, r.RentabilidadeMediaPorViagem);
+
+        static EstatisticaVeiculoResponse MapearVeiculo(EstatisticaVeiculo v) => new(
+            v.VeiculoId, v.Placa, ValidadorPlaca.Formatar(v.Placa), v.Descricao, v.Viagens, v.KmRodados,
+            v.Receitas, v.Despesas, v.CustoPorKm, v.Litros, v.KmPorLitro);
+
+        return Ok(new EstatisticasFrotaResponse(
+            meses, inicio, fim.AddDays(-1),
+            veiculosEmViagem, veiculosAtivos,
+            viagens.Count,
+            viagens.Count(v => v.Status == StatusViagem.Concluida),
+            viagens.Sum(v => v.QuilometragemRodadaKm ?? 0m),
+            lancamentos.Where(l => l.Tipo == TipoMovimentacao.Receita).Sum(l => l.Valor),
+            lancamentos.Where(l => l.Tipo == TipoMovimentacao.Despesa).Sum(l => l.Valor),
+            rotas.Select(MapearRota).ToList(),
+            veiculos.Select(MapearVeiculo).ToList(),
+            CalculadoraFrota.RotasMaisLucrativas(rotas).Select(MapearRota).ToList(),
+            CalculadoraFrota.VeiculosMaisEficientes(veiculos).Select(MapearVeiculo).ToList(),
+            hoje));
     }
 
     /// <summary>

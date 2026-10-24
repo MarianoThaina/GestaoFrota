@@ -45,6 +45,12 @@ public static class MauiProgram
         builder.Services.AddScoped<IFinanceiroService, FinanceiroService>();
         builder.Services.AddScoped<IRelatorioService, RelatorioService>();
 
+        // Módulo de frota (US06, US06-b, US07, US08)
+        builder.Services.AddScoped<IVeiculoService, VeiculoService>();
+        builder.Services.AddScoped<IRotaService, RotaService>();
+        builder.Services.AddScoped<IViagemService, ViagemService>();
+        builder.Services.AddScoped<IManutencaoService, ManutencaoService>();
+
         // ---------- ViewModels ----------
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<DashboardViewModel>();
@@ -58,6 +64,13 @@ public static class MauiProgram
         builder.Services.AddTransient<DividaFormViewModel>();
         builder.Services.AddTransient<DividaDetalheViewModel>();
         builder.Services.AddTransient<RelatoriosViewModel>();
+        builder.Services.AddTransient<FrotaViewModel>();
+        builder.Services.AddTransient<VeiculoFormViewModel>();
+        builder.Services.AddTransient<RotasViewModel>();
+        builder.Services.AddTransient<ViagensViewModel>();
+        builder.Services.AddTransient<ViagemFormViewModel>();
+        builder.Services.AddTransient<EncerrarViagemViewModel>();
+        builder.Services.AddTransient<ManutencaoFormViewModel>();
 
         // ---------- Páginas ----------
         builder.Services.AddTransient<LoginPage>();
@@ -72,6 +85,13 @@ public static class MauiProgram
         builder.Services.AddTransient<DividaFormPage>();
         builder.Services.AddTransient<DividaDetalhePage>();
         builder.Services.AddTransient<RelatoriosPage>();
+        builder.Services.AddTransient<FrotaPage>();
+        builder.Services.AddTransient<VeiculoFormPage>();
+        builder.Services.AddTransient<RotasPage>();
+        builder.Services.AddTransient<ViagensPage>();
+        builder.Services.AddTransient<ViagemFormPage>();
+        builder.Services.AddTransient<EncerrarViagemPage>();
+        builder.Services.AddTransient<ManutencaoFormPage>();
 
         return builder.Build();
     }
