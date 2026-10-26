@@ -250,8 +250,17 @@ Na mesma branch, em seguida: US10 e US13 (`CalculadoraFrota`,
 
 Continuam fora: item 7 (situação do usuário com três estados, frente de
 autenticação), item 8 (decisão Frete × Movimentação, do time; as estatísticas
-ignoram `Frete.ValorFrete`), fila offline para o financeiro, Client ID real do
-Google e o script PostgreSQL em `GestaoFrota.Database/`.
+ignoram `Frete.ValorFrete`), fila offline para o financeiro e Client ID real do
+Google.
+
+## Atualização (21/10/2026) - testes
+
+Projeto `GestaoFrota.Tests` (xUnit, só referencia o Domain) com testes das
+cinco classes de regra pura: `CalculadoraFinanceira`, `CalculadoraRelatorios`,
+`CalculadoraFrota`, `ValidadorPlaca` e `RegrasViagem`. Entra na solução
+(`GestaoFrota.slnx`) e roda com `dotnet test`. O script PostgreSQL de
+`GestaoFrota.Database/` ganhou um README dizendo que o schema real é o das
+migrations; o arquivo foi mantido.
 
 ## Atualização (21/10/2026) - filtros e toque nos relatórios
 
