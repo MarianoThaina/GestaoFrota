@@ -9,11 +9,11 @@ using GestaoFrota.App.Services;
 namespace GestaoFrota.App.ViewModels;
 
 /// <summary>
-/// Relatórios (US11, US12 e US14): indicadores do período, gráfico de colunas
-/// de entradas e saídas por mês, rosca de despesas por categoria e exportação
-/// em CSV. O período é escolhido em 3, 6 ou 12 meses, incluindo o atual.
-/// Só perfis financeiros chegam aqui — o menu esconde a tela do Motorista e a
-/// API devolve 403 de qualquer forma.
+/// Relatórios (US10 a US14): indicadores do período, gráfico de colunas de
+/// entradas e saídas por mês, rosca de despesas por categoria, estatísticas e
+/// ranking de frota e exportação em CSV. O período pode ser 3, 6, 12 ou 24
+/// meses, todo o histórico, um mês/ano, um ano ou um intervalo livre; o toque
+/// nos gráficos mostra o valor exato. Só perfis financeiros chegam aqui.
 /// </summary>
 public partial class RelatoriosViewModel : BaseViewModel
 {
@@ -33,11 +33,54 @@ public partial class RelatoriosViewModel : BaseViewModel
 
     private readonly IRelatorioService _relatorioService;
 
+    private List<DespesaCategoria> _categoriasRosca = new();
+
+    // ---------- Período ----------
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Periodo3Selecionado))]
     [NotifyPropertyChangedFor(nameof(Periodo6Selecionado))]
     [NotifyPropertyChangedFor(nameof(Periodo12Selecionado))]
-    private int meses = 6;
+    [NotifyPropertyChangedFor(nameof(Periodo24Selecionado))]
+    [NotifyPropertyChangedFor(nameof(PeriodoTudoSelecionado))]
+    [NotifyPropertyChangedFor(nameof(PeriodoPersonalizadoSelecionado))]
+    [NotifyPropertyChangedFor(nameof(FiltroTexto))]
+    private FiltroPeriodo filtro = FiltroPeriodo.UltimosMeses(6);
+
+    /// <summary>Painel com mês/ano e período livre, aberto pelo botão "Personalizar".</summary>
+    [ObservableProperty]
+    private bool mostrarPersonalizado;
+
+    public string[] NomesMeses { get; } =
+        { "Ano inteiro", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
+
+    public ObservableCollection<int> Anos { get; } = new(Enumerable.Range(0, 6).Select(i => DateTime.Today.Year - i));
+
+    [ObservableProperty]
+    private int anoSelecionado = DateTime.Today.Year;
+
+    /// <summary>Índice em NomesMeses: 0 = ano inteiro, 1..12 = mês.</summary>
+    [ObservableProperty]
+    private int mesSelecionadoIndice = DateTime.Today.Month;
+
+    [ObservableProperty]
+    private DateTime dataDe = DateTime.Today.AddMonths(-1);
+
+    [ObservableProperty]
+    private DateTime dataAte = DateTime.Today;
+
+    public DateTime DataMaxima => DateTime.Today;
+
+    public bool Periodo3Selecionado => Filtro.Tipo == TipoFiltroPeriodo.UltimosMeses && Filtro.Meses == 3;
+    public bool Periodo6Selecionado => Filtro.Tipo == TipoFiltroPeriodo.UltimosMeses && Filtro.Meses == 6;
+    public bool Periodo12Selecionado => Filtro.Tipo == TipoFiltroPeriodo.UltimosMeses && Filtro.Meses == 12;
+    public bool Periodo24Selecionado => Filtro.Tipo == TipoFiltroPeriodo.UltimosMeses && Filtro.Meses == 24;
+    public bool PeriodoTudoSelecionado => Filtro.Tipo == TipoFiltroPeriodo.Tudo;
+    public bool PeriodoPersonalizadoSelecionado => Filtro.Tipo is TipoFiltroPeriodo.Ano or TipoFiltroPeriodo.MesAno or TipoFiltroPeriodo.Livre;
+
+    public string FiltroTexto => Filtro.Rotulo;
+
+    // ---------- Dados ----------
 
     [ObservableProperty]
     private RelatorioResumo? resumo;
@@ -63,6 +106,23 @@ public partial class RelatoriosViewModel : BaseViewModel
     [ObservableProperty]
     private string? mensagemExportacao;
 
+    // ---------- Toque nos gráficos ----------
+
+    [ObservableProperty]
+    private int? mesTocado;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SemMesTocado))]
+    private string? mesTocadoTexto;
+
+    public bool SemMesTocado => string.IsNullOrEmpty(MesTocadoTexto);
+
+    [ObservableProperty]
+    private int? categoriaTocada;
+
+    [ObservableProperty]
+    private string? categoriaTocadaTexto;
+
     // ---------- US10 / US13 ----------
 
     [ObservableProperty]
@@ -82,11 +142,7 @@ public partial class RelatoriosViewModel : BaseViewModel
     public ObservableCollection<EstatisticaRota> TopRotas { get; } = new();
     public ObservableCollection<EstatisticaVeiculo> TopVeiculos { get; } = new();
 
-    public bool Periodo3Selecionado => Meses == 3;
-    public bool Periodo6Selecionado => Meses == 6;
-    public bool Periodo12Selecionado => Meses == 12;
-
-    public string PeriodoTexto => Resumo?.PeriodoTexto ?? string.Empty;
+    public string PeriodoTexto => Resumo?.PeriodoTexto ?? Filtro.Rotulo;
 
     public RelatoriosViewModel(IRelatorioService relatorioService)
     {
@@ -107,7 +163,7 @@ public partial class RelatoriosViewModel : BaseViewModel
 
         try
         {
-            var resumo = await _relatorioService.ObterResumoAsync(Meses);
+            var resumo = await _relatorioService.ObterResumoAsync(Filtro);
             AplicarResumo(resumo);
         }
         catch (Exception ex)
@@ -124,13 +180,228 @@ public partial class RelatoriosViewModel : BaseViewModel
         await CarregarFrotaAsync();
     }
 
+    // ---------- Seleção de período ----------
+
+    /// <summary>Atalhos: "3", "6", "12", "24" meses ou "tudo".</summary>
+    [RelayCommand]
+    private async Task SelecionarPeriodoAsync(string valor)
+    {
+        var novo = valor == "tudo"
+            ? FiltroPeriodo.Tudo()
+            : int.TryParse(valor, out var meses) ? FiltroPeriodo.UltimosMeses(meses) : null;
+
+        if (novo is null || novo == Filtro)
+        {
+            return;
+        }
+
+        MostrarPersonalizado = false;
+        await AplicarFiltroAsync(novo);
+    }
+
+    [RelayCommand]
+    private void AlternarPersonalizado() => MostrarPersonalizado = !MostrarPersonalizado;
+
+    /// <summary>Mês/ano escolhido nos pickers (índice 0 = ano inteiro).</summary>
+    [RelayCommand]
+    private async Task AplicarMesAnoAsync()
+    {
+        var novo = MesSelecionadoIndice <= 0
+            ? FiltroPeriodo.DoAno(AnoSelecionado)
+            : FiltroPeriodo.DoMes(AnoSelecionado, MesSelecionadoIndice);
+
+        await AplicarFiltroAsync(novo);
+    }
+
+    /// <summary>Intervalo livre entre duas datas.</summary>
+    [RelayCommand]
+    private async Task AplicarPeriodoLivreAsync()
+    {
+        if (DataAte.Date < DataDe.Date)
+        {
+            MensagemErro = "A data final não pode ser anterior à inicial.";
+            return;
+        }
+
+        if ((DataAte.Date - DataDe.Date).TotalDays > 366 * 3)
+        {
+            MensagemErro = "Escolha um intervalo de até 3 anos, ou use \"Tudo\".";
+            return;
+        }
+
+        await AplicarFiltroAsync(FiltroPeriodo.Entre(DataDe, DataAte));
+    }
+
+    private async Task AplicarFiltroAsync(FiltroPeriodo novo)
+    {
+        Filtro = novo;
+        MesTocado = null;
+        MesTocadoTexto = null;
+        CategoriaTocada = null;
+        CategoriaTocadaTexto = null;
+        await CarregarAsync();
+    }
+
+    // ---------- Toque nos gráficos ----------
+
+    /// <summary>Chamado pela página com a posição do toque no gráfico de colunas.</summary>
+    public void TocarColunas(float x, float larguraTotal)
+    {
+        if (Resumo is null)
+        {
+            return;
+        }
+
+        var indice = GraficoColunasDrawable.IndiceNoToque(x, larguraTotal, Resumo.FluxoMensal.Count);
+
+        // Tocar de novo no mesmo mês limpa a seleção.
+        MesTocado = indice == MesTocado ? null : indice;
+
+        if (MesTocado is { } i)
+        {
+            var mes = Resumo.FluxoMensal[i];
+            MesTocadoTexto = $"{mes.MesTexto}: {mes.EntradasTexto} · {mes.SaidasTexto} · saldo {mes.SaldoDoMesTexto}";
+        }
+        else
+        {
+            MesTocadoTexto = null;
+        }
+
+        GraficoColunas = new GraficoColunasDrawable(Resumo.FluxoMensal, MesTocado);
+    }
+
+    /// <summary>Chamado pela página com a posição do toque na rosca.</summary>
+    public void TocarRosca(float x, float y, float largura, float altura)
+    {
+        if (Resumo is null || _categoriasRosca.Count == 0)
+        {
+            return;
+        }
+
+        var indice = GraficoRoscaDrawable.IndiceNoToque(x, y, largura, altura, _categoriasRosca);
+        CategoriaTocada = indice == CategoriaTocada ? null : indice;
+
+        if (CategoriaTocada is { } i)
+        {
+            var categoria = _categoriasRosca[i];
+            CategoriaTocadaTexto = $"{categoria.Categoria}: {categoria.TotalTexto} ({categoria.PercentualTexto} das despesas)";
+        }
+        else
+        {
+            CategoriaTocadaTexto = null;
+        }
+
+        GraficoRosca = new GraficoRoscaDrawable(_categoriasRosca, Formatacao.Moeda(Resumo.Indicadores.TotalSaidas), CategoriaTocada);
+    }
+
+    /// <summary>A legenda também seleciona a fatia.</summary>
+    [RelayCommand]
+    private void SelecionarCategoria(DespesaCategoria categoria)
+    {
+        var indice = _categoriasRosca.IndexOf(categoria);
+        if (indice < 0 || Resumo is null)
+        {
+            return;
+        }
+
+        CategoriaTocada = indice == CategoriaTocada ? null : indice;
+        CategoriaTocadaTexto = CategoriaTocada.HasValue
+            ? $"{categoria.Categoria}: {categoria.TotalTexto} ({categoria.PercentualTexto} das despesas)"
+            : null;
+
+        GraficoRosca = new GraficoRoscaDrawable(_categoriasRosca, Formatacao.Moeda(Resumo.Indicadores.TotalSaidas), CategoriaTocada);
+    }
+
+    // ---------- Exportação (US14) ----------
+
+    /// <summary>
+    /// Baixa o CSV do período filtrado para o cache do app e abre a folha de
+    /// compartilhamento do sistema (e-mail, Drive, WhatsApp...).
+    /// </summary>
+    [RelayCommand]
+    private async Task ExportarAsync()
+    {
+        if (Exportando)
+        {
+            return;
+        }
+
+        Exportando = true;
+        MensagemExportacao = null;
+
+        try
+        {
+            var arquivo = await _relatorioService.ExportarCsvAsync(Filtro);
+
+            var caminho = Path.Combine(FileSystem.CacheDirectory, arquivo.NomeArquivo);
+            await File.WriteAllBytesAsync(caminho, arquivo.Conteudo);
+
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = "Exportar relatório financeiro",
+                File = new ShareFile(caminho, arquivo.ContentType)
+            });
+
+            MensagemExportacao = $"Arquivo {arquivo.NomeArquivo} gerado.";
+        }
+        catch (Exception ex)
+        {
+            MensagemExportacao = ErrosUi.Mensagem(ex, "Não foi possível exportar o relatório.");
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+        finally
+        {
+            Exportando = false;
+        }
+    }
+
+    // ---------- Montagem ----------
+
+    private void AplicarResumo(RelatorioResumo resumo)
+    {
+        Resumo = resumo;
+        Indicadores = resumo.Indicadores;
+        OnPropertyChanged(nameof(PeriodoTexto));
+
+        Fluxo.Clear();
+        foreach (var mes in resumo.FluxoMensal)
+        {
+            Fluxo.Add(mes);
+        }
+
+        // Rosca: no máximo 5 categorias nomeadas; o resto vira "Outras" para a
+        // legenda caber na tela e as fatias continuarem legíveis.
+        _categoriasRosca = AgruparCategorias(resumo.DespesasPorCategoria);
+        for (var i = 0; i < _categoriasRosca.Count; i++)
+        {
+            _categoriasRosca[i].Cor = PaletaCategorias[Math.Min(i, PaletaCategorias.Length - 1)];
+        }
+
+        Categorias.Clear();
+        foreach (var categoria in _categoriasRosca)
+        {
+            Categorias.Add(categoria);
+        }
+
+        SemDados = resumo.Indicadores.QuantidadeLancamentos == 0;
+        SemDespesas = _categoriasRosca.Count == 0;
+
+        // Trocar a instância do drawable faz o GraphicsView redesenhar via binding.
+        MesTocado = null;
+        MesTocadoTexto = null;
+        CategoriaTocada = null;
+        CategoriaTocadaTexto = null;
+        GraficoColunas = new GraficoColunasDrawable(resumo.FluxoMensal);
+        GraficoRosca = new GraficoRoscaDrawable(_categoriasRosca, Formatacao.Moeda(resumo.Indicadores.TotalSaidas));
+    }
+
     private async Task CarregarFrotaAsync()
     {
         MensagemFrota = null;
 
         try
         {
-            var frota = await _relatorioService.ObterFrotaAsync(Meses);
+            var frota = await _relatorioService.ObterFrotaAsync(Filtro);
             Frota = frota;
 
             TopRotas.Clear();
@@ -155,95 +426,6 @@ public partial class RelatoriosViewModel : BaseViewModel
             MensagemFrota = ErrosUi.Mensagem(ex, "Não foi possível carregar as estatísticas de frota.");
             System.Diagnostics.Debug.WriteLine(ex);
         }
-    }
-
-    /// <summary>Troca o período (3, 6 ou 12 meses) e recarrega.</summary>
-    [RelayCommand]
-    private async Task SelecionarPeriodoAsync(string valor)
-    {
-        if (!int.TryParse(valor, out var novo) || novo == Meses)
-        {
-            return;
-        }
-
-        Meses = novo;
-        await CarregarAsync();
-    }
-
-    /// <summary>
-    /// US14: baixa o CSV do período para o cache do app e abre a folha de
-    /// compartilhamento do sistema (e-mail, Drive, WhatsApp...). Não precisa
-    /// de permissão de armazenamento porque o arquivo fica na pasta do app.
-    /// </summary>
-    [RelayCommand]
-    private async Task ExportarAsync()
-    {
-        if (Exportando)
-        {
-            return;
-        }
-
-        Exportando = true;
-        MensagemExportacao = null;
-
-        try
-        {
-            var arquivo = await _relatorioService.ExportarCsvAsync(Meses);
-
-            var caminho = Path.Combine(FileSystem.CacheDirectory, arquivo.NomeArquivo);
-            await File.WriteAllBytesAsync(caminho, arquivo.Conteudo);
-
-            await Share.Default.RequestAsync(new ShareFileRequest
-            {
-                Title = "Exportar relatório financeiro",
-                File = new ShareFile(caminho, arquivo.ContentType)
-            });
-
-            MensagemExportacao = $"Arquivo {arquivo.NomeArquivo} gerado.";
-        }
-        catch (Exception ex)
-        {
-            MensagemExportacao = ErrosUi.Mensagem(ex, "Não foi possível exportar o relatório.");
-            System.Diagnostics.Debug.WriteLine(ex);
-        }
-        finally
-        {
-            Exportando = false;
-        }
-    }
-
-    private void AplicarResumo(RelatorioResumo resumo)
-    {
-        Resumo = resumo;
-        Indicadores = resumo.Indicadores;
-        OnPropertyChanged(nameof(PeriodoTexto));
-
-        Fluxo.Clear();
-        foreach (var mes in resumo.FluxoMensal)
-        {
-            Fluxo.Add(mes);
-        }
-
-        // Rosca: no máximo 5 categorias nomeadas; o resto vira "Outras" para a
-        // legenda caber na tela e as fatias continuarem legíveis.
-        var categorias = AgruparCategorias(resumo.DespesasPorCategoria);
-        for (var i = 0; i < categorias.Count; i++)
-        {
-            categorias[i].Cor = PaletaCategorias[Math.Min(i, PaletaCategorias.Length - 1)];
-        }
-
-        Categorias.Clear();
-        foreach (var categoria in categorias)
-        {
-            Categorias.Add(categoria);
-        }
-
-        SemDados = resumo.Indicadores.QuantidadeLancamentos == 0;
-        SemDespesas = categorias.Count == 0;
-
-        // Trocar a instância do drawable faz o GraphicsView redesenhar via binding.
-        GraficoColunas = new GraficoColunasDrawable(resumo.FluxoMensal);
-        GraficoRosca = new GraficoRoscaDrawable(categorias, Formatacao.Moeda(resumo.Indicadores.TotalSaidas));
     }
 
     private static List<DespesaCategoria> AgruparCategorias(IReadOnlyList<DespesaCategoria> origem)
