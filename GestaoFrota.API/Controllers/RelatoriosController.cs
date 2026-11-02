@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using GestaoFrota.API.DTOs;
 using GestaoFrota.API.Security;
+using GestaoFrota.API.Services;
 using GestaoFrota.Domain.Enums;
 using GestaoFrota.Domain.Services;
 using GestaoFrota.Infrastructure.Data;
@@ -13,20 +14,19 @@ namespace GestaoFrota.API.Controllers;
 
 /// <summary>
 /// Relatórios financeiros (US11 painel de indicadores, US12 gráficos de fluxo
-/// de caixa e US14 exportação). O período é "os últimos N meses, incluindo o
-/// atual", agrupado pela data de vencimento, como a listagem de movimentações.
-/// Movimentações estornadas nunca entram. Leitura: Administrador, Gestor de
-/// Frota e Financeiro; o Motorista recebe 403.
-/// Inclui também as estatísticas de frota (US10/US13) em GET /api/relatorios/frota.
+/// de caixa e US14 exportação) e estatísticas de frota (US10/US13).
+/// Período (mesmos parâmetros nos três endpoints): <c>meses=N</c> (últimos N,
+/// incluindo o atual, padrão 6), <c>tudo=true</c> (desde o primeiro registro),
+/// <c>ano=2026</c> (ano inteiro), <c>ano=2026&amp;mes=10</c> (um mês) ou
+/// <c>de=2026-01-15&amp;ate=2026-03-20</c> (livre). Agrupado pela data de
+/// vencimento. Estornadas nunca entram. Leitura: Administrador, Gestor de Frota
+/// e Financeiro; o Motorista recebe 403.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = Perfis.LeituraFinanceira)]
 public class RelatoriosController : ControllerBase
 {
-    private const int MesesPadrao = 6;
-    private const int MesesMaximo = 36;
-
     private static readonly CultureInfo PtBr = new("pt-BR");
 
     private readonly AppDbContext _context;
@@ -37,21 +37,23 @@ public class RelatoriosController : ControllerBase
     }
 
     /// <summary>Fluxo mensal, despesas por categoria e indicadores em uma única resposta.</summary>
-    /// <param name="meses">Quantidade de meses do período, incluindo o atual (1 a 36).</param>
     [HttpGet("resumo")]
-    public async Task<ActionResult<RelatorioResumoResponse>> ObterResumo([FromQuery] int meses = MesesPadrao)
+    public async Task<ActionResult<RelatorioResumoResponse>> ObterResumo(
+        [FromQuery] int? meses, [FromQuery] DateTime? de, [FromQuery] DateTime? ate,
+        [FromQuery] int? ano, [FromQuery] int? mes, [FromQuery] bool tudo = false)
     {
-        meses = Math.Clamp(meses, 1, MesesMaximo);
         var hoje = DateTime.UtcNow;
-        var inicio = CalculadoraRelatorios.InicioDoPeriodo(hoje, meses);
-        var fim = CalculadoraRelatorios.FimDoPeriodo(hoje);
-        var inicioComMesAnterior = inicio.AddMonths(-1);
+        var periodo = await ResolverPeriodoFinanceiroAsync(hoje, meses, de, ate, ano, mes, tudo);
+        var inicioComMesAnterior = periodo.Inicio.AddMonths(-1);
+        var mesAtual = new DateTime(hoje.Year, hoje.Month, 1);
+        var fimMesAtual = mesAtual.AddMonths(1);
 
-        // Carrega também o mês anterior ao período (variação de saídas) e os
-        // pendentes vencidos de qualquer data (indicador "em atraso").
+        // Carrega o período, o mês anterior a ele (variação de saídas), o mês
+        // corrente (a receber/a pagar) e os pendentes vencidos de qualquer data.
         var brutos = await _context.Movimentacoes.AsNoTracking()
             .Where(m => !m.Estornada
-                        && ((m.DataVencimento >= inicioComMesAnterior && m.DataVencimento < fim)
+                        && ((m.DataVencimento >= inicioComMesAnterior && m.DataVencimento < periodo.Fim)
+                            || (m.DataVencimento >= mesAtual.AddMonths(-1) && m.DataVencimento < fimMesAtual)
                             || (m.Status == StatusMovimentacao.Pendente && m.DataVencimento < hoje)))
             .Select(m => new { m.Tipo, m.Status, m.Valor, m.DataVencimento, Categoria = m.Categoria!.Nome })
             .ToListAsync();
@@ -60,23 +62,23 @@ public class RelatoriosController : ControllerBase
             .Select(m => new LancamentoRelatorio(m.Tipo, m.Status, m.Valor, m.DataVencimento, m.Categoria))
             .ToList();
 
-        var fluxo = CalculadoraRelatorios.FluxoPorMes(lancamentos, hoje, meses)
+        var fluxo = CalculadoraRelatorios.FluxoPorMes(lancamentos, periodo.Inicio, periodo.Fim)
             .Select(f => new FluxoMensalResponse(
                 f.Ano, f.Mes, $"{f.Mes:00}/{f.Ano}",
                 f.Entradas, f.Saidas, f.SaldoDoMes, f.EntradasRealizadas, f.SaidasRealizadas))
             .ToList();
 
-        var categorias = CalculadoraRelatorios.DespesasPorCategoria(lancamentos, hoje, meses)
+        var categorias = CalculadoraRelatorios.DespesasPorCategoria(lancamentos, periodo.Inicio, periodo.Fim)
             .Select(c => new DespesaCategoriaResponse(c.Categoria, c.Total, c.Percentual))
             .ToList();
 
-        var i = CalculadoraRelatorios.Indicadores(lancamentos, hoje, meses);
+        var i = CalculadoraRelatorios.Indicadores(lancamentos, hoje, periodo.Inicio, periodo.Fim);
         var indicadores = new IndicadoresResponse(
             i.TotalEntradas, i.TotalSaidas, i.Resultado, i.AReceberNoMes, i.APagarNoMes, i.EmAtraso,
             i.MaiorDespesaCategoria, i.MaiorDespesaValor, i.VariacaoSaidasPercentual, i.QuantidadeLancamentos);
 
         return Ok(new RelatorioResumoResponse(
-            meses, inicio, fim.AddDays(-1), indicadores, fluxo, categorias, hoje));
+            periodo.QuantidadeMeses, periodo.Inicio, periodo.UltimoDia, periodo.Rotulo, indicadores, fluxo, categorias, hoje));
     }
 
     /// <summary>
@@ -86,15 +88,19 @@ public class RelatoriosController : ControllerBase
     /// ÷ km rodados; km/l = km rodados ÷ litros. Canceladas ficam de fora.
     /// </summary>
     [HttpGet("frota")]
-    public async Task<ActionResult<EstatisticasFrotaResponse>> ObterFrota([FromQuery] int meses = MesesPadrao)
+    public async Task<ActionResult<EstatisticasFrotaResponse>> ObterFrota(
+        [FromQuery] int? meses, [FromQuery] DateTime? de, [FromQuery] DateTime? ate,
+        [FromQuery] int? ano, [FromQuery] int? mes, [FromQuery] bool tudo = false)
     {
-        meses = Math.Clamp(meses, 1, MesesMaximo);
         var hoje = DateTime.UtcNow;
-        var inicio = CalculadoraRelatorios.InicioDoPeriodo(hoje, meses);
-        var fim = CalculadoraRelatorios.FimDoPeriodo(hoje);
+
+        DateTime? primeiraViagem = tudo
+            ? await _context.Viagens.AsNoTracking().MinAsync(v => (DateTime?)v.DataInicio)
+            : null;
+        var periodo = PeriodoRelatorio.Resolver(hoje, meses, de, ate, ano, mes, tudo, primeiraViagem);
 
         var viagens = await _context.Viagens.AsNoTracking()
-            .Where(v => v.Status != StatusViagem.Cancelada && v.DataInicio >= inicio && v.DataInicio < fim)
+            .Where(v => v.Status != StatusViagem.Cancelada && v.DataInicio >= periodo.Inicio && v.DataInicio < periodo.Fim)
             .Select(v => new ViagemEstatistica(
                 v.Id,
                 v.RotaId, v.Rota!.Nome, v.Rota.Origem, v.Rota.Destino,
@@ -124,7 +130,7 @@ public class RelatoriosController : ControllerBase
             v.Receitas, v.Despesas, v.CustoPorKm, v.Litros, v.KmPorLitro);
 
         return Ok(new EstatisticasFrotaResponse(
-            meses, inicio, fim.AddDays(-1),
+            periodo.QuantidadeMeses, periodo.Inicio, periodo.UltimoDia,
             veiculosEmViagem, veiculosAtivos,
             viagens.Count,
             viagens.Count(v => v.Status == StatusViagem.Concluida),
@@ -143,15 +149,15 @@ public class RelatoriosController : ControllerBase
     /// UTF-8 para o Excel em português abrir sem configuração.
     /// </summary>
     [HttpGet("exportar")]
-    public async Task<IActionResult> Exportar([FromQuery] int meses = MesesPadrao)
+    public async Task<IActionResult> Exportar(
+        [FromQuery] int? meses, [FromQuery] DateTime? de, [FromQuery] DateTime? ate,
+        [FromQuery] int? ano, [FromQuery] int? mes, [FromQuery] bool tudo = false)
     {
-        meses = Math.Clamp(meses, 1, MesesMaximo);
         var hoje = DateTime.UtcNow;
-        var inicio = CalculadoraRelatorios.InicioDoPeriodo(hoje, meses);
-        var fim = CalculadoraRelatorios.FimDoPeriodo(hoje);
+        var periodo = await ResolverPeriodoFinanceiroAsync(hoje, meses, de, ate, ano, mes, tudo);
 
         var linhas = await _context.Movimentacoes.AsNoTracking()
-            .Where(m => !m.Estornada && m.DataVencimento >= inicio && m.DataVencimento < fim)
+            .Where(m => !m.Estornada && m.DataVencimento >= periodo.Inicio && m.DataVencimento < periodo.Fim)
             .OrderBy(m => m.DataVencimento)
             .ThenBy(m => m.DataCriacao)
             .Select(m => new
@@ -168,6 +174,9 @@ public class RelatoriosController : ControllerBase
             .ToListAsync();
 
         var sb = new StringBuilder();
+        sb.Append("Periodo;").Append(periodo.Rotulo).Append(';')
+          .Append(periodo.Inicio.ToString("dd/MM/yyyy", PtBr)).Append(';')
+          .Append(periodo.UltimoDia.ToString("dd/MM/yyyy", PtBr)).AppendLine();
         sb.AppendLine("Vencimento;Tipo;Descricao;Categoria;Forma de pagamento;Situacao;Pagamento;Valor");
 
         foreach (var l in linhas)
@@ -192,9 +201,22 @@ public class RelatoriosController : ControllerBase
 
         // BOM UTF-8: sem ele o Excel (Windows, pt-BR) troca os acentos por símbolos.
         var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
-        var nomeArquivo = $"relatorio-financeiro-{inicio:yyyyMM}-{fim.AddDays(-1):yyyyMM}.csv";
+        var nomeArquivo = $"relatorio-financeiro-{periodo.Inicio:yyyyMMdd}-{periodo.UltimoDia:yyyyMMdd}.csv";
 
         return File(bytes, "text/csv; charset=utf-8", nomeArquivo);
+    }
+
+    // ---------------- Auxiliares ----------------
+
+    /// <summary>"Tudo" começa no vencimento mais antigo não estornado.</summary>
+    private async Task<PeriodoRelatorio> ResolverPeriodoFinanceiroAsync(
+        DateTime hoje, int? meses, DateTime? de, DateTime? ate, int? ano, int? mes, bool tudo)
+    {
+        DateTime? primeiro = tudo
+            ? await _context.Movimentacoes.AsNoTracking().Where(m => !m.Estornada).MinAsync(m => (DateTime?)m.DataVencimento)
+            : null;
+
+        return PeriodoRelatorio.Resolver(hoje, meses, de, ate, ano, mes, tudo, primeiro);
     }
 
     /// <summary>Protege o campo contra ";" e aspas, que quebrariam a coluna.</summary>

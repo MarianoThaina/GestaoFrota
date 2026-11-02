@@ -142,8 +142,8 @@ permissão de escrita.
 | US08 | Viagens e hodômetro | Implementado: `ViagensController` (abrir, encerrar com `final > inicial`, cancelar; quilometragem rodada **gravada**; Motorista só vê as próprias), `ViagensPage`, `ViagemFormPage` e `EncerrarViagemPage`. Abrir e encerrar funcionam **offline** com fila de reenvio idempotente |
 | US09 | Vínculo financeiro com viagem | Implementado na API (`viagemId` e `quantidadeLitros` em `POST/PUT /api/movimentacoes`) e no formulário do app (picker de viagem; litros aparecem na categoria de combustível) |
 | US10 | Estatísticas de rota e veículo | Implementado: `GET /api/relatorios/frota` com `CalculadoraFrota` (rentabilidade, custo/km, km/l por rota e por veículo, a partir das viagens do período e dos lançamentos vinculados) e bloco "Frota no período" em `RelatoriosPage` |
-| US11 | Painel de indicadores | Implementado em `RelatoriosPage` (resultado do período, entradas, saídas, a receber e a pagar no mês, pendentes em atraso, maior despesa, variação de saídas). O Início mantém saldo e projeção e ganhou o card **Veículos em viagem** (lê o cache, funciona offline). **Falta** o filtro por mês, ano e período livre |
-| US12 | Gráficos de fluxo de caixa | Implementado: colunas de entradas x saídas por mês e rosca de despesas por categoria, desenhados com `GraphicsView` (sem biblioteca externa). Dados de `GET /api/relatorios/resumo` |
+| US11 | Painel de indicadores | Implementado em `RelatoriosPage` (resultado do período, entradas, saídas, a receber e a pagar no mês, pendentes em atraso, maior despesa, variação de saídas) com filtro por atalhos (3, 6, 12, 24 meses, tudo), mês/ano, ano e período livre. O Início mantém saldo e projeção e ganhou o card **Veículos em viagem** (lê o cache, funciona offline) |
+| US12 | Gráficos de fluxo de caixa | Implementado: colunas de entradas x saídas por mês e rosca de despesas por categoria, desenhados com `GraphicsView` (sem biblioteca externa), com toque mostrando o valor exato do mês ou da categoria. Dados de `GET /api/relatorios/resumo` |
 | US13 | Ranking de eficiência | Implementado: top 3 rotas mais lucrativas e top 3 veículos por menor custo/km, no mesmo endpoint e na mesma tela da US10 |
 | US14 | Exportação de relatório | Implementado em CSV (`GET /api/relatorios/exportar`), compartilhado pelo app via folha de compartilhamento do sistema. PDF não iniciado |
 | US15 | Login com Google | Fluxo implementado nas duas pontas. **Falta** o Client ID de produção (ver abaixo) |
@@ -250,9 +250,28 @@ Na mesma branch, em seguida: US10 e US13 (`CalculadoraFrota`,
 
 Continuam fora: item 7 (situação do usuário com três estados, frente de
 autenticação), item 8 (decisão Frete × Movimentação, do time; as estatísticas
-ignoram `Frete.ValorFrete`), filtros por mês/ano/período livre e toque nos
-gráficos (US11/US12), fila offline para o financeiro, Client ID real do Google
-e o script PostgreSQL em `GestaoFrota.Database/`.
+ignoram `Frete.ValorFrete`), fila offline para o financeiro e Client ID real do
+Google.
+
+## Atualização (21/10/2026) - testes
+
+Projeto `GestaoFrota.Tests` (xUnit, só referencia o Domain) com testes das
+cinco classes de regra pura: `CalculadoraFinanceira`, `CalculadoraRelatorios`,
+`CalculadoraFrota`, `ValidadorPlaca` e `RegrasViagem`. Entra na solução
+(`GestaoFrota.slnx`) e roda com `dotnet test`. O script PostgreSQL de
+`GestaoFrota.Database/` ganhou um README dizendo que o schema real é o das
+migrations; o arquivo foi mantido.
+
+## Atualização (21/10/2026) - filtros e toque nos relatórios
+
+`PeriodoRelatorio` na API resolve `meses`, `tudo`, `ano`, `ano+mes` e `de/ate`
+para os três endpoints de relatórios; `CalculadoraRelatorios` ganhou as
+sobrecargas com período explícito (as de `hoje, meses` continuam e delegam).
+No app, `FiltroPeriodo` vira query string, a tela tem atalhos de 3/6/12/24
+meses e "Tudo" mais o painel "Personalizar" (mês/ano, ano, período livre), e o
+toque nos dois gráficos mostra o valor exato (geometria em
+`GraficoColunasDrawable.IndiceNoToque` e `GraficoRoscaDrawable.IndiceNoToque`).
+Fecha o que faltava nas US11 e US12 segundo o levantamento de 20/10.
 
 Escrito sem SDK .NET na máquina de autoria: **não compilado**. Validar com
 `dotnet build` nos projetos API e App e `dotnet ef database update` antes do merge.

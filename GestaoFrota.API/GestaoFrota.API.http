@@ -138,6 +138,22 @@ Authorization: Bearer COLE_AQUI_O_JWT
 GET {{GestaoFrota.API_HostAddress}}/api/relatorios/frota?meses=6
 Authorization: Bearer COLE_AQUI_O_JWT
 
+### Filtros de período (valem para /resumo, /frota e /exportar): um mês
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/resumo?ano=2026&mes=10
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Ano inteiro
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/resumo?ano=2026
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Período livre
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/resumo?de=2026-09-15&ate=2026-10-20
+Authorization: Bearer COLE_AQUI_O_JWT
+
+### Todo o histórico (desde o vencimento mais antigo)
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/exportar?tudo=true
+Authorization: Bearer COLE_AQUI_O_JWT
+
 ### ---------- Frota (US06, US06-b, US07, US08) ----------
 ### Enums: StatusVeiculo 1=Disponivel 2=EmViagem 3=EmManutencao | StatusViagem 1=EmAndamento 2=Concluida 3=Cancelada
 

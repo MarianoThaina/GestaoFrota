@@ -10,8 +10,21 @@ GestaoFrota.Infrastructure  AppDbContext, configurações EF e migrations
 GestaoFrota.API             controllers REST, JWT, RBAC, Swagger
 GestaoFrota.App             app .NET MAUI (Android) - MVVM, SQLite offline, menu por perfil
 GestaoFrota.Web             páginas web de cadastro (Categorias, Formas, Usuários)
+GestaoFrota.Tests           testes xUnit das regras puras do domínio (só referencia o Domain)
 docs/                       protótipo HTML e documentação do projeto
 ```
+
+## Testes
+
+```bash
+dotnet test
+```
+
+Cobre as regras de negócio que não dependem de banco nem de tela: parcelas e
+projeção de caixa (`CalculadoraFinanceira`), indicadores, fluxo mensal e
+despesas por categoria (`CalculadoraRelatorios`), rentabilidade, custo/km, km/l
+e ranking (`CalculadoraFrota`), placa antiga/Mercosul (`ValidadorPlaca`) e
+hodômetro (`RegrasViagem`). Cada arquivo de teste nomeia a user story que prova.
 
 ## O que foi implementado nesta etapa
 
@@ -128,8 +141,10 @@ Enums trafegam como número (Tipo: 1 Receita, 2 Despesa; Status: 1 Pendente, 2 P
 | POST/GET/DELETE | `/api/movimentacoes/{id}/comprovante` | escrita: Adm/Fin; leitura: Adm/Gestor/Fin |
 | GET/POST | `/api/dividas`, `/api/dividas/{id}` | leitura: Adm/Gestor/Fin; POST: Adm/Fin |
 | GET | `/api/financeiro/saldo`, `/api/financeiro/projecao?meses=12` | Administrador, Gestor, Financeiro |
-| GET | `/api/relatorios/resumo?meses=6` (fluxo mensal, despesas por categoria, indicadores) | Administrador, Gestor, Financeiro |
-| GET | `/api/relatorios/exportar?meses=6` (CSV do período) | Administrador, Gestor, Financeiro |
+| GET | `/api/relatorios/resumo` (fluxo mensal, despesas por categoria, indicadores) | Administrador, Gestor, Financeiro |
+| GET | `/api/relatorios/exportar` (CSV do período) | Administrador, Gestor, Financeiro |
+
+Os três endpoints de relatórios aceitam o mesmo filtro de período: `meses=N` (últimos N, incluindo o atual, padrão 6, máximo 36), `tudo=true` (desde o primeiro registro), `ano=2026` (ano inteiro), `ano=2026&mes=10` (um mês) ou `de=2026-01-15&ate=2026-03-20` (livre). Prioridade: livre > mês/ano > ano > tudo > meses.
 
 O Motorista recebe **403** em todos esses endpoints.
 
@@ -165,7 +180,8 @@ Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 
 - **Comprovante no banco** (`varbinary(max)`): evita perder arquivos em hospedagens gratuitas com disco efêmero.
 - **Regras de cálculo isoladas** em `GestaoFrota.Domain/Services/CalculadoraFinanceira.cs` e `CalculadoraRelatorios.cs`, sem dependência de banco.
 - **Gráficos sem biblioteca externa:** colunas e rosca da tela de Relatórios são desenhadas com o `GraphicsView` do próprio MAUI (`GestaoFrota.App/Controls/`), o que mantém o app sem dependência nova e com o desenho legível linha a linha.
-- **Relatórios agrupados por vencimento:** o período (3, 6 ou 12 meses, incluindo o atual) usa a data de vencimento como competência, igual ao filtro da lista de movimentações. Pagos e pendentes entram; estornadas nunca. A exportação (US14) sai em CSV com `;` e BOM UTF-8, que o Excel em português abre sem configuração.
+- **Relatórios agrupados por vencimento:** o período (atalhos de 3, 6, 12 e 24 meses, todo o histórico, um mês, um ano ou intervalo livre) usa a data de vencimento como competência, igual ao filtro da lista de movimentações. Pagos e pendentes entram; estornadas nunca. "A receber/a pagar no mês", "em atraso" e a variação de saídas são indicadores do momento e olham sempre o mês corrente, não o filtro. A exportação (US14) sai em CSV com `;` e BOM UTF-8, que o Excel em português abre sem configuração, com a primeira linha dizendo o período.
+- **Toque nos gráficos:** o `GraphicsView` entrega o ponto do toque; a geometria do desenho (mesmas margens e larguras) converte X em mês e ângulo em fatia, e a instância do drawable é trocada com o índice selecionado para destacar e mostrar o valor exato. Sem biblioteca de gráfico, sem gesto customizado.
 - **Viagem é a única escrita offline-first (US08):** o `Id` da viagem nasce no aparelho (Guid), então abrir e encerrar funcionam sem rede: o registro fica no SQLite com `AberturaPendente`/`EncerramentoPendente` e o `ViagemService` reenvia ao abrir a tela de Viagens com conexão. A API trata o reenvio como idempotente (mesmo `Id` devolve a viagem existente; mesmo hodômetro final devolve 200). Veículos e rotas ficam em cache para o motorista escolher sem internet. Manutenção e lançamentos continuam exigindo conexão porque mexem no caixa.
 - **Quilometragem rodada gravada, não calculada:** no encerramento a API valida `final > inicial` (também protegido por check constraint), grava `QuilometragemRodadaKm` e atualiza o `KmAtual` do veículo. Assim os relatórios da US10 somam direto no banco.
 - **Manutenção gera a despesa no mesmo commit (US06-b):** manutenção, movimentação de saída na categoria "Manutenção" e status do veículo entram numa transação; se algo falhar, nada é salvo. A categoria padrão é a semeada pela `InitialCreate`; o cliente pode informar outra.
@@ -183,4 +199,4 @@ Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 
 - Imagens maiores que 5 MB são recusadas (sem compressão automática).
 - A quitação antecipada é armazenada e exibida, mas ainda não há operação que quite a dívida em um único pagamento.
 - A fila offline cobre só viagens (abrir e encerrar). Categorias criadas offline continuam marcadas como pendentes sem rotina de reenvio.
-- `GestaoFrota.Database/create_tables.sql` está em PostgreSQL enquanto a API usa SQL Server; o schema real é o das migrations.
+- `GestaoFrota.Database/create_tables.sql` é o rascunho PostgreSQL da Sprint 1 e não é executado; o schema real é o das migrations (ver o README daquela pasta).
