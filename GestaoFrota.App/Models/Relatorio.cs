@@ -190,3 +190,10 @@ public class EstatisticasFrota
 
 /// <summary>Arquivo devolvido por GET /api/relatorios/exportar.</summary>
 public record ArquivoExportado(string NomeArquivo, byte[] Conteudo, string ContentType);
+
+/// <summary>Formatos da exportação (US14): planilha (CSV) ou documento (PDF).</summary>
+public enum FormatoExportacao
+{
+    Csv,
+    Pdf
+}

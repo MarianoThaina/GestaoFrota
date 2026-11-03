@@ -153,6 +153,10 @@ Authorization: Bearer COLE_AQUI_O_JWT
 GET {{GestaoFrota.API_HostAddress}}/api/relatorios/exportar?meses=6
 Authorization: Bearer COLE_AQUI_O_JWT
 
+### Exportar PDF do período (US14): cabeçalho, resumo e tabela, A4 paisagem
+GET {{GestaoFrota.API_HostAddress}}/api/relatorios/exportar?meses=6&formato=pdf
+Authorization: Bearer COLE_AQUI_O_JWT
+
 ### Estatísticas de rota e veículo + ranking (US10/US13): viagens iniciadas no período e lançamentos vinculados
 GET {{GestaoFrota.API_HostAddress}}/api/relatorios/frota?meses=6
 Authorization: Bearer COLE_AQUI_O_JWT
