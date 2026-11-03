@@ -127,7 +127,7 @@ public class ViagensController : ControllerBase
     public async Task<ActionResult<IEnumerable<MotoristaResponse>>> ListarMotoristas()
     {
         var motoristas = await _context.Usuarios.AsNoTracking()
-            .Where(u => u.Ativo)
+            .Where(u => u.Situacao == SituacaoUsuario.Ativo)
             .OrderByDescending(u => u.Perfil == PerfilUsuario.OperadorMotorista)
             .ThenBy(u => u.Nome)
             .Select(u => new MotoristaResponse(u.Id, u.Nome, u.Perfil))
@@ -166,7 +166,7 @@ public class ViagensController : ControllerBase
         }
 
         var motorista = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id == motoristaId);
-        if (motorista is null || !motorista.Ativo)
+        if (motorista is null || motorista.Situacao != SituacaoUsuario.Ativo)
         {
             return BadRequest(new { mensagem = "Motorista inválido ou desativado." });
         }

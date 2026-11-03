@@ -354,9 +354,6 @@ namespace GestaoFrota.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("datetime2");
 
@@ -386,6 +383,11 @@ namespace GestaoFrota.Infrastructure.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<string>("Situacao")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<DateTime?>("UltimoLogin")
                         .HasColumnType("datetime2");
 
@@ -396,6 +398,8 @@ namespace GestaoFrota.Infrastructure.Migrations
 
                     b.HasIndex("GoogleId")
                         .IsUnique();
+
+                    b.HasIndex("Situacao");
 
                     b.ToTable("Usuarios", (string)null);
                 });
