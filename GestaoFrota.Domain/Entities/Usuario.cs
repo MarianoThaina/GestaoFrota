@@ -5,8 +5,7 @@ namespace GestaoFrota.Domain.Entities;
 
 /// <summary>
 /// Usuário do sistema, autenticado via Google SSO.
-/// O perfil (PerfilUsuario) define as permissões via RBAC; a situação
-/// (SituacaoUsuario) controla se ele pode entrar (US16).
+/// O perfil (PerfilUsuario) define as permissões via RBAC.
 /// </summary>
 public class Usuario : EntidadeBase
 {
@@ -23,14 +22,7 @@ public class Usuario : EntidadeBase
 
     public PerfilUsuario Perfil { get; set; } = PerfilUsuario.OperadorMotorista;
 
-    /// <summary>
-    /// Aguardando Aprovação (padrão no primeiro login), Ativo ou Inativo.
-    /// Só "Ativo" recebe token.
-    /// </summary>
-    public SituacaoUsuario Situacao { get; set; } = SituacaoUsuario.AguardandoAprovacao;
-
-    /// <summary>Atalho de leitura; não é coluna (ver UsuarioConfiguration).</summary>
-    public bool Ativo => Situacao == SituacaoUsuario.Ativo;
+    public bool Ativo { get; set; } = true;
 
     public DateTime? UltimoLogin { get; set; }
 

@@ -29,16 +29,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .HasMaxLength(30)
             .IsRequired();
 
-        // US16: três estados, guardados como texto (AguardandoAprovacao, Ativo, Inativo).
-        builder.Property(u => u.Situacao)
-            .HasConversion<string>()
-            .HasMaxLength(30)
-            .IsRequired();
-
-        builder.Ignore(u => u.Ativo);
-
         builder.HasIndex(u => u.Email).IsUnique();
         builder.HasIndex(u => u.GoogleId).IsUnique();
-        builder.HasIndex(u => u.Situacao);
     }
 }
