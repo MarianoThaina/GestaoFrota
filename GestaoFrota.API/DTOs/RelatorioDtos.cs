@@ -76,6 +76,7 @@ public record RelatorioResumoResponse(
     int Meses,
     DateTime PeriodoInicio,
     DateTime PeriodoFim,
+    string PeriodoRotulo,
     IndicadoresResponse Indicadores,
     IReadOnlyList<FluxoMensalResponse> FluxoMensal,
     IReadOnlyList<DespesaCategoriaResponse> DespesasPorCategoria,

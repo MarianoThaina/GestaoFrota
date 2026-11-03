@@ -5,19 +5,20 @@ namespace GestaoFrota.App.Services;
 
 public interface IRelatorioService
 {
-    /// <summary>Fluxo mensal, despesas por categoria e indicadores dos últimos N meses.</summary>
-    Task<RelatorioResumo> ObterResumoAsync(int meses);
+    /// <summary>Fluxo mensal, despesas por categoria e indicadores do período filtrado.</summary>
+    Task<RelatorioResumo> ObterResumoAsync(FiltroPeriodo filtro);
 
     /// <summary>CSV das movimentações do período (US14), pronto para compartilhar.</summary>
-    Task<ArquivoExportado> ExportarCsvAsync(int meses);
+    Task<ArquivoExportado> ExportarCsvAsync(FiltroPeriodo filtro);
 
     /// <summary>Estatísticas de rota e veículo e ranking (US10/US13) das viagens do período.</summary>
-    Task<EstatisticasFrota> ObterFrotaAsync(int meses);
+    Task<EstatisticasFrota> ObterFrotaAsync(FiltroPeriodo filtro);
 }
 
 /// <summary>
 /// Consome /api/relatorios. Como o saldo e a projeção, os relatórios exigem
 /// conexão: agregações são calculadas no servidor, sobre a base completa.
+/// Os três endpoints aceitam o mesmo filtro de período (ver FiltroPeriodo).
 /// </summary>
 public class RelatorioService : IRelatorioService
 {
@@ -30,21 +31,21 @@ public class RelatorioService : IRelatorioService
         _connectivity = connectivity;
     }
 
-    public async Task<RelatorioResumo> ObterResumoAsync(int meses)
+    public async Task<RelatorioResumo> ObterResumoAsync(FiltroPeriodo filtro)
     {
         ExigirConexao();
 
-        var resposta = await _httpClient.GetAsync($"relatorios/resumo?meses={meses}");
+        var resposta = await _httpClient.GetAsync($"relatorios/resumo?{filtro.ParaQuery()}");
         await resposta.GarantirSucessoAsync();
 
         return await resposta.Content.ReadFromJsonAsync<RelatorioResumo>() ?? new RelatorioResumo();
     }
 
-    public async Task<ArquivoExportado> ExportarCsvAsync(int meses)
+    public async Task<ArquivoExportado> ExportarCsvAsync(FiltroPeriodo filtro)
     {
         ExigirConexao();
 
-        var resposta = await _httpClient.GetAsync($"relatorios/exportar?meses={meses}");
+        var resposta = await _httpClient.GetAsync($"relatorios/exportar?{filtro.ParaQuery()}");
         await resposta.GarantirSucessoAsync();
 
         var conteudo = await resposta.Content.ReadAsByteArrayAsync();
@@ -56,11 +57,11 @@ public class RelatorioService : IRelatorioService
         return new ArquivoExportado(nome, conteudo, tipo);
     }
 
-    public async Task<EstatisticasFrota> ObterFrotaAsync(int meses)
+    public async Task<EstatisticasFrota> ObterFrotaAsync(FiltroPeriodo filtro)
     {
         ExigirConexao();
 
-        var resposta = await _httpClient.GetAsync($"relatorios/frota?meses={meses}");
+        var resposta = await _httpClient.GetAsync($"relatorios/frota?{filtro.ParaQuery()}");
         await resposta.GarantirSucessoAsync();
 
         return await resposta.Content.ReadFromJsonAsync<EstatisticasFrota>() ?? new EstatisticasFrota();
