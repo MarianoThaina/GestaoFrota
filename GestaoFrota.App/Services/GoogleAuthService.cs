@@ -64,10 +64,7 @@ public class GoogleAuthService : IAuthService
         }
 
         var response = await _httpClient.PostAsJsonAsync("auth/google", new { idToken });
-
-        // 403 = cadastro aguardando aprovação (US16); 401 = desativado. A mensagem
-        // da API chega à tela de login pela ApiException.
-        await response.GarantirSucessoAsync();
+        response.EnsureSuccessStatusCode();
 
         var auth = await response.Content.ReadFromJsonAsync<AuthResponse>()
             ?? throw new InvalidOperationException("Resposta de autenticação inválida da API.");
@@ -107,10 +104,10 @@ public class GoogleAuthService : IAuthService
 
             var response = await _httpClient.SendAsync(request);
 
-            if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                // Token expirado, usuário desativado ou devolvido a "Aguardando
-                // Aprovação" no backend: encerra a sessão local para forçar novo login.
+                // Token expirado ou usuário desativado no backend:
+                // encerra a sessão local para forçar novo login.
                 await _tokenStore.LimparSessaoAsync();
                 return false;
             }
