@@ -145,7 +145,7 @@ permissão de escrita.
 | US11 | Painel de indicadores | Implementado em `RelatoriosPage` (resultado do período, entradas, saídas, a receber e a pagar no mês, pendentes em atraso, maior despesa, variação de saídas) com filtro por atalhos (3, 6, 12, 24 meses, tudo), mês/ano, ano e período livre. O Início mantém saldo e projeção e ganhou o card **Veículos em viagem** (lê o cache, funciona offline) |
 | US12 | Gráficos de fluxo de caixa | Implementado: colunas de entradas x saídas por mês e rosca de despesas por categoria, desenhados com `GraphicsView` (sem biblioteca externa), com toque mostrando o valor exato do mês ou da categoria. Dados de `GET /api/relatorios/resumo` |
 | US13 | Ranking de eficiência | Implementado: top 3 rotas mais lucrativas e top 3 veículos por menor custo/km, no mesmo endpoint e na mesma tela da US10 |
-| US14 | Exportação de relatório | Implementado em CSV (`GET /api/relatorios/exportar`), compartilhado pelo app via folha de compartilhamento do sistema. PDF não iniciado |
+| US14 | Exportação de relatório | Implementado em CSV e PDF (`GET /api/relatorios/exportar`, `formato=pdf`; PDF com QuestPDF), compartilhados pelo app via folha de compartilhamento do sistema. Botões "PDF" e "CSV (planilha)" na tela de Relatórios |
 | US15 | Login com Google | Fluxo implementado nas duas pontas. **Falta** o Client ID de produção (ver abaixo) |
 | US16 | Perfis de usuário | Quatro perfis definidos, API de gestão pronta. **Faltam** a tela no app e o estado "Aguardando Aprovação" |
 | US17 | Navegação contextual | Menu por perfil implementado (`AppShell.ConfigurarMenuPorPerfil`). O Motorista vê Viagens e Frota (consulta) e **abre direto em Viagens** |
@@ -272,6 +272,17 @@ meses e "Tudo" mais o painel "Personalizar" (mês/ano, ano, período livre), e o
 toque nos dois gráficos mostra o valor exato (geometria em
 `GraficoColunasDrawable.IndiceNoToque` e `GraficoRoscaDrawable.IndiceNoToque`).
 Fecha o que faltava nas US11 e US12 segundo o levantamento de 20/10.
+
+## Atualização (03/11/2026) - exportação em PDF (US14)
+
+`GET /api/relatorios/exportar` aceita `formato=pdf` (padrão continua `csv`; outro
+valor responde 400). O PDF é montado em `GestaoFrota.API/Services/RelatorioPdf.cs`
+com QuestPDF (licença Community declarada no `Program.cs`): cabeçalho com período,
+data de geração e autor, resumo de entradas, saídas, resultado e quantidade, e a
+tabela das movimentações em A4 paisagem com o cabeçalho repetido por página. CSV
+e PDF usam a mesma consulta e os mesmos totais (`LinhaExportacao`,
+`TotaisExportacao`). No app, a tela de Relatórios tem dois botões, "PDF" e
+"CSV (planilha)". Detalhes e roteiro de teste em `docs/projeto/PR-relatorio-pdf.md`.
 
 Escrito sem SDK .NET na máquina de autoria: **não compilado**. Validar com
 `dotnet build` nos projetos API e App e `dotnet ef database update` antes do merge.

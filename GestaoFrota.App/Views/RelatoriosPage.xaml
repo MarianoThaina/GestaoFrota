@@ -415,14 +415,32 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- ===== US14: exportação ===== -->
-                <Button Text="Exportar período em CSV"
-                        Command="{Binding ExportarCommand}"
-                        BackgroundColor="#0B1D3A"
-                        TextColor="White"
-                        CornerRadius="24"
-                        HeightRequest="48"
-                        IsEnabled="{Binding Exportando, Converter={StaticResource InverseBoolConverter}}" />
+                <!-- ===== US14: exportação (PDF para ler/enviar, CSV para planilha) ===== -->
+                <Label Text="Exportar o período filtrado"
+                       FontSize="13"
+                       FontAttributes="Bold" />
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                    <Button Grid.Column="0"
+                            Text="PDF"
+                            Command="{Binding ExportarCommand}"
+                            CommandParameter="pdf"
+                            BackgroundColor="#0B1D3A"
+                            TextColor="White"
+                            CornerRadius="24"
+                            HeightRequest="48"
+                            IsEnabled="{Binding Exportando, Converter={StaticResource InverseBoolConverter}}" />
+                    <Button Grid.Column="1"
+                            Text="CSV (planilha)"
+                            Command="{Binding ExportarCommand}"
+                            CommandParameter="csv"
+                            BackgroundColor="White"
+                            TextColor="#0B1D3A"
+                            BorderColor="#0B1D3A"
+                            BorderWidth="1.5"
+                            CornerRadius="24"
+                            HeightRequest="48"
+                            IsEnabled="{Binding Exportando, Converter={StaticResource InverseBoolConverter}}" />
+                </Grid>
 
                 <Label Text="{Binding MensagemExportacao}"
                        FontSize="12"

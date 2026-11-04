@@ -8,6 +8,12 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ---------- PDF (US14) ----------
+// QuestPDF exige declarar a licença antes de gerar o primeiro documento.
+// Community: gratuita para projeto acadêmico e empresas com receita anual
+// abaixo de US$ 1 milhão.
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
 // ---------- Banco de dados (EF Core + SQL Server) ----------
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

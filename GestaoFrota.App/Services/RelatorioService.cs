@@ -8,8 +8,10 @@ public interface IRelatorioService
     /// <summary>Fluxo mensal, despesas por categoria e indicadores do período filtrado.</summary>
     Task<RelatorioResumo> ObterResumoAsync(FiltroPeriodo filtro);
 
-    /// <summary>CSV das movimentações do período (US14), pronto para compartilhar.</summary>
-    Task<ArquivoExportado> ExportarCsvAsync(FiltroPeriodo filtro);
+    /// <summary>
+    /// Movimentações do período (US14) em CSV ou PDF, prontas para compartilhar.
+    /// </summary>
+    Task<ArquivoExportado> ExportarAsync(FiltroPeriodo filtro, FormatoExportacao formato);
 
     /// <summary>Estatísticas de rota e veículo e ranking (US10/US13) das viagens do período.</summary>
     Task<EstatisticasFrota> ObterFrotaAsync(FiltroPeriodo filtro);
@@ -41,18 +43,20 @@ public class RelatorioService : IRelatorioService
         return await resposta.Content.ReadFromJsonAsync<RelatorioResumo>() ?? new RelatorioResumo();
     }
 
-    public async Task<ArquivoExportado> ExportarCsvAsync(FiltroPeriodo filtro)
+    public async Task<ArquivoExportado> ExportarAsync(FiltroPeriodo filtro, FormatoExportacao formato)
     {
         ExigirConexao();
 
-        var resposta = await _httpClient.GetAsync($"relatorios/exportar?{filtro.ParaQuery()}");
+        var extensao = formato == FormatoExportacao.Pdf ? "pdf" : "csv";
+        var resposta = await _httpClient.GetAsync($"relatorios/exportar?{filtro.ParaQuery()}&formato={extensao}");
         await resposta.GarantirSucessoAsync();
 
         var conteudo = await resposta.Content.ReadAsByteArrayAsync();
         var nome = resposta.Content.Headers.ContentDisposition?.FileNameStar
                    ?? resposta.Content.Headers.ContentDisposition?.FileName?.Trim('"')
-                   ?? $"relatorio-financeiro-{DateTime.Now:yyyyMMdd}.csv";
-        var tipo = resposta.Content.Headers.ContentType?.MediaType ?? "text/csv";
+                   ?? $"relatorio-financeiro-{DateTime.Now:yyyyMMdd}.{extensao}";
+        var tipo = resposta.Content.Headers.ContentType?.MediaType
+                   ?? (formato == FormatoExportacao.Pdf ? "application/pdf" : "text/csv");
 
         return new ArquivoExportado(nome, conteudo, tipo);
     }
