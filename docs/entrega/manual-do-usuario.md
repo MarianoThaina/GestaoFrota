@@ -171,8 +171,8 @@ toque em **Concluir manutenção** e o veículo volta a ficar **Disponível**.
 # Rotas
 
 Menu > **Rotas**: preencha o **Nome da rota** (ex.: "SP → Curitiba"), a **Origem**, o **Destino** e a
-**Distância estimada (km)**, e toque em **Adicionar rota**. Use **Editar** para corrigir e (só o Administrador)
-**Desativar** para tirar uma rota que não é mais usada.
+**Distância estimada (km)**, e toque em **Adicionar rota**. Use **Editar** para corrigir e
+**Desativar** (só o Administrador) para tirar uma rota que não é mais usada.
 
 # Viagens
 
