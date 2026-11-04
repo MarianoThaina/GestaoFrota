@@ -2,7 +2,7 @@
 
 - `relatorio-executivo.md`: fonte do Relatório Executivo. Edite aqui; os trechos `[PREENCHER]`,
   `[CONFERIR]` e `[CONFIRMAR]` dependem do grupo.
-- `relatorio-executivo-rascunho.pdf`: o mesmo texto já diagramado (rascunho de 04/11/2026).
+- O PDF final é gerado só no fim, quando o texto estiver fechado (comando abaixo).
 
 Para regerar o PDF depois de editar (precisa de [Pandoc](https://pandoc.org) e Chrome):
 
