@@ -1,17 +1,19 @@
 # GestaoFrota.Database
 
-Material do desenho inicial do banco (diagrama em `.brM3`, `.xml` e `.png`) e o
-rascunho `create_tables.sql`, escrito em **PostgreSQL** (`plpgsql`,
-`gen_random_uuid()`, `timestamptz`).
+Diagrama do desenho inicial do banco (Sprint 1), em `.brM3`, `.xml` e `.png`.
+Fica como registro e para a apresentação.
 
 **O schema real do projeto é o das migrations do EF Core em
-`GestaoFrota.Infrastructure/Migrations/`, aplicadas em SQL Server** com
-`dotnet ef database update -p GestaoFrota.Infrastructure -s GestaoFrota.API`.
-O script desta pasta não é executado em lugar nenhum e já não corresponde ao
-modelo (ex.: tabela `perfil` separada, enquanto o código guarda o perfil como
-texto em `Usuarios.Perfil`; não tem `Manutencoes`, `QuilometragemRodadaKm`
-nem `QuantidadeLitros`).
+`GestaoFrota.Infrastructure/Migrations/`, aplicadas em SQL Server** com:
 
-Fica aqui como registro do diagrama entregue na Sprint 1. Se o time preferir
-não manter os dois, o que pode ser apagado é o `.sql`; o diagrama continua útil
-na apresentação.
+```bash
+dotnet ef database update -p GestaoFrota.Infrastructure -s GestaoFrota.API
+```
+
+O rascunho `create_tables.sql` da Sprint 1 foi removido: estava em PostgreSQL,
+não era executado em lugar nenhum e já não correspondia ao modelo (tinha
+`cliente` e `parcela`, que o código não usa, e não tinha `Manutencoes`). Ele
+continua no histórico do Git para consulta.
+
+O diagrama também é da Sprint 1: tabelas criadas depois (como `Manutencoes`)
+podem não aparecer nele; em caso de dúvida, valem as migrations.

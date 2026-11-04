@@ -19,11 +19,35 @@
     <Nullable>enable</Nullable>
 
     <ApplicationTitle>Gestão de Frota</ApplicationTitle>
-    <ApplicationId>com.suaempresa.gestaofrota</ApplicationId>
+    <ApplicationId>com.gestaofrota.app</ApplicationId>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <!--
+    APK de Release para instalar direto no celular (sem Play Store).
+    Gerar: dotnet publish GestaoFrota.App -f net10.0-android -c Release
+    Saída:  GestaoFrota.App/bin/Release/net10.0-android/publish/com.gestaofrota.app-Signed.apk
+
+    Assinatura: sem keystore, o SDK assina com a chave de debug, que basta para
+    instalar no celular. Para assinar com chave própria, passe os valores na
+    linha de comando (nunca versione o .keystore nem a senha):
+      -p:GestaoFrotaKeystore=C:\caminho\gestaofrota.keystore
+      -p:GestaoFrotaKeyAlias=gestaofrota
+      e a variável de ambiente GESTAOFROTA_KEY_PASS com a senha.
+  -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' And '$(GestaoFrotaKeystore)' != '' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>$(GestaoFrotaKeystore)</AndroidSigningKeyStore>
+    <AndroidSigningKeyAlias>$(GestaoFrotaKeyAlias)</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>env:GESTAOFROTA_KEY_PASS</AndroidSigningKeyPass>
+    <AndroidSigningStorePass>env:GESTAOFROTA_KEY_PASS</AndroidSigningStorePass>
   </PropertyGroup>
 
   <ItemGroup>

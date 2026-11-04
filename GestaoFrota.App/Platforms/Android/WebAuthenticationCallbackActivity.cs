@@ -5,7 +5,7 @@ using Android.Content.PM;
 namespace GestaoFrota.App;
 
 /// <summary>
-/// Recebe o redirecionamento do Google (com.suaempresa.gestaofrota://oauth2redirect)
+/// Recebe o redirecionamento do Google (com.gestaofrota.app://oauth2redirect)
 /// e devolve o resultado ao WebAuthenticator. O esquema deve ser igual a
 /// AppConfig.GoogleRedirectUri.
 /// </summary>
@@ -13,7 +13,7 @@ namespace GestaoFrota.App;
 [IntentFilter(
     new[] { Intent.ActionView },
     Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-    DataScheme = "com.suaempresa.gestaofrota",
+    DataScheme = "com.gestaofrota.app",
     DataHost = "oauth2redirect")]
 public class WebAuthenticationCallbackActivity : Microsoft.Maui.Authentication.WebAuthenticatorCallbackActivity
 {

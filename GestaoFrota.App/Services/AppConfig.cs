@@ -1,14 +1,21 @@
 namespace GestaoFrota.App.Services;
 
 /// <summary>
-/// Configuração central do app. Ajuste ApiBaseUrl para o endereço da sua API
-/// (em dev, o emulador Android usa 10.0.2.2 para acessar o localhost da máquina).
+/// Configuração central do app.
+/// ApiBaseUrl muda conforme a compilação:
+/// - Debug no Android: emulador, que enxerga o localhost do PC por 10.0.2.2;
+/// - Release no Android (o .apk do celular): ApiPublica, o endereço HTTPS da API hospedada.
 /// </summary>
 public static class AppConfig
 {
+    /// <summary>Endereço da API hospedada, usado pelo .apk de Release. Preencher antes de gerar o .apk.</summary>
+    public const string ApiPublica = "https://ENDERECO_DA_API_HOSPEDADA/api/";
+
     public static string ApiBaseUrl { get; set; } =
-#if ANDROID
+#if ANDROID && DEBUG
         "http://10.0.2.2:5137/api/";
+#elif ANDROID
+        ApiPublica;
 #else
         "https://localhost:7201/api/";
 #endif
@@ -17,5 +24,5 @@ public static class AppConfig
     public const string GoogleClientId = "SEU_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
 
     /// <summary>Deve bater com o esquema registrado nas plataformas (ver README de configuração).</summary>
-    public const string GoogleRedirectUri = "com.suaempresa.gestaofrota://oauth2redirect";
+    public const string GoogleRedirectUri = "com.gestaofrota.app://oauth2redirect";
 }
