@@ -5,15 +5,15 @@ namespace GestaoFrota.App.Services;
 
 public interface IUsuarioService
 {
-    /// <summary>Todos os usuários, pendentes de aprovação primeiro.</summary>
     Task<List<Usuario>> ListarAsync();
 
-    Task AlterarPerfilAsync(Guid usuarioId, PerfilUsuario perfil);
+    Task AlterarPerfilAsync(
+        Guid usuarioId,
+        PerfilUsuario perfil);
 
-    /// <summary>Libera um cadastro "Aguardando Aprovação" (US16), com perfil opcional.</summary>
-    Task AprovarAsync(Guid usuarioId, PerfilUsuario? perfil);
-
-    Task AlterarSituacaoAsync(Guid usuarioId, SituacaoUsuario situacao);
+    Task AlterarStatusAsync(
+        Guid usuarioId,
+        bool ativo);
 }
 
 public class UsuarioService : IUsuarioService
@@ -27,25 +27,37 @@ public class UsuarioService : IUsuarioService
 
     public async Task<List<Usuario>> ListarAsync()
     {
-        var usuarios = await _httpClient.GetFromJsonAsync<List<Usuario>>("usuarios");
+        var usuarios =
+            await _httpClient.GetFromJsonAsync<List<Usuario>>("usuarios");
+
         return usuarios ?? new List<Usuario>();
     }
 
-    public async Task AlterarPerfilAsync(Guid usuarioId, PerfilUsuario perfil)
+    public async Task AlterarPerfilAsync(
+        Guid usuarioId,
+        PerfilUsuario perfil)
     {
-        var resposta = await _httpClient.PutAsJsonAsync($"usuarios/{usuarioId}/perfil", new { perfil });
-        await resposta.GarantirSucessoAsync();
+        var response = await _httpClient.PutAsJsonAsync(
+            $"usuarios/{usuarioId}/perfil",
+            new
+            {
+                perfil
+            });
+
+        response.EnsureSuccessStatusCode();
     }
 
-    public async Task AprovarAsync(Guid usuarioId, PerfilUsuario? perfil)
+    public async Task AlterarStatusAsync(
+        Guid usuarioId,
+        bool ativo)
     {
-        var resposta = await _httpClient.PutAsJsonAsync($"usuarios/{usuarioId}/aprovar", new { perfil });
-        await resposta.GarantirSucessoAsync();
-    }
+        var response = await _httpClient.PutAsJsonAsync(
+            $"usuarios/{usuarioId}/status",
+            new
+            {
+                ativo
+            });
 
-    public async Task AlterarSituacaoAsync(Guid usuarioId, SituacaoUsuario situacao)
-    {
-        var resposta = await _httpClient.PutAsJsonAsync($"usuarios/{usuarioId}/situacao", new { situacao });
-        await resposta.GarantirSucessoAsync();
+        response.EnsureSuccessStatusCode();
     }
 }

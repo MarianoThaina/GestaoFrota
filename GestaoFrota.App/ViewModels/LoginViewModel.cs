@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Input;
-using GestaoFrota.App.Helpers;
 using GestaoFrota.App.Services;
 
 namespace GestaoFrota.App.ViewModels;
@@ -26,31 +25,31 @@ public partial class LoginViewModel : BaseViewModel
 
         try
         {
-            await _authService.LoginComGoogleAsync();
+        await _authService.LoginComGoogleAsync();
 
-            var usuario = await _authService.ObterUsuarioLogadoAsync();
-            if (usuario is null)
-            {
-                MensagemErro = "Não foi possível identificar o usuário logado.";
-                return;
-            }
+var usuario =
+    await _authService.ObterUsuarioLogadoAsync();
 
-            var appShell = new AppShell();
-            appShell.ConfigurarMenuPorPerfil(usuario);
+if (usuario is null)
+{
+    MensagemErro =
+        "Não foi possível identificar o usuário logado.";
+    return;
+}
 
-            if (Application.Current?.Windows.Count > 0)
-            {
-                Application.Current.Windows[0].Page = appShell;
-            }
-        }
-        catch (TaskCanceledException)
-        {
-            // O usuário fechou o navegador do Google sem concluir: sem mensagem de erro.
+var appShell = new AppShell();
+
+appShell.ConfigurarMenuPorPerfil(usuario);
+
+if (Application.Current?.Windows.Count > 0)
+{
+    Application.Current.Windows[0].Page =
+        appShell;
+}
         }
         catch (Exception ex)
         {
-            // Inclui a mensagem da API quando o cadastro aguarda aprovação ou foi desativado (US16).
-            MensagemErro = ErrosUi.Mensagem(ex, "Não foi possível entrar com o Google. Tente novamente.");
+            MensagemErro = "Não foi possível entrar com o Google. Tente novamente.";
             System.Diagnostics.Debug.WriteLine(ex);
         }
         finally
