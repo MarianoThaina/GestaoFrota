@@ -1,0 +1,22 @@
+@page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+body { font-family: "Segoe UI", Arial, sans-serif; font-size: 10pt; color: #1d2433; line-height: 1.45; max-width: none; margin: 0; }
+header#title-block-header { background: #0B1D3A; color: #fff; padding: 14mm 10mm 10mm; margin: 0 0 8mm; }
+header .title { font-size: 26pt; margin: 0; color: #fff; border: none; }
+header .subtitle { font-size: 14pt; margin: 4px 0 0; color: #c9d4ea; font-weight: 400; }
+.capa p { margin: 2px 0; }
+.capa { border-left: 4px solid #0B1D3A; padding: 6px 12px; margin-bottom: 10px; background: #f3f5f9; }
+h1 { font-size: 15pt; color: #0B1D3A; border-bottom: 2px solid #0B1D3A; padding-bottom: 3px; margin: 18px 0 8px; page-break-after: avoid; }
+h2 { font-size: 12pt; color: #0B1D3A; margin: 14px 0 6px; page-break-after: avoid; }
+table { border-collapse: collapse; width: 100%; margin: 6px 0 12px; font-size: 8.6pt; page-break-inside: auto; }
+tr { page-break-inside: avoid; }
+th { background: #0B1D3A; color: #fff; text-align: left; padding: 5px 6px; font-weight: 600; }
+td { border-bottom: 1px solid #dde2ec; padding: 4px 6px; vertical-align: top; }
+tbody tr:nth-child(even) td { background: #f6f8fb; }
+code { font-family: Consolas, monospace; font-size: 8.4pt; background: #eef1f6; padding: 0 3px; border-radius: 2px; }
+blockquote { margin: 8px 0; padding: 6px 12px; background: #fff7e0; border-left: 4px solid #e0a800; color: #4a3b00; }
+blockquote p { margin: 2px 0; }
+pre.diagrama { font-family: Consolas, monospace; font-size: 8pt; line-height: 1.2; background: #f6f8fb; border: 1px solid #dde2ec; padding: 8px; page-break-inside: avoid; }
+a { color: #0B4FA8; text-decoration: none; }
+col { width: auto !important; }
+table { table-layout: auto; }
+td:first-child { white-space: normal; min-width: 22mm; }
