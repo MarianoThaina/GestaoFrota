@@ -315,11 +315,12 @@ public partial class RelatoriosViewModel : BaseViewModel
     // ---------- Exportação (US14) ----------
 
     /// <summary>
-    /// Baixa o CSV do período filtrado para o cache do app e abre a folha de
-    /// compartilhamento do sistema (e-mail, Drive, WhatsApp...).
+    /// Baixa o arquivo do período filtrado (CSV ou PDF, conforme o botão) para
+    /// o cache do app e abre a folha de compartilhamento do sistema (e-mail,
+    /// Drive, WhatsApp...). O parâmetro vem do CommandParameter do XAML.
     /// </summary>
     [RelayCommand]
-    private async Task ExportarAsync()
+    private async Task ExportarAsync(string? formato)
     {
         if (Exportando)
         {
@@ -331,7 +332,10 @@ public partial class RelatoriosViewModel : BaseViewModel
 
         try
         {
-            var arquivo = await _relatorioService.ExportarCsvAsync(Filtro);
+            var formatoEscolhido = string.Equals(formato, "pdf", StringComparison.OrdinalIgnoreCase)
+                ? FormatoExportacao.Pdf
+                : FormatoExportacao.Csv;
+            var arquivo = await _relatorioService.ExportarAsync(Filtro, formatoEscolhido);
 
             var caminho = Path.Combine(FileSystem.CacheDirectory, arquivo.NomeArquivo);
             await File.WriteAllBytesAsync(caminho, arquivo.Conteudo);

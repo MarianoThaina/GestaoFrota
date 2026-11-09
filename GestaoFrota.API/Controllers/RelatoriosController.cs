@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Claims;
 using System.Text;
 using GestaoFrota.API.DTOs;
 using GestaoFrota.API.Security;
@@ -145,33 +146,34 @@ public class RelatoriosController : ControllerBase
     }
 
     /// <summary>
-    /// Exporta as movimentações do período em CSV (US14). Separador ";" e BOM
-    /// UTF-8 para o Excel em português abrir sem configuração.
+    /// Exporta as movimentações do período (US14) em CSV (padrão) ou PDF
+    /// (<c>formato=pdf</c>). Os dois formatos saem da mesma consulta e dos
+    /// mesmos totais. CSV: separador ";" e BOM UTF-8 para o Excel em português
+    /// abrir sem configuração. PDF: ver <see cref="RelatorioPdf"/>.
     /// </summary>
     [HttpGet("exportar")]
     public async Task<IActionResult> Exportar(
         [FromQuery] int? meses, [FromQuery] DateTime? de, [FromQuery] DateTime? ate,
-        [FromQuery] int? ano, [FromQuery] int? mes, [FromQuery] bool tudo = false)
+        [FromQuery] int? ano, [FromQuery] int? mes, [FromQuery] bool tudo = false,
+        [FromQuery] string? formato = null)
     {
+        var formatoNormalizado = string.IsNullOrWhiteSpace(formato) ? "csv" : formato.Trim().ToLowerInvariant();
+        if (formatoNormalizado is not ("csv" or "pdf"))
+        {
+            return BadRequest(new { mensagem = "Formato inválido. Use csv ou pdf." });
+        }
+
         var hoje = DateTime.UtcNow;
         var periodo = await ResolverPeriodoFinanceiroAsync(hoje, meses, de, ate, ano, mes, tudo);
+        var linhas = await CarregarLinhasExportacaoAsync(periodo);
+        var sufixoArquivo = $"{periodo.Inicio:yyyyMMdd}-{periodo.UltimoDia:yyyyMMdd}";
 
-        var linhas = await _context.Movimentacoes.AsNoTracking()
-            .Where(m => !m.Estornada && m.DataVencimento >= periodo.Inicio && m.DataVencimento < periodo.Fim)
-            .OrderBy(m => m.DataVencimento)
-            .ThenBy(m => m.DataCriacao)
-            .Select(m => new
-            {
-                m.DataVencimento,
-                m.Tipo,
-                m.Descricao,
-                Categoria = m.Categoria!.Nome,
-                FormaPagamento = m.FormaPagamento!.Nome,
-                m.Status,
-                m.DataPagamento,
-                m.Valor
-            })
-            .ToListAsync();
+        if (formatoNormalizado == "pdf")
+        {
+            var geradoPor = User.FindFirst(ClaimTypes.Name)?.Value;
+            var pdf = RelatorioPdf.Gerar(periodo, linhas, geradoPor, hoje);
+            return File(pdf, "application/pdf", $"relatorio-financeiro-{sufixoArquivo}.pdf");
+        }
 
         var sb = new StringBuilder();
         sb.Append("Periodo;").Append(periodo.Rotulo).Append(';')
@@ -192,21 +194,38 @@ public class RelatoriosController : ControllerBase
               .AppendLine();
         }
 
-        var totalEntradas = linhas.Where(l => l.Tipo == TipoMovimentacao.Receita).Sum(l => l.Valor);
-        var totalSaidas = linhas.Where(l => l.Tipo == TipoMovimentacao.Despesa).Sum(l => l.Valor);
+        var totais = TotaisExportacao.De(linhas);
         sb.AppendLine();
-        sb.Append("Total de entradas;;;;;;;").Append(totalEntradas.ToString("F2", PtBr)).AppendLine();
-        sb.Append("Total de saidas;;;;;;;").Append(totalSaidas.ToString("F2", PtBr)).AppendLine();
-        sb.Append("Resultado;;;;;;;").Append((totalEntradas - totalSaidas).ToString("F2", PtBr)).AppendLine();
+        sb.Append("Total de entradas;;;;;;;").Append(totais.Entradas.ToString("F2", PtBr)).AppendLine();
+        sb.Append("Total de saidas;;;;;;;").Append(totais.Saidas.ToString("F2", PtBr)).AppendLine();
+        sb.Append("Resultado;;;;;;;").Append(totais.Resultado.ToString("F2", PtBr)).AppendLine();
 
         // BOM UTF-8: sem ele o Excel (Windows, pt-BR) troca os acentos por símbolos.
         var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
-        var nomeArquivo = $"relatorio-financeiro-{periodo.Inicio:yyyyMMdd}-{periodo.UltimoDia:yyyyMMdd}.csv";
 
-        return File(bytes, "text/csv; charset=utf-8", nomeArquivo);
+        return File(bytes, "text/csv; charset=utf-8", $"relatorio-financeiro-{sufixoArquivo}.csv");
     }
 
     // ---------------- Auxiliares ----------------
+
+    /// <summary>Movimentações do período para a exportação (CSV e PDF), sem estornadas.</summary>
+    private async Task<List<LinhaExportacao>> CarregarLinhasExportacaoAsync(PeriodoRelatorio periodo)
+    {
+        return await _context.Movimentacoes.AsNoTracking()
+            .Where(m => !m.Estornada && m.DataVencimento >= periodo.Inicio && m.DataVencimento < periodo.Fim)
+            .OrderBy(m => m.DataVencimento)
+            .ThenBy(m => m.DataCriacao)
+            .Select(m => new LinhaExportacao(
+                m.DataVencimento,
+                m.Tipo,
+                m.Descricao,
+                m.Categoria!.Nome,
+                m.FormaPagamento!.Nome,
+                m.Status,
+                m.DataPagamento,
+                m.Valor))
+            .ToListAsync();
+    }
 
     /// <summary>"Tudo" começa no vencimento mais antigo não estornado.</summary>
     private async Task<PeriodoRelatorio> ResolverPeriodoFinanceiroAsync(
