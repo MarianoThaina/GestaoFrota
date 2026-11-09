@@ -32,7 +32,7 @@ dava para gerar/validar o projeto aqui.
    - Crie um OAuth Client ID no [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
      (tipo "Android"/"iOS" ou "Web", conforme a plataforma).
    - Preencha `GoogleClientId`.
-   - Registre o esquema de redirecionamento (`com.suaempresa.gestaofrota://oauth2redirect`)
+   - Registre o esquema de redirecionamento (`com.gestaofrota.app://oauth2redirect`)
      como *intent filter* no `AndroidManifest.xml` (Android) e como *URL Scheme*
      no `Info.plist` (iOS/MacCatalyst) — o `dotnet new maui` já cria esses
      arquivos, você só precisa adicionar o intent filter/URL scheme.
@@ -94,7 +94,7 @@ depois do passo 1 do "Passo a passo" acima, direto nos arquivos gerados:
   [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
   [IntentFilter(new[] { global::Android.Content.Intent.ActionView },
       Categories = new[] { global::Android.Content.Intent.CategoryDefault, global::Android.Content.Intent.CategoryBrowsable },
-      DataScheme = "com.suaempresa.gestaofrota")]
+      DataScheme = "com.gestaofrota.app")]
   public class WebAuthenticationCallbackActivity : WebAuthenticatorCallbackActivity
   {
   }
@@ -118,7 +118,7 @@ depois do passo 1 do "Passo a passo" acima, direto nos arquivos gerados:
     <dict>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>com.suaempresa.gestaofrota</string>
+        <string>com.gestaofrota.app</string>
       </array>
     </dict>
   </array>

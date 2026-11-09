@@ -2,7 +2,13 @@
 
 Aplicativo mobile (.NET MAUI) + API REST (ASP.NET Core) + SQL Server (EF Core) para gestão financeira e controle de frota.
 
-Esta etapa entrega o **núcleo financeiro**: movimentações, dívidas/financiamentos com geração automática de parcelas, saldo atual e projeção de caixa, com autenticação Google (SSO) e RBAC.
+O sistema cobre três frentes, com login Google (SSO) e permissões por perfil (RBAC):
+
+- **Financeiro:** movimentações com comprovante, dívidas e financiamentos com geração automática de parcelas, saldo atual e projeção de caixa.
+- **Frota:** veículos, rotas, viagens (com registro offline no celular) e manutenções.
+- **Relatórios:** fluxo mensal, despesas por categoria, rentabilidade e custo/km por rota e veículo, com exportação do período.
+
+O app é distribuído como `.apk` para instalar direto no celular Android (ver [Instalar o app no celular](#instalar-o-app-no-celular-apk)).
 
 ```
 GestaoFrota.Domain          entidades, enums e a CalculadoraFinanceira (regras puras)
@@ -26,7 +32,7 @@ despesas por categoria (`CalculadoraRelatorios`), rentabilidade, custo/km, km/l
 e ranking (`CalculadoraFrota`), placa antiga/Mercosul (`ValidadorPlaca`) e
 hodômetro (`RegrasViagem`). Cada arquivo de teste nomeia a user story que prova.
 
-## O que foi implementado nesta etapa
+## Núcleo financeiro
 
 | Requisito | Onde |
 |---|---|
@@ -46,7 +52,7 @@ Movimentações **estornadas** nunca entram no saldo nem na projeção.
 
 - .NET SDK 10 com a workload MAUI/Android (`dotnet workload install maui-android`)
 - SQL Server (LocalDB, Express ou Docker)
-- Android SDK + um emulador (AVD) com **câmera virtual** habilitada
+- Android SDK; para desenvolver, um emulador (AVD) com **câmera virtual** habilitada; para a entrega, um celular Android 6.0 ou mais novo
 - Projeto OAuth no Google Cloud (para o login) - ver a seção abaixo
 
 ## Configuração (sem versionar segredos)
@@ -67,12 +73,13 @@ Equivalentes por variável de ambiente: `Jwt__Key`, `Authentication__Google__Cli
 No app, edite `GestaoFrota.App/Services/AppConfig.cs`:
 
 - `GoogleClientId` com o mesmo Client ID usado na API;
-- `ApiBaseUrl` já aponta para `http://10.0.2.2:5137/api/` (o emulador enxerga o `localhost` do PC por `10.0.2.2`).
+- `ApiPublica` com o endereço HTTPS da API hospedada: é o que o `.apk` de Release usa no celular;
+- no Debug, `ApiBaseUrl` aponta para `http://10.0.2.2:5137/api/` (o emulador enxerga o `localhost` do PC por `10.0.2.2`), e isso não muda.
 
 ### Login Google (SSO)
 
 1. Google Cloud Console > APIs e serviços > Credenciais > criar ID do cliente OAuth.
-2. Registre o esquema de redirecionamento `com.suaempresa.gestaofrota://oauth2redirect` (igual a `AppConfig.GoogleRedirectUri` e ao `WebAuthenticationCallbackActivity`).
+2. Registre o esquema de redirecionamento `com.gestaofrota.app://oauth2redirect` (igual a `AppConfig.GoogleRedirectUri` e ao `WebAuthenticationCallbackActivity`).
 3. Use o mesmo Client ID no app e na API (a API valida a audiência do `id_token`).
 
 Não há confirmação de e-mail própria: quem autentica é o Google, que já entrega o e-mail verificado dentro do `id_token`. Contas novas entram como **Motorista** (`OperadorMotorista`) e só um Administrador promove perfis.
@@ -105,6 +112,68 @@ cd GestaoFrota.App
 dotnet build -t:Run -f net10.0-android
 ```
 
+## Instalar o app no celular (.apk)
+
+O celular não enxerga a API rodando no seu PC: antes de gerar o `.apk`, a API
+precisa estar hospedada num endereço HTTPS e esse endereço tem que estar em
+`AppConfig.ApiPublica` (ver *Configuração*).
+
+### 1. Gerar o .apk
+
+```bash
+dotnet publish GestaoFrota.App -f net10.0-android -c Release
+```
+
+O arquivo sai em
+`GestaoFrota.App/bin/Release/net10.0-android/publish/com.gestaofrota.app-Signed.apk`.
+
+Sem configuração extra, o `.apk` é assinado com a chave de desenvolvimento do
+SDK, o que basta para instalar no celular. Para assinar com uma chave própria,
+veja o comentário no `GestaoFrota.App.csproj` (a chave e a senha nunca entram
+no repositório).
+
+### 2. Passar para o celular
+
+Qualquer um destes caminhos serve:
+
+- **Cabo USB:** copie o `.apk` para a pasta *Download* do celular.
+- **Google Drive, e-mail ou WhatsApp:** envie o arquivo para você mesmo e baixe
+  no celular.
+- **adb (com a depuração USB ligada):** `adb install -r caminho/do/arquivo.apk`
+  instala direto e pula os passos 3 e 4.
+
+### 3. Permitir a instalação
+
+O Android bloqueia apps de fora da Play Store até você liberar a origem:
+
+1. Abra o `.apk` pelo app *Arquivos* (ou pelo navegador, Drive, WhatsApp).
+2. Na mensagem "Por segurança, seu telefone não tem permissão para instalar
+   apps desta origem", toque em **Configurações**.
+3. Ative **Permitir desta fonte** e volte.
+
+O caminho exato varia por fabricante; em geral fica em *Configurações > Apps >
+Acesso especial > Instalar apps desconhecidos*.
+
+### 4. Instalar e abrir
+
+1. Toque em **Instalar**. Se o Play Protect avisar que o app é desconhecido,
+   toque em **Mais detalhes > Instalar mesmo assim** (o app não está na Play
+   Store, por isso o aviso).
+2. Abra **Gestão de Frota** e toque em **Entrar com Google**.
+3. Na primeira vez em que anexar um comprovante, o app pede permissão para a
+   câmera: toque em **Permitir**.
+
+Para atualizar, instale o `.apk` novo por cima: os dados ficam no servidor e o
+login é refeito pelo Google.
+
+**Se der errado**
+
+| Sintoma | Causa provável |
+|---|---|
+| "App não instalado" | Já existe uma versão assinada com outra chave: desinstale a antiga e instale de novo. |
+| O login abre o Google mas não volta ao app | O Client ID ou o esquema `com.gestaofrota.app://oauth2redirect` não estão registrados no Google Cloud. |
+| Login feito, mas as telas não carregam | `ApiPublica` errado ou a API fora do ar: abra `<endereço>/swagger` no navegador do celular. |
+
 ### Criar os perfis para a demonstração
 
 1. Entre no app com a conta que será **Administrador** (cria o usuário automaticamente como Motorista).
@@ -117,7 +186,7 @@ dotnet build -t:Run -f net10.0-android
 3. Entre com uma segunda conta Google: ela fica como **Motorista**. Use-a para mostrar o menu restrito.
 4. Daí em diante, o Administrador altera perfis em *Usuários* dentro do app.
 
-## Roteiro do vídeo (emulador Android)
+## Roteiro do vídeo (app no celular)
 
 1. **Login e RBAC (Administrador):** "Entrar com Google" > mostrar o menu lateral completo (Início, Movimentações, Dívidas e Financiamentos, Categorias, Formas de Pagamento, Usuários, Sair).
 2. **Cadastros base:** abrir *Categorias* e *Formas de Pagamento*.
@@ -191,13 +260,13 @@ Enums: StatusVeiculo 1 Disponivel, 2 EmViagem, 3 EmManutencao · StatusViagem 1 
 
 ## Repositório
 
-- Torne o repositório **público** e proteja a branch `main` (GitHub > Settings > Branches > *Add branch protection rule*: exigir pull request e bloquear push direto).
+- O repositório é **público**. Recomendado proteger a branch `main` (GitHub > Settings > Branches > *Add branch protection rule*: exigir pull request e bloquear push direto).
 - Revise o histórico antes de publicar: se algum segredo já foi commitado, **troque a chave** (não basta apagar o arquivo).
 
 ## Limitações conhecidas
 
-- O código desta etapa foi escrito sem acesso a um SDK .NET/emulador; faça `dotnet build` e um teste completo no emulador antes de gravar o vídeo.
+- Parte do código foi escrita sem SDK .NET na máquina de autoria; antes de gravar o vídeo, rode `dotnet build` e `dotnet test` e faça um teste completo com o `.apk` num celular real.
 - Imagens maiores que 5 MB são recusadas (sem compressão automática).
 - A quitação antecipada é armazenada e exibida, mas ainda não há operação que quite a dívida em um único pagamento.
 - A fila offline cobre só viagens (abrir e encerrar). Categorias criadas offline continuam marcadas como pendentes sem rotina de reenvio.
-- `GestaoFrota.Database/create_tables.sql` é o rascunho PostgreSQL da Sprint 1 e não é executado; o schema real é o das migrations (ver o README daquela pasta).
+- O schema do banco é o das migrations do EF Core; o rascunho SQL da Sprint 1 foi removido (ver `GestaoFrota.Database/README.md`).
