@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<!--
-		usesCleartextTraffic: o emulador acessa a API local por http://10.0.2.2:5137.
-		Em produção use sempre HTTPS e remova este atributo.
-	-->
+	<!-- Tráfego em texto claro desativado: a API hospedada usa HTTPS.
+	     Para testar contra a API local (http://10.0.2.2:5137), adicione temporariamente
+	     android:usesCleartextTraffic="true" e remova antes do build de Release. -->
 	<application android:allowBackup="true"
 	             android:icon="@mipmap/appicon"
 	             android:roundIcon="@mipmap/appicon_round"
-	             android:supportsRtl="true"
-	             android:usesCleartextTraffic="true"></application>
+	             android:supportsRtl="true"></application>
 
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
