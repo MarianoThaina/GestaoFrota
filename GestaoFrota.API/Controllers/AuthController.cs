@@ -1,6 +1,7 @@
 using GestaoFrota.API.DTOs;
 using GestaoFrota.API.Services;
 using GestaoFrota.Domain.Entities;
+using GestaoFrota.Domain.Enums;
 using GestaoFrota.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,15 +21,31 @@ public class AuthController : ControllerBase
     private readonly AppDbContext _context;
     private readonly IGoogleAuthService _googleAuthService;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly IConfiguration _configuration;
 
     public AuthController(
         AppDbContext context,
         IGoogleAuthService googleAuthService,
-        IJwtTokenService jwtTokenService)
+        IJwtTokenService jwtTokenService,
+        IConfiguration configuration)
     {
         _context = context;
         _googleAuthService = googleAuthService;
         _jwtTokenService = jwtTokenService;
+        _configuration = configuration;
+    }
+
+    /// <summary>
+    /// Seed de Administrador: e-mails listados em Seed:AdministradoresEmails
+    /// (appsettings ou variável de ambiente Seed__AdministradoresEmails__0)
+    /// viram Administrador no login. Evita o UPDATE manual no banco.
+    /// </summary>
+    private bool EhAdministradorSeed(string email)
+    {
+        var emails = _configuration.GetSection("Seed:AdministradoresEmails").Get<string[]>();
+        return emails is not null && emails.Any(e =>
+            !string.IsNullOrWhiteSpace(e) &&
+            string.Equals(e.Trim(), email, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -80,6 +97,11 @@ public class AuthController : ControllerBase
             usuario.Nome = googleUser.Nome;
             usuario.FotoUrl = googleUser.FotoUrl;
             usuario.UltimoLogin = DateTime.UtcNow;
+        }
+
+        if (EhAdministradorSeed(usuario.Email) && usuario.Perfil != PerfilUsuario.Administrador)
+        {
+            usuario.Perfil = PerfilUsuario.Administrador;
         }
 
         await _context.SaveChangesAsync();

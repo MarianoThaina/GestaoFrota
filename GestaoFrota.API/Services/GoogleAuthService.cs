@@ -25,6 +25,12 @@ public class GoogleAuthService : IGoogleAuthService
 
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
 
+            // O seed de Administrador confia no e-mail; exige que o Google o tenha verificado.
+            if (!payload.EmailVerified)
+            {
+                throw new UnauthorizedAccessException("E-mail da conta Google não verificado.");
+            }
+
             return new GoogleUserInfo(
                 GoogleId: payload.Subject,
                 Email: payload.Email,

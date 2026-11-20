@@ -13,15 +13,15 @@ const CONFIG = {
   //           simulado. Serve para trabalhar no visual sem depender da API.
   //   false → o site fala com a API de verdade e exige login pelo Google.
   //
-  // Deixe false na entrega final.
-  MODO_DEMO: true,
+  // Deixe false na entrega final (já está false).
+  MODO_DEMO: false,
 
   // Endereço da API. O perfil http do projeto sobe em 5137 e o https em 7201
   // (GestaoFrota.API/Properties/launchSettings.json).
   //
   // Use o https se o navegador já confiar no certificado de desenvolvimento;
   // caso contrário o http evita o aviso de certificado inválido.
-  API: 'https://localhost:7201',
+  API: 'https://gestaofrota.runasp.net',
 
   // Client ID do Google, do tipo "Aplicativo da Web".
   //

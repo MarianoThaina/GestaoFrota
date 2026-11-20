@@ -176,8 +176,11 @@ login é refeito pelo Google.
 
 ### Criar os perfis para a demonstração
 
-1. Entre no app com a conta que será **Administrador** (cria o usuário automaticamente como Motorista).
-2. Promova-a direto no banco, uma única vez:
+1. **Administrador automático (seed):** na API hospedada, defina a variável de ambiente
+   `Seed__AdministradoresEmails__0=seu-email@gmail.com` (ou preencha `Seed:AdministradoresEmails` no
+   `appsettings.json`). No primeiro login dessa conta, ela vira **Administrador** sozinha. Não precisa de SQL.
+   O avaliador, se tiver o e-mail na lista, também entra como Administrador.
+2. *(Alternativa manual)* promova direto no banco, uma única vez:
 
    ```sql
    UPDATE Usuarios SET Perfil = 'Administrador' WHERE Email = 'seu-email@gmail.com';
