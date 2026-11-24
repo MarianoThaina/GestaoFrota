@@ -14,9 +14,9 @@ subtitle: "Relatório Executivo"
 
 </div>
 
-> **Rascunho de 04/11/2026.** Montado a partir do código e do histórico do repositório. Os trechos
-> entre colchetes, como [PREENCHER] e [CONFIRMAR], dependem do grupo. As seções 6 e 7 também dependem da
-> hospedagem escolhida e do roadmap original do documento do projeto.
+> **Rascunho de 04/11/2026, atualizado em 24/11/2026.** Montado a partir do código e do histórico do
+> repositório. Os trechos entre colchetes, como [PREENCHER] e [CONFIRMAR], dependem do grupo. A seção 7
+> também depende do roadmap original do documento do projeto.
 
 # 1. Resumo executivo
 
@@ -49,7 +49,7 @@ configurar o login Google real, hospedar a API e validar o `.apk` em celulares r
 
 | Funcionalidade | Como funciona |
 |---|---|
-| Login com Google | O app abre o login do Google e recebe um `id_token`. A API confere esse token, cria ou atualiza o usuário e devolve um JWT próprio. O app nunca vê a senha, e a sessão fica salva no `SecureStorage` do aparelho. |
+| Login com Google | O app abre o login do Google; o Google devolve um código para a API, que o troca por um `id_token` e o repassa ao app. A API confere esse token, cria ou atualiza o usuário e devolve um JWT próprio. O app nunca vê a senha, e a sessão fica salva no `SecureStorage` do aparelho. |
 | Perfis | Quatro perfis: Administrador, Gestor de Frota, Financeiro e Operador/Motorista. Uma conta nova entra como Motorista, e só o Administrador promove. |
 | Menu por perfil | Menu lateral (Flyout) montado conforme o perfil. O Motorista vê só Viagens e Frota (consulta) e abre direto em Viagens. |
 | Segurança no servidor | Todo endpoint tem `[Authorize(Roles = …)]`. O Motorista só recebe as próprias viagens, por um filtro na consulta da API. |
@@ -204,26 +204,34 @@ dados não sincronizados levaria a decisões erradas.
 
 # 6. Infraestrutura e custos
 
-> [PREENCHER quando a hospedagem for escolhida] A tabela abaixo é a proposta. Os valores foram
-> conferidos nas páginas dos provedores em 04/11/2026 e podem mudar.
+A API e o banco estão hospedados no **MonsterASP.NET**, plano gratuito, no endereço
+`https://gestaofrota.runasp.net`. O plano gratuito não pede cartão e inclui banco SQL Server e
+certificado HTTPS (Let's Encrypt). [CONFIRMAR os limites do plano gratuito no painel: espaço, banco e
+tráfego.]
 
-| Componente | Proposta | Custo |
+| Componente | Escolha | Custo |
 |---|---|---|
 | Repositório e versionamento | GitHub (repositório público) | R$ 0 |
-| Login | Google Identity (OAuth 2.0) | R$ 0 |
-| API | Azure App Service, plano Free F1, endereço `*.azurewebsites.net` com HTTPS | R$ 0 [CONFIRMAR o limite de CPU diário do F1] |
-| Banco de dados | Azure SQL Database, oferta gratuita: 100.000 vCore-segundos e 32 GB por mês, renovados todo mês; pausa sozinho se estourar | R$ 0 |
+| Login | Google Identity (OAuth 2.0), cliente Web único para site, app e API; app em modo Teste com usuários cadastrados | R$ 0 |
+| API | MonsterASP.NET, plano gratuito, `gestaofrota.runasp.net` com HTTPS | R$ 0 |
+| Banco de dados | SQL Server do MonsterASP.NET (plano gratuito); as migrations rodam na inicialização da API | R$ 0 |
 | Distribuição do app | `.apk` instalado direto no celular, sem Play Store | R$ 0 (a Play Store cobraria taxa única de cadastro) |
 | Ferramentas | .NET SDK, Visual Studio/VS Code, Android SDK | R$ 0 |
 | **Total mensal** | | **R$ 0** |
 
-**Limites conhecidos da proposta:**
+**Segredos fora do código.** A chave do JWT, a chave secreta do cliente Google e a connection string
+ficam só nas variáveis de ambiente da hospedagem (`Jwt__Key`, `Authentication__Google__ClientSecret`,
+`ConnectionStrings__DefaultConnection`). O repositório guarda apenas valores públicos, como o Client ID.
 
-- O plano F1 não aceita domínio próprio com certificado; o endereço padrão `azurewebsites.net` atende ao projeto.
-- A oferta gratuita do Azure SQL não é compatível com a assinatura *Azure for Students Starter*. Se o grupo usar a conta de estudante, é preciso conferir qual oferta ela é antes de criar o banco.
+**Limites conhecidos:**
 
-Fontes: [Azure SQL Database free offer](https://learn.microsoft.com/azure/azure-sql/database/free-offer) ·
-[Azure App Service – certificados e domínio](https://learn.microsoft.com/azure/app-service/configure-ssl-bindings).
+- Com o login em modo Teste no Google, só entram os e-mails cadastrados como usuários de teste (até 100).
+  Publicar o login exigiria página inicial e política de privacidade, fora do escopo da entrega.
+- O certificado do SQL Server do MonsterASP não é de autoridade pública: a connection string precisa de
+  `TrustServerCertificate=True`.
+
+Fontes: [MonsterASP.NET](https://www.monsterasp.net) ·
+[MonsterASP.NET – conexão segura ao MSSQL](https://help.monsterasp.net/books/databases/page/secure-connection-ssltls-to-mssql).
 
 # 7. Cronograma: planejado × executado
 
