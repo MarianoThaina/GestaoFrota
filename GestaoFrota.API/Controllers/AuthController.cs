@@ -112,6 +112,48 @@ public class AuthController : ControllerBase
             token, expiraEm, usuario.Id, usuario.Nome, usuario.Email, usuario.FotoUrl, usuario.Perfil));
     }
 
+    /// <summary>Esquema que devolve o resultado ao app (WebAuthenticationCallbackActivity).</summary>
+    private const string RetornoApp = "com.gestaofrota.app://oauth2redirect";
+
+    /// <summary>
+    /// Retorno do login Google do app Android. O cliente "Aplicativo da Web"
+    /// do Google não aceita redirecionar para o esquema do app, então o Google
+    /// devolve o código para cá; a API troca o código pelo id_token (com o
+    /// Client Secret, que fica só no servidor) e redireciona o navegador para
+    /// com.gestaofrota.app://oauth2redirect#id_token=..., que o
+    /// WebAuthenticator do app recebe. Dali o app segue o fluxo de sempre:
+    /// POST /api/auth/google com o id_token.
+    /// </summary>
+    [HttpGet("google/retorno")]
+    public async Task<IActionResult> RetornoGoogle([FromQuery] string? code, [FromQuery] string? error)
+    {
+        if (!string.IsNullOrWhiteSpace(error))
+        {
+            // Ex.: access_denied quando a pessoa cancela ou não está na lista de testadores.
+            return Redirect($"{RetornoApp}#error={Uri.EscapeDataString(error)}");
+        }
+
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return BadRequest(new { mensagem = "Parâmetro code ausente. Esta rota é chamada pelo Google, não diretamente." });
+        }
+
+        try
+        {
+            var idToken = await _googleAuthService.TrocarCodigoPorIdTokenAsync(code);
+            return Redirect($"{RetornoApp}#id_token={Uri.EscapeDataString(idToken)}");
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Redirect($"{RetornoApp}#error=codigo_recusado");
+        }
+        catch (InvalidOperationException)
+        {
+            // Client Secret ausente na hospedagem: devolve ao app em vez de um 500 no navegador.
+            return Redirect($"{RetornoApp}#error=api_sem_client_secret");
+        }
+    }
+
     /// <summary>
     /// Retorna os dados do usuário autenticado a partir do JWT — útil para
     /// o app mobile validar sessão/perfil sem precisar refazer login.

@@ -45,7 +45,9 @@ builder.Services
 builder.Services.AddAuthorization();
 
 // ---------- Serviços de aplicação ----------
-builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+// Cliente HTTP tipado: o GoogleAuthService chama o endpoint de token do Google
+// para trocar o código do login do app pelo id_token.
+builder.Services.AddHttpClient<IGoogleAuthService, GoogleAuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ---------- Controllers e documentação ----------

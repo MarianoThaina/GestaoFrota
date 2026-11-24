@@ -49,14 +49,23 @@ public class GoogleAuthService : IAuthService
             "https://accounts.google.com/o/oauth2/v2/auth" +
             $"?client_id={Uri.EscapeDataString(AppConfig.GoogleClientId)}" +
             $"&redirect_uri={Uri.EscapeDataString(AppConfig.GoogleRedirectUri)}" +
-            "&response_type=id_token" +
+            "&response_type=code" +
             "&scope=openid%20email%20profile" +
-            $"&nonce={Guid.NewGuid()}";
+            "&prompt=select_account";
 
-        var callbackUri = new Uri(AppConfig.GoogleRedirectUri);
+        // O Google devolve o código para a API (GoogleRedirectUri); a API troca
+        // pelo id_token e redireciona para o esquema do app (GoogleCallbackUri).
+        var callbackUri = new Uri(AppConfig.GoogleCallbackUri);
 
         var resultado = await WebAuthenticator.Default.AuthenticateAsync(
             new Uri(authUrl), callbackUri);
+
+        if (resultado.Properties.TryGetValue("error", out var erro) && !string.IsNullOrWhiteSpace(erro))
+        {
+            throw new InvalidOperationException(erro == "access_denied"
+                ? "Login cancelado ou conta sem permissão (o e-mail precisa estar entre os usuários de teste do Google)."
+                : $"O Google recusou o login ({erro}).");
+        }
 
         if (!resultado.Properties.TryGetValue("id_token", out var idToken) || string.IsNullOrWhiteSpace(idToken))
         {

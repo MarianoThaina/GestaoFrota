@@ -20,9 +20,24 @@ public static class AppConfig
         "https://localhost:7201/api/";
 #endif
 
-    /// <summary>Client ID OAuth2 do tipo "Web application" ou "iOS/Android" no Google Cloud Console.</summary>
-    public const string GoogleClientId = "SEU_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+    /// <summary>
+    /// Client ID OAuth2 do tipo "Aplicativo da Web" no Google Cloud Console.
+    /// É o mesmo da API e do site: a API só aceita id_token emitido para ele.
+    /// </summary>
+    public const string GoogleClientId = "869635075019-me5auvsrffljgkk40oc9jfucd91sblls.apps.googleusercontent.com";
 
-    /// <summary>Deve bater com o esquema registrado nas plataformas (ver README de configuração).</summary>
-    public const string GoogleRedirectUri = "com.gestaofrota.app://oauth2redirect";
+    /// <summary>
+    /// Para onde o Google devolve o login. O cliente Web do Google só aceita
+    /// endereço https, então o Google devolve o código para a API publicada,
+    /// que troca pelo id_token e redireciona para GoogleCallbackUri.
+    /// Cadastrado em "URIs de redirecionamento autorizados" no Google Cloud.
+    /// Vale também no emulador (Debug): o retorno sempre passa pela API publicada.
+    /// </summary>
+    public const string GoogleRedirectUri = ApiPublica + "auth/google/retorno";
+
+    /// <summary>
+    /// Esquema que a API usa para devolver o id_token ao app. Deve bater com
+    /// WebAuthenticationCallbackActivity (Platforms/Android).
+    /// </summary>
+    public const string GoogleCallbackUri = "com.gestaofrota.app://oauth2redirect";
 }
