@@ -28,7 +28,7 @@ const CONFIG = {
   // Precisa ser exatamente o mesmo valor de
   // GestaoFrota.API/appsettings.json > Authentication:Google:ClientId,
   // porque a API valida se o token foi emitido para esse ClientId.
-  GOOGLE_CLIENT_ID: 'SEU_GOOGLE_CLIENT_ID_AQUI.apps.googleusercontent.com'
+  GOOGLE_CLIENT_ID: '869635075019-me5auvsrffljgkk40oc9jfucd91sblls.apps.googleusercontent.com'
 };
 
 // Os enums chegam da API como número, não como texto: o Program.cs não

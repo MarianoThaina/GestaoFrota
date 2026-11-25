@@ -63,11 +63,12 @@ Movimentações **estornadas** nunca entram no saldo nem na projeção.
 cd GestaoFrota.API
 dotnet user-secrets init
 dotnet user-secrets set "Jwt:Key" "uma-chave-aleatoria-com-no-minimo-32-caracteres"
-dotnet user-secrets set "Authentication:Google:ClientId" "SEU_ID.apps.googleusercontent.com"
+dotnet user-secrets set "Authentication:Google:ClientSecret" "CHAVE_SECRETA_DO_CLIENTE_WEB"
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=GestaoFrota;Trusted_Connection=True;TrustServerCertificate=True;"
 ```
 
-Equivalentes por variável de ambiente: `Jwt__Key`, `Authentication__Google__ClientId`, `ConnectionStrings__DefaultConnection`.
+Equivalentes por variável de ambiente: `Jwt__Key`, `Authentication__Google__ClientSecret`, `ConnectionStrings__DefaultConnection`.
+O Client ID do Google (`Authentication:Google:ClientId`) **não é segredo** e já está no `appsettings.json`, no `AppConfig.cs` e no `GestaoFrota.Web/js/config.js`.
 **Nunca** faça commit de chaves, senhas ou connection strings reais (`appsettings.Development.json` já está no `.gitignore`).
 
 No app, edite `GestaoFrota.App/Services/AppConfig.cs`:
@@ -78,9 +79,19 @@ No app, edite `GestaoFrota.App/Services/AppConfig.cs`:
 
 ### Login Google (SSO)
 
-1. Google Cloud Console > APIs e serviços > Credenciais > criar ID do cliente OAuth.
-2. Registre o esquema de redirecionamento `com.gestaofrota.app://oauth2redirect` (igual a `AppConfig.GoogleRedirectUri` e ao `WebAuthenticationCallbackActivity`).
-3. Use o mesmo Client ID no app e na API (a API valida a audiência do `id_token`).
+Um único cliente OAuth do tipo **Aplicativo da Web** serve o site, o app e a API (a API valida a audiência do `id_token` contra ele).
+
+1. Google Cloud Console > Google Auth Platform > Clientes > criar cliente **Aplicativo da Web**.
+2. **Origens JavaScript autorizadas** (login do site): `http://localhost`, `http://localhost:5500` e `https://gestaofrota.runasp.net`.
+3. **URIs de redirecionamento autorizados** (login do app): `https://gestaofrota.runasp.net/api/auth/google/retorno`.
+4. Em **Público**, com o app em modo Teste, cadastre como usuários de teste os e-mails que vão logar (grupo e professor).
+5. A **chave secreta do cliente** vai só na hospedagem da API (`Authentication__Google__ClientSecret`), nunca no repositório.
+
+Como o login do app funciona: o cliente Web do Google não aceita redirecionar para o esquema do app, então o app abre o Google com
+`redirect_uri` = `AppConfig.GoogleRedirectUri` (a API publicada). O Google devolve um código para `GET /api/auth/google/retorno`, a API
+troca o código pelo `id_token` (com a chave secreta) e redireciona para `com.gestaofrota.app://oauth2redirect#id_token=...`
+(`AppConfig.GoogleCallbackUri`, recebido pelo `WebAuthenticationCallbackActivity`). Dali o app chama `POST /api/auth/google` como antes.
+Por isso o login do app, mesmo no emulador, depende da API publicada em HTTPS com a chave secreta configurada.
 
 Não há confirmação de e-mail própria: quem autentica é o Google, que já entrega o e-mail verificado dentro do `id_token`. Contas novas entram como **Motorista** (`OperadorMotorista`) e só um Administrador promove perfis.
 
@@ -171,7 +182,8 @@ login é refeito pelo Google.
 | Sintoma | Causa provável |
 |---|---|
 | "App não instalado" | Já existe uma versão assinada com outra chave: desinstale a antiga e instale de novo. |
-| O login abre o Google mas não volta ao app | O Client ID ou o esquema `com.gestaofrota.app://oauth2redirect` não estão registrados no Google Cloud. |
+| O login abre o Google mas não volta ao app | A API publicada não está em HTTPS, a variável `Authentication__Google__ClientSecret` falta na hospedagem, ou o redirecionamento `https://gestaofrota.runasp.net/api/auth/google/retorno` não está cadastrado no cliente do Google. |
+| "Acesso bloqueado" ou "Login cancelado ou conta sem permissão" | O e-mail não está entre os usuários de teste do Google Auth Platform. |
 | Login feito, mas as telas não carregam | `ApiPublica` errado ou a API fora do ar: abra `<endereço>/swagger` no navegador do celular. |
 
 ### Criar os perfis para a demonstração
