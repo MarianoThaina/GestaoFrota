@@ -243,8 +243,7 @@ Os números da frota dependem de as despesas e receitas estarem **vinculadas às
 
 Em **Exportar o período filtrado**, toque em **PDF** para um relatório pronto para imprimir ou
 mandar, ou em **CSV (planilha)** para abrir no Excel. O celular abre as opções de compartilhamento:
-salvar no Drive, enviar pelo WhatsApp ou por e-mail. [CONFERIR: os botões dependem do PR #18; sem
-ele, o botão é **Exportar período em CSV**.]
+salvar no Drive, enviar pelo WhatsApp ou por e-mail.
 
 [CAPTURA: relatórios com gráfico tocado e o PDF exportado]
 
@@ -256,8 +255,8 @@ Menu > **Usuários** mostra todos que já entraram no aplicativo.
 2. Em **Perfil do usuário**, escolha Administrador, Gestor de Frota, Financeiro ou Motorista.
 3. Toque em **Salvar perfil**.
 
-A pessoa vê o menu novo na próxima vez que entrar no aplicativo. [CONFERIR: se precisa sair e
-entrar de novo.]
+A pessoa vê o menu novo depois de tocar em **Sair** e entrar de novo com o Google: o perfil viaja
+dentro da sessão, que só é renovada num login novo.
 
 # Problemas comuns
 
