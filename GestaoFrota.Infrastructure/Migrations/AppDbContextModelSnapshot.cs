@@ -53,6 +53,56 @@ namespace GestaoFrota.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Categorias", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0001-000000000001"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Frete",
+                            Tipo = "Receita"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0001-000000000002"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Combustível",
+                            Tipo = "Despesa"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0001-000000000003"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Pedágio",
+                            Tipo = "Despesa"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0001-000000000004"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Manutenção",
+                            Tipo = "Despesa"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0001-000000000005"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Salários",
+                            Tipo = "Despesa"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0001-000000000006"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Financiamento",
+                            Tipo = "Despesa"
+                        });
                 });
 
             modelBuilder.Entity("GestaoFrota.Domain.Entities.Divida", b =>
@@ -129,6 +179,36 @@ namespace GestaoFrota.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("FormasPagamento", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0002-000000000001"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Pix"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0002-000000000002"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Boleto"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0002-000000000003"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Transferência TED"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0002-000000000004"),
+                            Ativo = true,
+                            DataCriacao = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Cartão Corporativo"
+                        });
                 });
 
             modelBuilder.Entity("GestaoFrota.Domain.Entities.Frete", b =>
@@ -511,8 +591,6 @@ namespace GestaoFrota.Infrastructure.Migrations
                     b.HasIndex("MotoristaId");
 
                     b.HasIndex("RotaId");
-
-                    b.HasIndex("VeiculoId");
 
                     b.HasIndex("VeiculoId", "Status");
 
