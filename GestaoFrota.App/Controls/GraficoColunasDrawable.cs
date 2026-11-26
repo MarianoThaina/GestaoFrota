@@ -17,7 +17,7 @@ public class GraficoColunasDrawable : IDrawable
     private const float MargemTopo = 24f;
     private const float AlturaRotulos = 22f;
 
-    private static readonly Color CorEntrada = Color.FromArgb("#1E8E3E");
+    private static readonly Color CorEntrada = Color.FromArgb("#137333");
     private static readonly Color CorSaida = Color.FromArgb("#D93025");
     private static readonly Color CorGrade = Color.FromArgb("#DCE3EE");
     private static readonly Color CorTexto = Color.FromArgb("#5F6B7A");

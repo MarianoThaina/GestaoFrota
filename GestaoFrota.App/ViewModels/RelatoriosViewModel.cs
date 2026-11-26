@@ -25,7 +25,7 @@ public partial class RelatoriosViewModel : BaseViewModel
         Color.FromArgb("#7FB2E4"),
         Color.FromArgb("#B3D3F2"),
         Color.FromArgb("#D9E7F8"),
-        Color.FromArgb("#9AA7B8"),
+        Color.FromArgb("#6B7A8F"),
     };
 
     /// <summary>Acima deste número, as categorias menores viram "Outras" na rosca.</summary>

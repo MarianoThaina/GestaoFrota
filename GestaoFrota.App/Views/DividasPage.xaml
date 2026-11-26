@@ -36,7 +36,7 @@
                     <Label Text="Nenhuma dívida cadastrada ainda."
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           TextColor="Gray" />
+                           TextColor="#5F6368" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Divida">
@@ -51,10 +51,10 @@
                                            FontSize="12" />
                                 </Grid>
                                 <Label Text="{Binding ParcelaTexto}" />
-                                <Label Text="{Binding PrimeiroVencimentoTexto}" FontSize="12" TextColor="Gray" />
-                                <ProgressBar Progress="{Binding Progresso}" ProgressColor="#1E8E3E" />
-                                <Label Text="{Binding ProgressoTexto}" FontSize="12" TextColor="Gray" />
-                                <Label Text="{Binding SaldoDevedorTexto}" FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding PrimeiroVencimentoTexto}" FontSize="12" TextColor="#5F6368" />
+                                <ProgressBar Progress="{Binding Progresso}" ProgressColor="#137333" />
+                                <Label Text="{Binding ProgressoTexto}" FontSize="12" TextColor="#5F6368" />
+                                <Label Text="{Binding SaldoDevedorTexto}" FontSize="12" TextColor="#5F6368" />
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>

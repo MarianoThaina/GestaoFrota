@@ -26,7 +26,7 @@
             <Label
                 Text="Gerencie os perfis e acessos dos usuários do sistema."
                 FontSize="13"
-                TextColor="Gray" />
+                TextColor="#5F6368" />
 
         </VerticalStackLayout>
 
@@ -53,7 +53,7 @@
 
                         <Label
                             Text="Nenhum usuário encontrado."
-                            TextColor="Gray"
+                            TextColor="#5F6368"
                             HorizontalTextAlignment="Center" />
 
                     </VerticalStackLayout>
@@ -81,7 +81,7 @@
                                 <Label
                                     Text="{Binding Email}"
                                     FontSize="13"
-                                    TextColor="Gray" />
+                                    TextColor="#5F6368" />
 
                                 <HorizontalStackLayout
                                     Spacing="5">
@@ -179,7 +179,7 @@
                                 <Label
                                     Text="{Binding UltimoLogin, StringFormat='Último login: {0:dd/MM/yyyy HH:mm}'}"
                                     FontSize="11"
-                                    TextColor="Gray" />
+                                    TextColor="#5F6368" />
 
                             </VerticalStackLayout>
 

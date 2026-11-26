@@ -64,8 +64,8 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.10" />
 
-    <!-- Logging em DEBUG (usado em MauiProgram) -->
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+    <!-- Logging em DEBUG (usado em MauiProgram): só entra no build de Debug, não vai no .apk de produção -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" Condition="'$(Configuration)' == 'Debug'" />
 
     <!-- Serialização -->
     <PackageReference Include="System.Text.Json" Version="9.0.0" />

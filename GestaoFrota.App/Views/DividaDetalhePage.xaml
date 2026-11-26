@@ -18,9 +18,9 @@
             <VerticalStackLayout Spacing="4">
                 <Label Text="{Binding Divida.Descricao}" FontAttributes="Bold" FontSize="16" />
                 <Label Text="{Binding Divida.ParcelaTexto}" />
-                <Label Text="{Binding Divida.ProgressoTexto}" FontSize="12" TextColor="Gray" />
-                <Label Text="{Binding Divida.SaldoDevedorTexto}" FontSize="12" TextColor="Gray" />
-                <Label Text="{Binding Divida.QuitacaoTexto}" FontSize="12" TextColor="Gray" />
+                <Label Text="{Binding Divida.ProgressoTexto}" FontSize="12" TextColor="#5F6368" />
+                <Label Text="{Binding Divida.SaldoDevedorTexto}" FontSize="12" TextColor="#5F6368" />
+                <Label Text="{Binding Divida.QuitacaoTexto}" FontSize="12" TextColor="#5F6368" />
             </VerticalStackLayout>
         </Frame>
 
@@ -39,13 +39,13 @@
                         <Grid Padding="4,8" ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto, Auto" ColumnSpacing="8">
                             <Label Grid.Row="0" Grid.Column="0" Text="{Binding Descricao}" FontAttributes="Bold" FontSize="13" />
                             <Label Grid.Row="0" Grid.Column="1" Text="{Binding ValorFormatado}" TextColor="{Binding CorValor}" FontAttributes="Bold" />
-                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding VencimentoTexto}" FontSize="12" TextColor="Gray" />
+                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding VencimentoTexto}" FontSize="12" TextColor="#5F6368" />
                             <Label Grid.Row="1" Grid.Column="1" Text="{Binding StatusTexto}" TextColor="{Binding CorStatus}" FontSize="12" FontAttributes="Bold" />
                             <Button Grid.Row="2" Grid.ColumnSpan="2"
                                     Text="Marcar parcela como paga"
                                     FontSize="12"
-                                    HeightRequest="34"
-                                    BackgroundColor="#1E8E3E"
+                                    HeightRequest="48"
+                                    BackgroundColor="#137333"
                                     TextColor="White"
                                     CornerRadius="17"
                                     HorizontalOptions="Start"

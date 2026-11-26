@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<!-- Sem android:usesCleartextTraffic aqui: o padrão do Android é bloquear HTTP, e a API hospedada usa HTTPS.
-	     O HTTP para o emulador (http://10.0.2.2:5137) é liberado só em Debug, por [Application(UsesCleartextTraffic = true)]
-	     em MainApplication.cs. Não adicione o atributo neste arquivo, ou ele vale também no Release. -->
-	<application android:allowBackup="true"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+	<!-- Rede: Resources/xml/network_security_config.xml bloqueia HTTP em todas as versões (só HTTPS),
+	     com exceção do 10.0.2.2, o PC visto pelo emulador, para a API local em desenvolvimento.
+	     Backup desligado: os dados vivem no servidor, e a cópia local (sessão no SecureStorage e cache
+	     financeiro) não deve ir para a nuvem; num aparelho novo, o login pelo Google recupera tudo. -->
+	<application android:allowBackup="false"
+	             android:fullBackupContent="false"
+	             android:networkSecurityConfig="@xml/network_security_config"
 	             android:icon="@mipmap/appicon"
 	             android:roundIcon="@mipmap/appicon_round"
 	             android:supportsRtl="true"></application>
@@ -11,11 +14,14 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 
-	<!-- Comprovantes: câmera e galeria (MediaPicker) -->
+	<!-- Comprovantes: câmera e galeria (MediaPicker).
+	     Android 13+ usa o seletor de fotos do sistema, que não pede permissão de mídia
+	     (por isso não há READ_MEDIA_IMAGES). As de armazenamento valem só nas versões antigas. -->
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+	<!-- O MAUI Essentials injeta esta permissão; o seletor de fotos do Android 13+ dispensa. -->
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
 	<uses-feature android:name="android.hardware.camera" android:required="false" />
 
 	<queries>

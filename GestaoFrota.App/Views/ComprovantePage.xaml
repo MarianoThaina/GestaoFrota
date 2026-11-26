@@ -12,7 +12,7 @@
                            VerticalOptions="Center"
                            HorizontalOptions="Center" />
 
-        <Image Source="{Binding Imagem}" Aspect="AspectFit" />
+        <Image Source="{Binding Imagem}" Aspect="AspectFit" SemanticProperties.Description="Foto do comprovante" />
 
         <Label Text="{Binding MensagemErro}"
                TextColor="#D93025"

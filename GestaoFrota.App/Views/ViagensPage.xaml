@@ -34,7 +34,7 @@
                 SelectedItem="{Binding Filtro}" />
 
         <VerticalStackLayout Grid.Row="3" Spacing="2">
-            <Label Text="{Binding ResumoLista}" FontSize="12" TextColor="Gray" />
+            <Label Text="{Binding ResumoLista}" FontSize="12" TextColor="#5F6368" />
             <Label Text="{Binding MensagemErro}"
                    TextColor="#D93025"
                    FontSize="13"
@@ -49,7 +49,7 @@
                     <Label Text="Nenhuma viagem registrada ainda."
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           TextColor="Gray" />
+                           TextColor="#5F6368" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Viagem">
@@ -65,24 +65,24 @@
                                     <Label Grid.Column="1"
                                            Text="{Binding DataTexto}"
                                            FontSize="12"
-                                           TextColor="Gray" />
+                                           TextColor="#5F6368" />
                                 </Grid>
 
                                 <Label Text="{Binding TrajetoTexto}" FontAttributes="Bold" FontSize="16" />
-                                <Label Text="{Binding VeiculoTexto}" FontSize="12" TextColor="Gray" />
-                                <Label Text="{Binding MotoristaNome}" FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding VeiculoTexto}" FontSize="12" TextColor="#5F6368" />
+                                <Label Text="{Binding MotoristaNome}" FontSize="12" TextColor="#5F6368" />
 
                                 <!-- Hodômetros: inicial, final e rodado -->
                                 <Grid ColumnDefinitions="*, *, *" ColumnSpacing="8" Margin="0,4,0,0">
                                     <Frame Grid.Column="0" Padding="8" CornerRadius="8" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
                                         <VerticalStackLayout>
-                                            <Label Text="Inicial" FontSize="10" TextColor="Gray" />
+                                            <Label Text="Inicial" FontSize="10" TextColor="#5F6368" />
                                             <Label Text="{Binding HodometroInicialTexto}" FontAttributes="Bold" FontSize="13" />
                                         </VerticalStackLayout>
                                     </Frame>
                                     <Frame Grid.Column="1" Padding="8" CornerRadius="8" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
                                         <VerticalStackLayout>
-                                            <Label Text="Final" FontSize="10" TextColor="Gray" />
+                                            <Label Text="Final" FontSize="10" TextColor="#5F6368" />
                                             <Label Text="{Binding HodometroFinalTexto}" FontAttributes="Bold" FontSize="13" />
                                         </VerticalStackLayout>
                                     </Frame>
@@ -102,21 +102,21 @@
                                 <HorizontalStackLayout Spacing="8">
                                     <Button Text="Encerrar viagem"
                                             FontSize="12"
-                                            HeightRequest="36"
+                                            HeightRequest="48"
                                             Padding="12,0"
-                                            BackgroundColor="#1E8E3E"
+                                            BackgroundColor="#137333"
                                             TextColor="White"
-                                            CornerRadius="18"
+                                            CornerRadius="24"
                                             IsVisible="{Binding PodeEncerrar}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EncerrarCommand}"
                                             CommandParameter="{Binding .}" />
                                     <Button Text="Cancelar"
                                             FontSize="12"
-                                            HeightRequest="36"
+                                            HeightRequest="48"
                                             Padding="12,0"
-                                            BackgroundColor="#D9534F"
+                                            BackgroundColor="#C5221F"
                                             TextColor="White"
-                                            CornerRadius="18"
+                                            CornerRadius="24"
                                             IsVisible="{Binding PodeCancelar}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CancelarCommand}"
                                             CommandParameter="{Binding .}" />

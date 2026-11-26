@@ -34,7 +34,7 @@
                BorderColor="#DCE3EE"
                BackgroundColor="#F5F8FF">
             <VerticalStackLayout Spacing="8">
-                <Label Text="Editando rota" FontAttributes="Bold" FontSize="12" TextColor="Gray" />
+                <Label Text="Editando rota" FontAttributes="Bold" FontSize="12" TextColor="#5F6368" />
                 <Entry Placeholder="Nome da rota" MaxLength="150" Text="{Binding EdicaoNome}" />
                 <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
                     <Entry Grid.Column="0" Placeholder="Origem" MaxLength="150" Text="{Binding EdicaoOrigem}" />
@@ -62,7 +62,7 @@
                     <Label Text="Nenhuma rota cadastrada ainda."
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           TextColor="Gray" />
+                           TextColor="#5F6368" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Rota">
@@ -75,7 +75,7 @@
                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IniciarEdicaoCommand}"
                                                CommandParameter="{Binding .}" />
                                     <SwipeItem Text="Desativar"
-                                               BackgroundColor="#D9534F"
+                                               BackgroundColor="#C5221F"
                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeDesativar}"
                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DesativarCommand}"
                                                CommandParameter="{Binding .}" />
@@ -85,12 +85,12 @@
                             <Grid Padding="12,10" ColumnDefinitions="*, Auto" Opacity="{Binding Ativa, Converter={StaticResource BoolToOpacityConverter}}">
                                 <VerticalStackLayout Grid.Column="0" Spacing="2">
                                     <Label Text="{Binding Nome}" FontAttributes="Bold" />
-                                    <Label Text="{Binding TrajetoTexto}" FontSize="12" TextColor="Gray" />
+                                    <Label Text="{Binding TrajetoTexto}" FontSize="12" TextColor="#5F6368" />
                                     <HorizontalStackLayout Spacing="4">
-                                        <Label Text="{Binding DistanciaTexto}" FontSize="12" TextColor="Gray" />
+                                        <Label Text="{Binding DistanciaTexto}" FontSize="12" TextColor="#5F6368" />
                                         <Label Text="· inativa"
                                                FontSize="12"
-                                               TextColor="#D9534F"
+                                               TextColor="#C5221F"
                                                IsVisible="{Binding Ativa, Converter={StaticResource InverseBoolConverter}}" />
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>

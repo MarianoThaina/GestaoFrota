@@ -46,9 +46,9 @@ public class Divida
 
     public Color CorStatus => Status switch
     {
-        StatusDivida.Quitada => Color.FromArgb("#1E8E3E"),
+        StatusDivida.Quitada => Color.FromArgb("#137333"),
         StatusDivida.QuitadaParcialmente => Color.FromArgb("#2C6CE0"),
-        _ => Color.FromArgb("#E8710A")
+        _ => Color.FromArgb("#B3500B")
     };
 }
 
