@@ -941,3 +941,170 @@ a {
     font-size: 22px;
   }
 }
+
+
+/* =========================================================================
+   TELAS DE CONSULTA (Relatórios, Movimentações, Viagens)
+   ========================================================================= */
+
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--espaco-md);
+  margin-bottom: var(--espaco-lg);
+}
+
+.indicador {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-md);
+}
+
+.indicador-destaque {
+  background: var(--cor-primaria-clara);
+  border-color: transparent;
+  grid-column: 1 / -1;
+}
+
+.indicador-rotulo {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.indicador-valor {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: var(--espaco-xs);
+}
+
+.indicador-destaque .indicador-valor { font-size: 32px; }
+
+.valor-positivo { color: var(--cor-positiva); }
+.valor-negativo { color: var(--cor-negativa); }
+
+.cartao-titulo {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 var(--espaco-md);
+}
+
+.grafico-colunas {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--espaco-md);
+  height: 180px;
+  padding-top: var(--espaco-sm);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.grafico-mes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.grafico-par {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 100%;
+}
+
+.grafico-barra {
+  width: 14px;
+  border-radius: 4px 4px 0 0;
+  min-height: 2px;
+}
+
+.grafico-barra-entrada { background: var(--cor-positiva); }
+.grafico-barra-saida { background: var(--cor-negativa); }
+
+.grafico-rotulos {
+  display: flex;
+  gap: var(--espaco-md);
+  margin-top: var(--espaco-xs);
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.grafico-rotulos span { flex: 1; text-align: center; }
+
+.legenda {
+  display: flex;
+  gap: var(--espaco-md);
+  justify-content: center;
+  margin-top: var(--espaco-sm);
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.legenda i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.barra-categoria {
+  margin-bottom: var(--espaco-sm);
+}
+
+.barra-categoria-topo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.barra-categoria-trilho {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--cor-superficie-variante);
+  overflow: hidden;
+}
+
+.barra-categoria-trilho span {
+  display: block;
+  height: 100%;
+  background: var(--cor-primaria);
+}
+
+.grade-dupla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--espaco-md);
+  margin-bottom: var(--espaco-lg);
+}
+
+.lista-valor {
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.lista-valor small {
+  display: block;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.botoes-exportar {
+  display: flex;
+  gap: var(--espaco-sm);
+  flex-wrap: wrap;
+}
+
+.pagina-texto {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--espaco-xl) var(--espaco-md);
+  line-height: 1.6;
+}
+
+.pagina-texto h1 { margin-bottom: var(--espaco-sm); }
+.pagina-texto h2 { margin-top: var(--espaco-lg); font-size: 18px; }

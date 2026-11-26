@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relatórios — Gestão de Frota</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <aside class="lateral"></aside>
+
+    <main class="conteudo">
+
+      <header class="topo">
+        <div>
+          <h1 class="titulo-pagina">Relatórios</h1>
+          <p class="subtitulo" id="periodo-rotulo">Resultado financeiro e desempenho da frota.</p>
+        </div>
+      </header>
+
+      <div class="segmentos" role="group" aria-label="Período">
+        <button class="segmento" data-meses="3">3 meses</button>
+        <button class="segmento ativo" data-meses="6">6 meses</button>
+        <button class="segmento" data-meses="12">1 ano</button>
+        <button class="segmento" data-tudo="true">Tudo</button>
+      </div>
+
+      <div id="aviso" class="aviso" hidden></div>
+
+      <div class="indicadores" id="indicadores"></div>
+
+      <section class="cartao">
+        <h2 class="cartao-titulo">Entradas e saídas por mês</h2>
+        <div id="grafico"></div>
+      </section>
+
+      <div class="grade-dupla">
+        <section class="cartao">
+          <h2 class="cartao-titulo">Despesas por categoria</h2>
+          <div id="categorias"></div>
+        </section>
+
+        <section class="cartao">
+          <h2 class="cartao-titulo">Frota no período</h2>
+          <div id="frota"></div>
+        </section>
+      </div>
+
+      <section class="cartao">
+        <h2 class="cartao-titulo">Exportar o período</h2>
+        <div class="botoes-exportar">
+          <button class="botao botao-cheio" id="botao-pdf">Baixar PDF</button>
+          <button class="botao botao-contorno" id="botao-csv">Baixar CSV (planilha)</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/relatorios.js"></script>
+</body>
+</html>

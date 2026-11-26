@@ -31,7 +31,7 @@ async function aoReceberTokenDoGoogle(resposta) {
   try {
     const sessao = await Auth.entrarComGoogle(resposta.credential);
     Sessao.salvar(sessao);
-    window.location.href = 'categorias.html';
+    window.location.href = Sessao.telaInicial();
   } catch (erro) {
     mostrarErro(erro.message);
   }
@@ -110,7 +110,7 @@ function montarBotaoGoogle() {
 
 // Se a sessão anterior ainda vale, pula o login.
 if (!Sessao.expirada()) {
-  window.location.href = 'categorias.html';
+  window.location.href = Sessao.telaInicial();
 }
 
 if (CONFIG.MODO_DEMO) {

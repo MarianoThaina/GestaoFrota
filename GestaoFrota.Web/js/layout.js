@@ -8,15 +8,19 @@
    Motorista não vê Financeiro nem Relatórios — esses itens simplesmente não
    são criados para ele.
 
-   Itens marcados com `pronta: false` ainda não têm endpoint na API. Eles
-   aparecem apagados, para o time enxergar o que falta.
+   Itens marcados com `pronta: false` não têm tela no site (a operação
+   completa fica no aplicativo Android). Aparecem apagados, com um aviso.
+
+   Telas no site: Relatórios, Movimentações e Viagens (consulta) e os
+   cadastros de Categorias, Formas de pagamento e Usuários.
    ========================================================================= */
 
 const ITENS_MENU = [
   {
     secao: 'Financeiro',
     itens: [
-      { rotulo: 'Movimentações', arquivo: 'movimentacoes.html', icone: 'movimentacoes', pronta: false, perfis: [PERFIL.ADMINISTRADOR, PERFIL.FINANCEIRO] },
+      { rotulo: 'Relatórios', arquivo: 'relatorios.html', icone: 'relatorios', pronta: true, perfis: [PERFIL.ADMINISTRADOR, PERFIL.FINANCEIRO, PERFIL.GESTOR_DE_FROTA] },
+      { rotulo: 'Movimentações', arquivo: 'movimentacoes.html', icone: 'movimentacoes', pronta: true, perfis: [PERFIL.ADMINISTRADOR, PERFIL.FINANCEIRO, PERFIL.GESTOR_DE_FROTA] },
       { rotulo: 'Categorias', arquivo: 'categorias.html', icone: 'categorias', pronta: true, perfis: [PERFIL.ADMINISTRADOR, PERFIL.FINANCEIRO, PERFIL.GESTOR_DE_FROTA] },
       { rotulo: 'Formas de pagamento', arquivo: 'formas-pagamento.html', icone: 'pagamento', pronta: true, perfis: [PERFIL.ADMINISTRADOR, PERFIL.FINANCEIRO, PERFIL.GESTOR_DE_FROTA] }
     ]
@@ -27,7 +31,7 @@ const ITENS_MENU = [
       // O protótipo mostra Frota no menu do motorista (imagem 16), então ele
       // entra aqui também.
       { rotulo: 'Frota', arquivo: 'frota.html', icone: 'frota', pronta: false, perfis: [PERFIL.ADMINISTRADOR, PERFIL.GESTOR_DE_FROTA, PERFIL.OPERADOR_MOTORISTA] },
-      { rotulo: 'Viagens', arquivo: 'viagens.html', icone: 'viagens', pronta: false, perfis: [PERFIL.ADMINISTRADOR, PERFIL.GESTOR_DE_FROTA, PERFIL.OPERADOR_MOTORISTA] }
+      { rotulo: 'Viagens', arquivo: 'viagens.html', icone: 'viagens', pronta: true, perfis: [PERFIL.ADMINISTRADOR, PERFIL.GESTOR_DE_FROTA, PERFIL.OPERADOR_MOTORISTA] }
     ]
   },
   {
@@ -42,6 +46,7 @@ const ITENS_MENU = [
 // Ícones desenhados em SVG dentro do próprio arquivo, sem link externo.
 // Assim o site continua funcionando sem internet, igual ao protótipo.
 const ICONES = {
+  relatorios: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   movimentacoes: '<path d="M3 6h18M3 12h12M3 18h6"/>',
   categorias: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   pagamento: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
@@ -127,6 +132,30 @@ function montarLateral(arquivoAtual) {
   const lateral = document.querySelector('.lateral');
   lateral.innerHTML = partes.join('');
   document.getElementById('botao-sair').addEventListener('click', () => Sessao.sair());
+}
+
+// Formatação em pt-BR usada pelas telas de consulta.
+const FORMATO_MOEDA = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const FORMATO_NUMERO = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+
+function moeda(valor) {
+  return FORMATO_MOEDA.format(valor || 0);
+}
+
+function numero(valor) {
+  return FORMATO_NUMERO.format(valor || 0);
+}
+
+function dataCurta(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+}
+
+// Texto vindo da API vai para o HTML: escapa antes de montar a lista.
+function texto(valor) {
+  const div = document.createElement('div');
+  div.textContent = valor == null ? '' : String(valor);
+  return div.innerHTML;
 }
 
 // Toda tela interna chama isto como primeira linha.

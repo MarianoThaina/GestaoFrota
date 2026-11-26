@@ -17,6 +17,19 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
   </ItemGroup>
 
+  <!--
+    O site (GestaoFrota.Web) é publicado junto, na wwwroot da API, para abrir
+    em https://gestaofrota.runasp.net/ sem hospedagem separada. A fonte
+    continua só em GestaoFrota.Web; aqui é apenas um link na publicação.
+  -->
+  <ItemGroup>
+    <Content Include="..\GestaoFrota.Web\**\*"
+             Exclude="..\GestaoFrota.Web\README.md"
+             Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\GestaoFrota.Domain\GestaoFrota.Domain.csproj" />
     <ProjectReference Include="..\GestaoFrota.Infrastructure\GestaoFrota.Infrastructure.csproj" />

@@ -156,6 +156,59 @@ const Usuarios = {
   }
 };
 
+// Período no formato que a API entende: { meses: 6 } ou { tudo: true }.
+function consultaPeriodo(periodo) {
+  const p = new URLSearchParams();
+  if (periodo && periodo.tudo) p.set('tudo', 'true');
+  else p.set('meses', String((periodo && periodo.meses) || 6));
+  return p.toString();
+}
+
+const Relatorios = {
+  resumo(periodo) {
+    return Api.get('/api/relatorios/resumo?' + consultaPeriodo(periodo));
+  },
+  frota(periodo) {
+    return Api.get('/api/relatorios/frota?' + consultaPeriodo(periodo));
+  },
+  // PDF e CSV vêm como arquivo e precisam do token, então não dá para usar
+  // um <a href> simples: baixa com fetch e entrega ao navegador.
+  async baixar(periodo, formato) {
+    let resposta;
+    try {
+      resposta = await fetch(CONFIG.API + '/api/relatorios/exportar?' + consultaPeriodo(periodo) + '&formato=' + formato, {
+        headers: { 'Authorization': 'Bearer ' + Sessao.token() }
+      });
+    } catch {
+      throw new ErroApi(0, 'Não foi possível falar com o servidor.');
+    }
+    if (!resposta.ok) {
+      throw new ErroApi(resposta.status, Api.extrairMensagem(resposta.status, await Api.lerCorpo(resposta)));
+    }
+    const nome = (resposta.headers.get('Content-Disposition') || '').match(/filename="?([^";]+)/);
+    const url = URL.createObjectURL(await resposta.blob());
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = nome ? nome[1] : 'relatorio-financeiro.' + formato;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+};
+
+const Movimentacoes = {
+  listar() {
+    return Api.get('/api/movimentacoes');
+  }
+};
+
+const Viagens = {
+  listar() {
+    return Api.get('/api/viagens');
+  }
+};
+
 const Auth = {
   entrarComGoogle(idToken) {
     return Api.post('/api/auth/google', { idToken });

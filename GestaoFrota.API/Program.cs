@@ -135,15 +135,16 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Swagger
 
 app.UseHttpsRedirection();
 
+// Site web (GestaoFrota.Web, copiado para a wwwroot na publicação):
+// "/" abre o index.html (login) e os demais arquivos são servidos como estão.
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseCors("AppMobile");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-// A raiz não tem controller; redireciona para o endpoint de status
-// para não exibir "HTTP 404" ao abrir o endereço da API no navegador.
-app.MapGet("/", () => Results.Redirect("/api/status")).ExcludeFromDescription();
 
 app.Run();
