@@ -25,18 +25,18 @@
                    IsVisible="{Binding Viagem, Converter={StaticResource NotNullToBoolConverter}}">
                 <VerticalStackLayout Spacing="4">
                     <Label Text="{Binding Viagem.TrajetoTexto}" FontAttributes="Bold" FontSize="16" />
-                    <Label Text="{Binding Viagem.VeiculoTexto}" FontSize="12" TextColor="Gray" />
-                    <Label Text="{Binding Viagem.DataTexto}" FontSize="12" TextColor="Gray" />
+                    <Label Text="{Binding Viagem.VeiculoTexto}" FontSize="12" TextColor="#5F6368" />
+                    <Label Text="{Binding Viagem.DataTexto}" FontSize="12" TextColor="#5F6368" />
                     <Frame Padding="10" Margin="0,8,0,0" CornerRadius="8" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
                         <VerticalStackLayout>
-                            <Label Text="Hodômetro inicial registrado" FontSize="10" TextColor="Gray" />
+                            <Label Text="Hodômetro inicial registrado" FontSize="10" TextColor="#5F6368" />
                             <Label Text="{Binding Viagem.HodometroInicialTexto}" FontAttributes="Bold" FontSize="18" />
                         </VerticalStackLayout>
                     </Frame>
                 </VerticalStackLayout>
             </Frame>
 
-            <Label Text="Hodômetro final (km)" FontSize="12" TextColor="Gray" />
+            <Label Text="Hodômetro final (km)" FontSize="12" TextColor="#5F6368" />
             <Entry Placeholder="Ex.: 184.735" Keyboard="Numeric" Text="{Binding HodometroFinalTexto}" />
 
             <!-- A validação crítica da US08, mostrada enquanto digita -->
@@ -47,10 +47,10 @@
             <Label Text="{Binding PreviaRodado}"
                    FontSize="13"
                    FontAttributes="Bold"
-                   TextColor="#1E8E3E"
+                   TextColor="#137333"
                    IsVisible="{Binding PreviaRodado, Converter={StaticResource StringNotEmptyConverter}}" />
 
-            <Label Text="Observações (opcional)" FontSize="12" TextColor="Gray" />
+            <Label Text="Observações (opcional)" FontSize="12" TextColor="#5F6368" />
             <Editor Placeholder="Ex.: entrega concluída sem ocorrências"
                     MaxLength="500"
                     AutoSize="TextChanges"
@@ -60,7 +60,7 @@
             <Frame Padding="12" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
                 <Label Text="Ao confirmar, o sistema calcula e salva a quilometragem rodada sozinho. Você não precisa fazer a conta."
                        FontSize="12"
-                       TextColor="Gray" />
+                       TextColor="#5F6368" />
             </Frame>
 
             <Label Text="{Binding MensagemErro}"

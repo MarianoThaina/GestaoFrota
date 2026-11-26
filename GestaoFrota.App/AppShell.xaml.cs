@@ -72,10 +72,35 @@ public partial class AppShell : Shell
         LblPerfilUsuario.Text = perfil.HasValue ? NomeDoPerfil(perfil.Value) : string.Empty;
 
         // US17: o Motorista abre o app direto na tela de Viagens.
+        _itemInicial = perfil == PerfilUsuario.OperadorMotorista ? MenuViagens : MenuInicio;
         if (perfil == PerfilUsuario.OperadorMotorista)
         {
             CurrentItem = MenuViagens;
         }
+    }
+
+    private FlyoutItem? _itemInicial;
+
+    /// <summary>
+    /// Voltar (botão ou gesto): fecha o menu se estiver aberto; dentro de um
+    /// módulo do menu volta para a tela inicial do perfil, em vez de fechar o
+    /// app; só na tela inicial é que o app vai para segundo plano.
+    /// </summary>
+    protected override bool OnBackButtonPressed()
+    {
+        if (FlyoutIsPresented)
+        {
+            FlyoutIsPresented = false;
+            return true;
+        }
+
+        if (Navigation.NavigationStack.Count <= 1 && _itemInicial is not null && CurrentItem != _itemInicial)
+        {
+            CurrentItem = _itemInicial;
+            return true;
+        }
+
+        return base.OnBackButtonPressed();
     }
 
     private static string NomeDoPerfil(PerfilUsuario perfil) => Helpers.PerfilNomes.Nome(perfil);

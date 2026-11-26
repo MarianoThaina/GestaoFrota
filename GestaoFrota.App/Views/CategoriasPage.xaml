@@ -37,7 +37,7 @@
                BorderColor="#DCE3EE"
                BackgroundColor="#F5F8FF">
             <VerticalStackLayout Spacing="8">
-                <Label Text="Editando categoria" FontAttributes="Bold" FontSize="12" TextColor="Gray" />
+                <Label Text="Editando categoria" FontAttributes="Bold" FontSize="12" TextColor="#5F6368" />
                 <Entry Placeholder="Nome da categoria" Text="{Binding EdicaoNome}" />
                 <Picker Title="Tipo" SelectedItem="{Binding EdicaoTipo}">
                     <Picker.ItemsSource>
@@ -62,7 +62,7 @@
                     <Label Text="Nenhuma categoria cadastrada ainda."
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           TextColor="Gray" />
+                           TextColor="#5F6368" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Categoria">
@@ -75,7 +75,7 @@
                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IniciarEdicaoCommand}"
                                                CommandParameter="{Binding .}" />
                                     <SwipeItem Text="Desativar"
-                                               BackgroundColor="#D9534F"
+                                               BackgroundColor="#C5221F"
                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeDesativar}"
                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DesativarCommand}"
                                                CommandParameter="{Binding .}" />
@@ -86,10 +86,10 @@
                                 <VerticalStackLayout Grid.Column="0">
                                     <Label Text="{Binding Nome}" FontAttributes="Bold" />
                                     <HorizontalStackLayout Spacing="4">
-                                        <Label Text="{Binding Tipo}" FontSize="12" TextColor="Gray" />
+                                        <Label Text="{Binding Tipo}" FontSize="12" TextColor="#5F6368" />
                                         <Label Text="· inativa"
                                                FontSize="12"
-                                               TextColor="#D9534F"
+                                               TextColor="#C5221F"
                                                IsVisible="{Binding Ativo, Converter={StaticResource InverseBoolConverter}}" />
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>

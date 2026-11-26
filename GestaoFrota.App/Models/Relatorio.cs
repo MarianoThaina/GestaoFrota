@@ -19,7 +19,7 @@ public class FluxoMensal
     public string EntradasTexto => "+ " + Formatacao.Moeda(Entradas);
     public string SaidasTexto => "- " + Formatacao.Moeda(Saidas);
     public string SaldoDoMesTexto => Formatacao.Moeda(SaldoDoMes);
-    public Color CorSaldo => SaldoDoMes >= 0 ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+    public Color CorSaldo => SaldoDoMes >= 0 ? Color.FromArgb("#137333") : Color.FromArgb("#D93025");
 }
 
 /// <summary>Participação de uma categoria nas despesas do período (US12).</summary>
@@ -53,7 +53,7 @@ public class IndicadoresRelatorio
     public string TotalEntradasTexto => Formatacao.Moeda(TotalEntradas);
     public string TotalSaidasTexto => Formatacao.Moeda(TotalSaidas);
     public string ResultadoTexto => Formatacao.Moeda(Resultado);
-    public Color CorResultado => Resultado >= 0 ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+    public Color CorResultado => Resultado >= 0 ? Color.FromArgb("#137333") : Color.FromArgb("#D93025");
     public string AReceberTexto => Formatacao.Moeda(AReceberNoMes);
     public string APagarTexto => Formatacao.Moeda(APagarNoMes);
     public string EmAtrasoTexto => Formatacao.Moeda(EmAtraso);
@@ -74,7 +74,7 @@ public class IndicadoresRelatorio
     public Color CorVariacao => VariacaoSaidasPercentual switch
     {
         > 0 => Color.FromArgb("#D93025"),
-        < 0 => Color.FromArgb("#1E8E3E"),
+        < 0 => Color.FromArgb("#137333"),
         _ => Colors.Gray
     };
 }
@@ -130,7 +130,7 @@ public class EstatisticaRota
     public string PosicaoTexto => $"{Posicao}º";
     public string TrajetoTexto => $"{Origem} → {Destino}";
     public string RentabilidadeTexto => Formatacao.Moeda(Rentabilidade);
-    public Color CorRentabilidade => Rentabilidade >= 0 ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+    public Color CorRentabilidade => Rentabilidade >= 0 ? Color.FromArgb("#137333") : Color.FromArgb("#D93025");
     public string DetalheTexto =>
         $"{Viagens} {(Viagens == 1 ? "viagem" : "viagens")} · {Formatacao.Km(KmRodados)} · " +
         (CustoPorKm.HasValue ? $"{Formatacao.Moeda(CustoPorKm.Value)}/km" : "custo/km indisponível");
@@ -184,7 +184,7 @@ public class EstatisticasFrota
     public string ResumoTexto =>
         $"{TotalViagens} {(TotalViagens == 1 ? "viagem" : "viagens")} no período ({ViagensConcluidas} concluídas) · {Formatacao.Km(KmRodados)} rodados";
     public string RentabilidadeTexto => Formatacao.Moeda(ReceitasVinculadas - DespesasVinculadas);
-    public Color CorRentabilidade => ReceitasVinculadas - DespesasVinculadas >= 0 ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+    public Color CorRentabilidade => ReceitasVinculadas - DespesasVinculadas >= 0 ? Color.FromArgb("#137333") : Color.FromArgb("#D93025");
     public string VeiculosEmViagemTexto => $"{VeiculosEmViagem} de {VeiculosAtivos}";
 }
 

@@ -67,9 +67,9 @@ public class Veiculo
         ? Colors.Gray
         : Status switch
         {
-            StatusVeiculo.EmViagem => Color.FromArgb("#E8710A"),
+            StatusVeiculo.EmViagem => Color.FromArgb("#B3500B"),
             StatusVeiculo.EmManutencao => Color.FromArgb("#D93025"),
-            _ => Color.FromArgb("#1E8E3E")
+            _ => Color.FromArgb("#137333")
         };
 
     [Ignore]

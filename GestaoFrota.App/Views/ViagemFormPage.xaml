@@ -20,32 +20,32 @@
                        TextColor="#7A5A00" />
             </Frame>
 
-            <Label Text="Veículo (somente disponíveis)" FontSize="12" TextColor="Gray" />
+            <Label Text="Veículo (somente disponíveis)" FontSize="12" TextColor="#5F6368" />
             <Picker Title="Escolha o veículo"
                     ItemsSource="{Binding Veiculos}"
                     SelectedItem="{Binding VeiculoSelecionado}" />
 
-            <Label Text="Rota" FontSize="12" TextColor="Gray" />
+            <Label Text="Rota" FontSize="12" TextColor="#5F6368" />
             <Picker Title="Escolha a rota"
                     ItemsSource="{Binding Rotas}"
                     SelectedItem="{Binding RotaSelecionada}" />
 
             <!-- Só gestores escolhem o motorista; o Motorista abre sempre para si -->
             <VerticalStackLayout Spacing="4" IsVisible="{Binding PodeEscolherMotorista}">
-                <Label Text="Motorista" FontSize="12" TextColor="Gray" />
+                <Label Text="Motorista" FontSize="12" TextColor="#5F6368" />
                 <Picker Title="Escolha o motorista"
                         ItemsSource="{Binding Motoristas}"
                         SelectedItem="{Binding MotoristaSelecionado}" />
             </VerticalStackLayout>
 
-            <Label Text="Hodômetro inicial (km)" FontSize="12" TextColor="Gray" />
+            <Label Text="Hodômetro inicial (km)" FontSize="12" TextColor="#5F6368" />
             <Entry Placeholder="Ex.: 184.320" Keyboard="Numeric" Text="{Binding HodometroInicialTexto}" />
             <Label Text="{Binding DicaHodometro}"
                    FontSize="11"
-                   TextColor="Gray"
+                   TextColor="#5F6368"
                    IsVisible="{Binding DicaHodometro, Converter={StaticResource StringNotEmptyConverter}}" />
 
-            <Label Text="Observações (opcional)" FontSize="12" TextColor="Gray" />
+            <Label Text="Observações (opcional)" FontSize="12" TextColor="#5F6368" />
             <Editor Placeholder="Ex.: carga refrigerada, entrega até 18h"
                     MaxLength="500"
                     AutoSize="TextChanges"

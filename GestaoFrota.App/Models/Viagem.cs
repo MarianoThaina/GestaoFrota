@@ -110,11 +110,11 @@ public class Viagem
 
     [Ignore]
     public Color CorStatus => PendenteSincronizacao
-        ? Color.FromArgb("#B8860B")
+        ? Color.FromArgb("#8A6500")
         : Status switch
         {
-            StatusViagem.EmAndamento => Color.FromArgb("#E8710A"),
-            StatusViagem.Concluida => Color.FromArgb("#1E8E3E"),
+            StatusViagem.EmAndamento => Color.FromArgb("#B3500B"),
+            StatusViagem.Concluida => Color.FromArgb("#137333"),
             _ => Colors.Gray
         };
 

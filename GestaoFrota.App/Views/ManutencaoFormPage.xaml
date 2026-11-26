@@ -12,24 +12,24 @@
             <Frame Padding="14" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False"
                    IsVisible="{Binding Veiculo, Converter={StaticResource NotNullToBoolConverter}}">
                 <VerticalStackLayout Spacing="2">
-                    <Label Text="Veículo" FontSize="10" TextColor="Gray" />
+                    <Label Text="Veículo" FontSize="10" TextColor="#5F6368" />
                     <Label Text="{Binding Veiculo.Titulo}" FontAttributes="Bold" FontSize="16" />
-                    <Label Text="{Binding Veiculo.PlacaTexto}" FontSize="12" TextColor="Gray" />
+                    <Label Text="{Binding Veiculo.PlacaTexto}" FontSize="12" TextColor="#5F6368" />
                 </VerticalStackLayout>
             </Frame>
 
-            <Label Text="Data da manutenção" FontSize="12" TextColor="Gray" />
+            <Label Text="Data da manutenção" FontSize="12" TextColor="#5F6368" />
             <DatePicker Date="{Binding Data}" MaximumDate="{Binding DataMaxima}" Format="dd/MM/yyyy" />
 
-            <Label Text="Descrição do serviço" FontSize="12" TextColor="Gray" />
+            <Label Text="Descrição do serviço" FontSize="12" TextColor="#5F6368" />
             <Entry Placeholder="Ex.: Revisão de freios e troca de pastilhas"
                    MaxLength="300"
                    Text="{Binding Descricao}" />
 
-            <Label Text="Valor total (R$)" FontSize="12" TextColor="Gray" />
+            <Label Text="Valor total (R$)" FontSize="12" TextColor="#5F6368" />
             <Entry Placeholder="5.400,00" Keyboard="Numeric" Text="{Binding ValorTexto}" />
 
-            <Label Text="Forma de pagamento da despesa" FontSize="12" TextColor="Gray" />
+            <Label Text="Forma de pagamento da despesa" FontSize="12" TextColor="#5F6368" />
             <Picker Title="Escolha a forma de pagamento"
                     ItemsSource="{Binding Formas}"
                     SelectedItem="{Binding FormaSelecionada}" />
@@ -40,7 +40,7 @@
             </Grid>
 
             <VerticalStackLayout IsVisible="{Binding Pago}" Spacing="4">
-                <Label Text="Data do pagamento" FontSize="12" TextColor="Gray" />
+                <Label Text="Data do pagamento" FontSize="12" TextColor="#5F6368" />
                 <DatePicker Date="{Binding DataPagamento}" MaximumDate="{Binding DataMaxima}" Format="dd/MM/yyyy" />
             </VerticalStackLayout>
 

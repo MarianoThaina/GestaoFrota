@@ -185,10 +185,37 @@ public partial class MovimentacaoFormViewModel : BaseViewModel
                 return;
             }
 
-            var permissao = await Permissions.RequestAsync<Permissions.Camera>();
+            var permissao = await Permissions.CheckStatusAsync<Permissions.Camera>();
             if (permissao != PermissionStatus.Granted)
             {
-                MensagemErro = "Permita o uso da câmera para fotografar o comprovante.";
+                // Explica antes de pedir (Permission_Rationale): a câmera serve só para o comprovante.
+                if (Permissions.ShouldShowRationale<Permissions.Camera>() && Shell.Current is not null)
+                {
+                    await Shell.Current.DisplayAlert(
+                        "Câmera",
+                        "O app usa a câmera só para fotografar o comprovante desta movimentação. Nada é gravado sem você salvar.",
+                        "Entendi");
+                }
+
+                permissao = await Permissions.RequestAsync<Permissions.Camera>();
+            }
+
+            if (permissao != PermissionStatus.Granted)
+            {
+                MensagemErro = "Sem acesso à câmera. Use a Galeria ou libere a câmera nas configurações do app.";
+
+                // Negada de vez ("não perguntar novamente"): o Android não mostra mais o pedido,
+                // então oferece o caminho para liberar nas configurações.
+                if (!Permissions.ShouldShowRationale<Permissions.Camera>() && Shell.Current is not null
+                    && await Shell.Current.DisplayAlert(
+                        "Câmera bloqueada",
+                        "A câmera está bloqueada para este app. Quer abrir as configurações para liberar?",
+                        "Abrir configurações",
+                        "Agora não"))
+                {
+                    AppInfo.Current.ShowSettingsUI();
+                }
+
                 return;
             }
 

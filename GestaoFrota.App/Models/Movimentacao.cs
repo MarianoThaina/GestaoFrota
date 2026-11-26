@@ -71,7 +71,7 @@ public class Movimentacao
     [Ignore]
     public Color CorValor => Estornada
         ? Colors.Gray
-        : Tipo == TipoMovimentacao.Receita ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+        : Tipo == TipoMovimentacao.Receita ? Color.FromArgb("#137333") : Color.FromArgb("#D93025");
 
     [Ignore]
     public string StatusTexto => Estornada
@@ -83,7 +83,7 @@ public class Movimentacao
     [Ignore]
     public Color CorStatus => Estornada
         ? Colors.Gray
-        : Status == StatusMovimentacao.Pago ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#E8710A");
+        : Status == StatusMovimentacao.Pago ? Color.FromArgb("#137333") : Color.FromArgb("#B3500B");
 
     [Ignore]
     public string VencimentoTexto => $"Vence em {Formatacao.Data(DataVencimento)}";

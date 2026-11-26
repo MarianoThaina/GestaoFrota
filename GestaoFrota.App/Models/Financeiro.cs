@@ -16,7 +16,7 @@ public class SaldoResumo
     public string AReceberTexto => Formatacao.Moeda(AReceber);
     public string APagarTexto => Formatacao.Moeda(APagar);
 
-    public Color CorSaldo => SaldoAtual >= 0 ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+    public Color CorSaldo => SaldoAtual >= 0 ? Color.FromArgb("#137333") : Color.FromArgb("#D93025");
 }
 
 public class ProjecaoMes
@@ -33,7 +33,7 @@ public class ProjecaoMes
     public string EntradasTexto => "+ " + Formatacao.Moeda(EntradasPrevistas);
     public string SaidasTexto => "- " + Formatacao.Moeda(SaidasPrevistas);
     public string SaldoProjetadoTexto => Formatacao.Moeda(SaldoProjetado);
-    public Color CorSaldoProjetado => SaldoProjetado >= 0 ? Color.FromArgb("#1E8E3E") : Color.FromArgb("#D93025");
+    public Color CorSaldoProjetado => SaldoProjetado >= 0 ? Color.FromArgb("#137333") : Color.FromArgb("#D93025");
 }
 
 public class ProjecaoResposta

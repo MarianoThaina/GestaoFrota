@@ -28,7 +28,7 @@
                     <Label Text="Nenhuma forma de pagamento cadastrada ainda."
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           TextColor="Gray" />
+                           TextColor="#5F6368" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:FormaPagamento">
