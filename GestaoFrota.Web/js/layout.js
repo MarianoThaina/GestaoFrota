@@ -34,7 +34,7 @@ const ITENS_MENU = [
     secao: 'Administração',
     itens: [
       { rotulo: 'Usuários', arquivo: 'usuarios.html', icone: 'usuarios', pronta: true, perfis: [PERFIL.ADMINISTRADOR] },
-      { rotulo: 'Ajustes', arquivo: 'ajustes.html', icone: 'ajustes', pronta: false, perfis: [PERFIL.ADMINISTRADOR, PERFIL.GESTOR_DE_FROTA, PERFIL.FINANCEIRO, PERFIL.OPERADOR_MOTORISTA] }
+      { rotulo: 'Ajustes', arquivo: 'ajustes.html', icone: 'ajustes', pronta: false, aviso: 'Em uma próxima versão', perfis: [PERFIL.ADMINISTRADOR, PERFIL.GESTOR_DE_FROTA, PERFIL.FINANCEIRO, PERFIL.OPERADOR_MOTORISTA] }
     ]
   }
 ];
@@ -96,7 +96,9 @@ function montarLateral(arquivoAtual) {
         );
       } else {
         partes.push(
-          '<span class="menu-item menu-item-bloqueado" title="Ainda não há endpoint na API para esta tela">' +
+          // Movimentações, Frota e Viagens já funcionam no aplicativo Android
+          // (a API tem os endpoints); no site ficam só os cadastros e a administração.
+          '<span class="menu-item menu-item-bloqueado" title="' + (item.aviso || 'Disponível no aplicativo Android') + '">' +
             svg(item.icone) + item.rotulo +
           '</span>'
         );
