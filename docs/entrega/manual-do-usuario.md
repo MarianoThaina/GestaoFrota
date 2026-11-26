@@ -3,8 +3,10 @@ title: "Gestão de Frota"
 subtitle: "Manual do Usuário"
 ---
 
-> **Rascunho de 04/11/2026.** Os nomes de botões e telas foram copiados do aplicativo. As
-> imagens marcadas com [CAPTURA] entram quando o app estiver rodando no celular.
+> **Versão de 26/11/2026.** Os nomes de botões e telas foram copiados do aplicativo, e as imagens
+> são telas reais do app. A mesma ajuda está on-line, com busca e filtro por perfil, na
+> **Central de Ajuda**: <https://gestaofrota.runasp.net/ajuda.html> (menu > **Ajuda** no app, ou
+> **Precisa de ajuda?** na tela de entrada).
 
 # Para que serve o aplicativo
 
@@ -34,7 +36,10 @@ administrador para mudar o seu perfil (veja [Usuários](#usuários)).
 
 **Para sair:** abra o menu (o ícone ☰ no canto de cima) e toque em **Sair**, no fim da lista.
 
-[CAPTURA: tela de login]
+**Precisa de ajuda?** No menu, toque em **Ajuda**: a Central de Ajuda abre no navegador, já
+filtrada para o seu perfil. Na tela de entrada, antes de fazer login, use **Precisa de ajuda?**.
+
+![Tela de entrada](img/login.webp){width=32%}
 
 # O que cada perfil vê
 
@@ -56,7 +61,8 @@ do menu.
 
 O **Motorista** abre o aplicativo direto na tela **Viagens**.
 
-[CAPTURA: menu do Administrador e menu do Motorista, lado a lado]
+![Menu do Administrador](img/menu-administrador.webp){width=32%}
+![Menu do Gestor de Frota](img/menu-gestor.webp){width=32%}
 
 # Início
 
@@ -71,7 +77,7 @@ O **Motorista** abre o aplicativo direto na tela **Viagens**.
 
 Para atualizar qualquer lista do aplicativo, **puxe a tela para baixo**.
 
-[CAPTURA: tela Início]
+![Tela Início](img/inicio.webp){width=32%}
 
 # Movimentações (entradas e saídas)
 
@@ -99,6 +105,9 @@ Na mesma tela, em **Comprovante (opcional)**:
 
 A foto pode ter até 5 MB. Para ver depois, toque em **Comprovante** no lançamento, na lista.
 
+Na primeira vez o celular pede permissão para a câmera. Se você negar, a **Galeria** continua
+funcionando; se bloquear de vez, o aplicativo oferece **Abrir configurações** para liberar.
+
 ## Marcar como pago
 
 Na lista de **Movimentações**, toque em **Marcar como pago** no lançamento pendente. A partir daí ele
@@ -111,7 +120,12 @@ do saldo, da projeção e dos relatórios.
 
 Use os filtros **Tipo** e **Situação**, no alto da lista, para achar um lançamento.
 
-[CAPTURA: formulário de nova movimentação e lista com os botões]
+Lançar, marcar como pago e estornar são do **Administrador** e do **Financeiro**. O Gestor de Frota
+vê a lista só para consulta, sem esses botões.
+
+![Nova movimentação](img/movimentacao-formulario.webp){width=32%}
+![Comprovante anexado](img/comprovante-anexado.webp){width=32%}
+![Lista com as ações](img/movimentacoes-lista.webp){width=32%}
 
 # Dívidas e Financiamentos
 
@@ -128,7 +142,8 @@ Use para financiamentos e compras parceladas: o aplicativo cria todas as parcela
 O aplicativo cria uma parcela pendente por mês. Elas aparecem em **Movimentações** e na projeção do
 Início. Para pagar uma parcela, abra a dívida e toque em **Marcar parcela como paga**.
 
-[CAPTURA: dívida com a lista de parcelas]
+![Novo financiamento](img/novo-financiamento.webp){width=32%}
+![Dívida em aberto](img/dividas.webp){width=32%}
 
 # Categorias e Formas de Pagamento
 
@@ -166,7 +181,8 @@ O aplicativo faz duas coisas sozinho: lança a despesa no caixa, na categoria Ma
 veículo como **Em manutenção**, para ele não ser escolhido numa viagem. Quando o serviço terminar,
 toque em **Concluir manutenção** e o veículo volta a ficar **Disponível**.
 
-[CAPTURA: lista da frota com as situações]
+![Novo veículo](img/novo-veiculo.webp){width=32%}
+![Frota](img/frota.webp){width=32%}
 
 # Rotas
 
@@ -181,7 +197,7 @@ Menu > **Rotas**: preencha o **Nome da rota** (ex.: "SP → Curitiba"), a **Orig
 1. Menu > **Viagens** > **+ Abrir viagem**.
 2. Escolha o **Veículo** (só aparecem os disponíveis), a **Rota** e o **Motorista**. Quem está logado
    como Motorista só abre viagem para si mesmo.
-3. Anote o **Hodômetro inicial (km)**, o número do painel do caminhão.
+3. Confira o **Hodômetro inicial (km)**: ele já vem com o último registrado do veículo.
 4. Toque em **Abrir viagem**.
 
 O veículo passa a **Em viagem**.
@@ -211,7 +227,9 @@ Abrir e encerrar viagens **funciona sem sinal**:
 Mesmo que o envio caia no meio, nada é registrado em dobro. As outras telas (lançamentos, dívidas,
 cadastros) precisam de internet. Sem sinal, o aplicativo avisa em vez de fingir que salvou.
 
-[CAPTURA: viagem "aguardando envio" e encerramento]
+![Abrir viagem](img/abrir-viagem.webp){width=32%}
+![Encerrar](img/encerrar-viagem.webp){width=32%}
+![Sem internet: aguardando envio](img/aguardando-envio.webp){width=32%}
 
 # Relatórios
 
@@ -245,7 +263,9 @@ Em **Exportar o período filtrado**, toque em **PDF** para um relatório pronto 
 mandar, ou em **CSV (planilha)** para abrir no Excel. O celular abre as opções de compartilhamento:
 salvar no Drive, enviar pelo WhatsApp ou por e-mail.
 
-[CAPTURA: relatórios com gráfico tocado e o PDF exportado]
+![Resultado do período](img/relatorios.webp){width=32%}
+![Ranking e exportação](img/relatorios-ranking.webp){width=32%}
+![PDF exportado](img/relatorio-pdf.webp){width=32%}
 
 # Usuários (só o Administrador)
 
@@ -262,7 +282,7 @@ dentro da sessão, que só é renovada num login novo.
 
 | O que acontece | O que fazer |
 |---|---|
-| Entrei, mas o menu só tem Início e Viagens | A sua conta ainda é de Motorista. Peça ao administrador para mudar o seu perfil. |
+| Entrei, mas o menu só tem Início, Viagens e Frota | A sua conta ainda é de Motorista. Peça ao administrador para mudar o seu perfil. |
 | O login abre o Google, mas não volta para o aplicativo | Feche o aplicativo e tente de novo. Se continuar, avise o responsável pelo sistema. |
 | "Sem conexão" ao salvar um lançamento | Lançamentos precisam de internet. Espere o sinal voltar e salve de novo. |
 | Viagem continua "aguardando envio" | Com internet, abra **Viagens** e puxe a tela para baixo. |
@@ -270,6 +290,8 @@ dentro da sessão, que só é renovada num login novo.
 | O veículo não aparece para abrir viagem | Ele está em viagem, em manutenção ou desativado. Veja a situação em **Frota**. |
 | Não aceita a placa | Use ABC-1234 (antiga) ou ABC1D23 (Mercosul) e confira se ela já não está cadastrada. |
 | A foto do comprovante não sobe | A foto tem mais de 5 MB. Tire outra ou escolha uma imagem menor na galeria. |
+| A câmera não abre | Libere a câmera nas configurações do celular (o app oferece o atalho) ou use a **Galeria**. |
+| Não vejo os botões de pagar, estornar ou desativar | Eles só aparecem para o perfil que pode usá-los. Veja [O que cada perfil vê](#o-que-cada-perfil-vê). |
 
 # Palavras usadas no aplicativo
 

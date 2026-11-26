@@ -72,6 +72,8 @@
         <ShellContent ContentTemplate="{DataTemplate views:UsuariosPage}" />
     </FlyoutItem>
 
+    <MenuItem Text="Ajuda" Clicked="OnAjudaClicked" />
+
     <MenuItem Text="Sair" Clicked="OnSairClicked" />
 
 </Shell>

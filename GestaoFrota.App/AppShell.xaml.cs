@@ -71,6 +71,8 @@ public partial class AppShell : Shell
         LblNomeUsuario.Text = usuario?.Nome ?? "Gestão de Frota";
         LblPerfilUsuario.Text = perfil.HasValue ? NomeDoPerfil(perfil.Value) : string.Empty;
 
+        _perfil = perfil;
+
         // US17: o Motorista abre o app direto na tela de Viagens.
         _itemInicial = perfil == PerfilUsuario.OperadorMotorista ? MenuViagens : MenuInicio;
         if (perfil == PerfilUsuario.OperadorMotorista)
@@ -80,6 +82,14 @@ public partial class AppShell : Shell
     }
 
     private FlyoutItem? _itemInicial;
+    private PerfilUsuario? _perfil;
+
+    /// <summary>Abre a Central de Ajuda já filtrada para o perfil de quem está logado.</summary>
+    private async void OnAjudaClicked(object? sender, EventArgs e)
+    {
+        FlyoutIsPresented = false;
+        await CentralDeAjuda.AbrirAsync(_perfil);
+    }
 
     /// <summary>
     /// Voltar (botão ou gesto): fecha o menu se estiver aberto; dentro de um

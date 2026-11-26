@@ -9,4 +9,6 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
     }
+
+    private async void OnAjudaClicked(object? sender, EventArgs e) => await Helpers.CentralDeAjuda.AbrirAsync();
 }
