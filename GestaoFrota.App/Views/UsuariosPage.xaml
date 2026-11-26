@@ -135,7 +135,8 @@
 
                                 <Picker
                                     Title="Selecione o perfil"
-                                    ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type vm:UsuariosViewModel}}, Path=PerfisDisponiveis}"
+                                    ItemsSource="{x:Static vm:UsuariosViewModel.Perfis}"
+                                    ItemDisplayBinding="{Binding ., Converter={StaticResource PerfilNomeConverter}}"
                                     SelectedItem="{Binding Perfil}" />
 
                                 <Button

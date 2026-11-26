@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GestaoFrota.App.Services;
 
@@ -6,6 +7,16 @@ namespace GestaoFrota.App.ViewModels;
 public partial class LoginViewModel : BaseViewModel
 {
     private readonly IAuthService _authService;
+
+    /// <summary>
+    /// Verdadeiro enquanto o App confere a sessão salva ao abrir: a tela mostra
+    /// "Verificando sessão…" em vez do botão, para ninguém entrar de novo à toa.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(MostrarBotaoEntrar))]
+    private bool verificandoSessao;
+
+    public bool MostrarBotaoEntrar => !VerificandoSessao;
 
     public LoginViewModel(IAuthService authService)
     {

@@ -13,7 +13,11 @@ public partial class UsuariosViewModel : BaseViewModel
 
     public ObservableCollection<Usuario> Usuarios { get; } = new();
 
-    public List<PerfilUsuario> PerfisDisponiveis { get; } =
+    /// <summary>
+    /// Estática de propósito: o Picker recebe a lista antes do SelectedItem.
+    /// Por RelativeSource ela chegava depois e o perfil atual ficava em branco.
+    /// </summary>
+    public static List<PerfilUsuario> Perfis { get; } =
         Enum.GetValues<PerfilUsuario>().ToList();
 
     [ObservableProperty]
@@ -102,6 +106,14 @@ public partial class UsuariosViewModel : BaseViewModel
             await _usuarioService.AlterarPerfilAsync(
                 usuario.Id,
                 usuario.Perfil);
+
+            if (Shell.Current is not null)
+            {
+                await Shell.Current.DisplayAlert(
+                    "Perfil alterado",
+                    $"{usuario.Nome} agora é {Helpers.PerfilNomes.Nome(usuario.Perfil)}. A mudança vale a partir do próximo login.",
+                    "OK");
+            }
         }
         catch (Exception ex)
         {

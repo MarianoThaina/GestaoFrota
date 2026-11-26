@@ -128,13 +128,17 @@ public partial class ViagemFormViewModel : BaseViewModel
             {
                 MensagemErro = Offline
                     ? "Nenhum veículo disponível no cache deste aparelho. Conecte-se uma vez para baixar a frota."
-                    : "Nenhum veículo disponível. Cadastre um veículo em Frota ou encerre a viagem em andamento.";
+                    : gestor
+                        ? "Nenhum veículo disponível. Cadastre um veículo em Frota ou encerre a viagem em andamento."
+                        : "Nenhum veículo disponível no momento. Peça ao gestor da frota para liberar um veículo.";
             }
             else if (Rotas.Count == 0)
             {
                 MensagemErro = Offline
                     ? "Nenhuma rota no cache deste aparelho. Conecte-se uma vez para baixar as rotas."
-                    : "Nenhuma rota ativa. Cadastre uma rota antes de abrir a viagem.";
+                    : gestor
+                        ? "Nenhuma rota ativa. Cadastre uma rota antes de abrir a viagem."
+                        : "Nenhuma rota ativa no momento. Peça ao gestor da frota para cadastrar a rota.";
             }
         }
         catch (Exception ex)

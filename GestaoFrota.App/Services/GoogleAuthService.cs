@@ -111,7 +111,10 @@ public class GoogleAuthService : IAuthService
             using var request = new HttpRequestMessage(HttpMethod.Get, "auth/me");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await _httpClient.SendAsync(request);
+            // A hospedagem gratuita "dorme" depois de 30 min parada e demora para
+            // acordar; não deixa o usuário 100 s (padrão do HttpClient) na tela de login.
+            using var limite = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            var response = await _httpClient.SendAsync(request, limite.Token);
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
@@ -124,10 +127,10 @@ public class GoogleAuthService : IAuthService
             response.EnsureSuccessStatusCode();
             return true;
         }
-        catch (HttpRequestException)
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
         {
-            // API inacessível (ex.: sem conexão no primeiro uso do dia):
-            // mantém a sessão local salva em SecureStorage/Preferences.
+            // API inacessível ou lenta demais (sem conexão, ou a hospedagem
+            // acordando): mantém a sessão local salva em SecureStorage/Preferences.
             return true;
         }
     }

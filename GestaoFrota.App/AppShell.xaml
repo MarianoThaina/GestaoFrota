@@ -17,6 +17,14 @@
         O Motorista vê Início, Viagens e Frota (só consulta) e abre direto em
         Viagens (US17). A restrição de escrita (RBAC) é sempre validada no backend.
     -->
+    <Shell.Resources>
+        <!-- Texto dos itens do menu lateral: sem isto o Android usa preto sobre o fundo azul-escuro. -->
+        <Style TargetType="Label" Class="FlyoutItemLabelStyle">
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+    </Shell.Resources>
+
     <Shell.FlyoutHeader>
         <VerticalStackLayout Padding="20,36,20,16" Spacing="2" BackgroundColor="#0B1D3A">
             <Label x:Name="LblNomeUsuario" Text="Gestão de Frota" TextColor="White" FontSize="18" FontAttributes="Bold" />
