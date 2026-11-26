@@ -66,6 +66,12 @@ const Sessao = {
     return true;
   },
 
+  // Primeira tela depois do login: o Motorista não tem Relatórios, então
+  // começa em Viagens.
+  telaInicial() {
+    return this.temPerfil(PERFIL.OPERADOR_MOTORISTA) ? 'viagens.html' : 'relatorios.html';
+  },
+
   temPerfil(...perfisAceitos) {
     const usuario = this.usuario();
     return usuario ? perfisAceitos.includes(usuario.perfil) : false;
