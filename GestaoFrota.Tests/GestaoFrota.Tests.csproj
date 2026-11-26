@@ -12,6 +12,8 @@
   <ItemGroup>
     <!-- Só o domínio: as regras testadas são funções puras, sem banco nem HTTP. -->
     <ProjectReference Include="..\GestaoFrota.Domain\GestaoFrota.Domain.csproj" />
+    <!-- PeriodoRelatorio mora na API mas também é função pura: entra só o arquivo, não a API. -->
+    <Compile Include="..\GestaoFrota.API\Services\PeriodoRelatorio.cs" Link="Links\PeriodoRelatorio.cs" />
   </ItemGroup>
 
   <ItemGroup>

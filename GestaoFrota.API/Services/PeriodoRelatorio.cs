@@ -28,7 +28,8 @@ public readonly record struct PeriodoRelatorio(DateTime Inicio, DateTime Fim, st
         int? ano,
         int? mes,
         bool tudo,
-        DateTime? primeiroRegistro)
+        DateTime? primeiroRegistro,
+        DateTime? ultimoRegistro = null)
     {
         if (de.HasValue || ate.HasValue)
         {
@@ -57,9 +58,21 @@ public readonly record struct PeriodoRelatorio(DateTime Inicio, DateTime Fim, st
 
         if (tudo)
         {
-            var base_ = primeiroRegistro ?? hoje;
-            var inicio = new DateTime(base_.Year, base_.Month, 1);
-            return new PeriodoRelatorio(inicio, CalculadoraRelatorios.FimDoPeriodo(hoje), "todo o histórico");
+            // Do mês do primeiro registro até o mês do último, sempre incluindo
+            // o mês atual. Sem isso, com só lançamentos futuros (ex.: parcelas
+            // de um financiamento novo) o início ficava depois do fim e o
+            // período saía invertido e vazio.
+            var primeiro = primeiroRegistro is { } p && p < hoje ? p : hoje;
+            var inicio = new DateTime(primeiro.Year, primeiro.Month, 1);
+
+            var fim = CalculadoraRelatorios.FimDoPeriodo(hoje);
+            if (ultimoRegistro is { } u)
+            {
+                var depoisDoUltimo = new DateTime(u.Year, u.Month, 1).AddMonths(1);
+                if (depoisDoUltimo > fim) fim = depoisDoUltimo;
+            }
+
+            return new PeriodoRelatorio(inicio, fim, "todo o histórico");
         }
 
         var n = Math.Clamp(meses ?? MesesPadrao, 1, MesesMaximo);
