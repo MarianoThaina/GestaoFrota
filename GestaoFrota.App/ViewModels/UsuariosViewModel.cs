@@ -31,14 +31,19 @@ public partial class UsuariosViewModel : BaseViewModel
         _authService = authService;
     }
 
+    // Trava própria: o RefreshView liga "Carregando" antes de chamar o comando,
+    // então usar "Carregando" como trava fazia o indicador girar para sempre.
+    private bool _carregandoAgora;
+
     [RelayCommand]
     private async Task CarregarAsync()
     {
-        if (Carregando)
+        if (_carregandoAgora)
         {
             return;
         }
 
+        _carregandoAgora = true;
         Carregando = true;
         MensagemErro = null;
 
@@ -87,6 +92,7 @@ public partial class UsuariosViewModel : BaseViewModel
         }
         finally
         {
+            _carregandoAgora = false;
             Carregando = false;
         }
     }

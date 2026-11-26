@@ -149,35 +149,55 @@ public partial class RelatoriosViewModel : BaseViewModel
         _relatorioService = relatorioService;
     }
 
+    // Trava própria: "Carregando" também é ligado pelo RefreshView ao puxar a
+    // tela, antes de chamar o comando. Usar "Carregando" como trava fazia o
+    // comando sair na hora e o indicador ficava girando para sempre.
+    private bool _carregandoAgora;
+    private bool _recarregarAoTerminar;
+
     [RelayCommand]
     private async Task CarregarAsync()
     {
-        if (Carregando)
+        if (_carregandoAgora)
         {
+            // Período trocado no meio de um carregamento: recarrega no fim,
+            // em vez de descartar o pedido novo.
+            _recarregarAoTerminar = true;
             return;
         }
 
+        _carregandoAgora = true;
         Carregando = true;
-        MensagemErro = null;
-        MensagemExportacao = null;
 
         try
         {
-            var resumo = await _relatorioService.ObterResumoAsync(Filtro);
-            AplicarResumo(resumo);
-        }
-        catch (Exception ex)
-        {
-            MensagemErro = ErrosUi.Mensagem(ex, "Não foi possível carregar os relatórios.");
-            System.Diagnostics.Debug.WriteLine(ex);
+            do
+            {
+                _recarregarAoTerminar = false;
+                MensagemErro = null;
+                MensagemExportacao = null;
+
+                try
+                {
+                    var resumo = await _relatorioService.ObterResumoAsync(Filtro);
+                    AplicarResumo(resumo);
+                }
+                catch (Exception ex)
+                {
+                    MensagemErro = ErrosUi.Mensagem(ex, "Não foi possível carregar os relatórios.");
+                    System.Diagnostics.Debug.WriteLine(ex);
+                }
+
+                // US10/US13 em chamada separada: uma falha aqui não derruba o financeiro.
+                await CarregarFrotaAsync();
+            }
+            while (_recarregarAoTerminar);
         }
         finally
         {
+            _carregandoAgora = false;
             Carregando = false;
         }
-
-        // US10/US13 em chamada separada: uma falha aqui não derruba o financeiro.
-        await CarregarFrotaAsync();
     }
 
     // ---------- Seleção de período ----------

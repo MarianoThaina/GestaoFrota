@@ -176,10 +176,10 @@ public class RelatoriosController : ControllerBase
         }
 
         var sb = new StringBuilder();
-        sb.Append("Periodo;").Append(periodo.Rotulo).Append(';')
+        sb.Append("Período;").Append(periodo.Rotulo).Append(';')
           .Append(periodo.Inicio.ToString("dd/MM/yyyy", PtBr)).Append(';')
           .Append(periodo.UltimoDia.ToString("dd/MM/yyyy", PtBr)).AppendLine();
-        sb.AppendLine("Vencimento;Tipo;Descricao;Categoria;Forma de pagamento;Situacao;Pagamento;Valor");
+        sb.AppendLine("Vencimento;Tipo;Descrição;Categoria;Forma de pagamento;Situação;Pagamento;Valor");
 
         foreach (var l in linhas)
         {
@@ -197,7 +197,7 @@ public class RelatoriosController : ControllerBase
         var totais = TotaisExportacao.De(linhas);
         sb.AppendLine();
         sb.Append("Total de entradas;;;;;;;").Append(totais.Entradas.ToString("F2", PtBr)).AppendLine();
-        sb.Append("Total de saidas;;;;;;;").Append(totais.Saidas.ToString("F2", PtBr)).AppendLine();
+        sb.Append("Total de saídas;;;;;;;").Append(totais.Saidas.ToString("F2", PtBr)).AppendLine();
         sb.Append("Resultado;;;;;;;").Append(totais.Resultado.ToString("F2", PtBr)).AppendLine();
 
         // BOM UTF-8: sem ele o Excel (Windows, pt-BR) troca os acentos por símbolos.
@@ -231,11 +231,15 @@ public class RelatoriosController : ControllerBase
     private async Task<PeriodoRelatorio> ResolverPeriodoFinanceiroAsync(
         DateTime hoje, int? meses, DateTime? de, DateTime? ate, int? ano, int? mes, bool tudo)
     {
-        DateTime? primeiro = tudo
-            ? await _context.Movimentacoes.AsNoTracking().Where(m => !m.Estornada).MinAsync(m => (DateTime?)m.DataVencimento)
-            : null;
+        DateTime? primeiro = null, ultimo = null;
+        if (tudo)
+        {
+            var validas = _context.Movimentacoes.AsNoTracking().Where(m => !m.Estornada);
+            primeiro = await validas.MinAsync(m => (DateTime?)m.DataVencimento);
+            ultimo = await validas.MaxAsync(m => (DateTime?)m.DataVencimento);
+        }
 
-        return PeriodoRelatorio.Resolver(hoje, meses, de, ate, ano, mes, tudo, primeiro);
+        return PeriodoRelatorio.Resolver(hoje, meses, de, ate, ano, mes, tudo, primeiro, ultimo);
     }
 
     /// <summary>Protege o campo contra ";" e aspas, que quebrariam a coluna.</summary>
