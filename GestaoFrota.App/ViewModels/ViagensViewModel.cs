@@ -62,6 +62,10 @@ public partial class ViagensViewModel : BaseViewModel
             PodeCancelar = usuario?.Perfil is PerfilUsuario.Administrador or PerfilUsuario.GestorDeFrota;
 
             _todas = await _viagemService.ListarAsync();
+            foreach (var viagem in _todas)
+            {
+                viagem.CancelamentoPermitido = PodeCancelar;
+            }
             AplicarFiltro();
             AtualizarAvisoOffline();
         }

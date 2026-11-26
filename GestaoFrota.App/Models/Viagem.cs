@@ -122,8 +122,15 @@ public class Viagem
     [Ignore]
     public bool PodeEncerrar => Status == StatusViagem.EmAndamento && !EncerramentoPendente;
 
+    /// <summary>
+    /// Preenchido pela tela de Viagens conforme o perfil: só Administrador e
+    /// Gestor de Frota cancelam (a API recusa os demais).
+    /// </summary>
     [Ignore]
-    public bool PodeCancelar => Status == StatusViagem.EmAndamento && !PendenteSincronizacao;
+    public bool CancelamentoPermitido { get; set; }
+
+    [Ignore]
+    public bool PodeCancelar => CancelamentoPermitido && Status == StatusViagem.EmAndamento && !PendenteSincronizacao;
 
     [Ignore]
     public bool TemErroSincronizacao => !string.IsNullOrWhiteSpace(ErroSincronizacao);

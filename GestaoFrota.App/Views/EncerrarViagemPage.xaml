@@ -37,7 +37,7 @@
             </Frame>
 
             <Label Text="Hodômetro final (km)" FontSize="12" TextColor="Gray" />
-            <Entry Placeholder="184.735" Keyboard="Numeric" Text="{Binding HodometroFinalTexto}" />
+            <Entry Placeholder="Ex.: 184.735" Keyboard="Numeric" Text="{Binding HodometroFinalTexto}" />
 
             <!-- A validação crítica da US08, mostrada enquanto digita -->
             <Label Text="O hodômetro final deve ser maior que o inicial."
