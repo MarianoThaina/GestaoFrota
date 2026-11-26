@@ -10,6 +10,11 @@ public partial class App : Application
     public App(IServiceProvider serviceProvider)
     {
         InitializeComponent();
+
+        // O visual foi desenhado só para o tema claro (cartões brancos, textos
+        // escuros). Com o celular no modo escuro o fundo ficava preto e textos
+        // e campos sumiam (branco sobre branco). Fica sempre claro.
+        UserAppTheme = AppTheme.Light;
         _serviceProvider = serviceProvider;
     }
 
