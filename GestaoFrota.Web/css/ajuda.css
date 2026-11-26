@@ -1,0 +1,282 @@
+/* =========================================================================
+   CENTRAL DE AJUDA — usa as variáveis de cor de estilo.css
+   ========================================================================= */
+
+.pagina-ajuda {
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.ajuda-topo {
+  background: #0B1D3A;
+  color: #FFFFFF;
+  padding: var(--espaco-xl) var(--espaco-md) var(--espaco-lg);
+}
+
+.ajuda-topo-conteudo {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.ajuda-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  color: #FFFFFF;
+  text-decoration: none;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.ajuda-topo h1 {
+  font-size: 32px;
+  margin: var(--espaco-md) 0 var(--espaco-xs);
+}
+
+.ajuda-topo p {
+  color: #C9D6EA;
+  margin: 0 0 var(--espaco-lg);
+}
+
+.ajuda-busca {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-sm);
+  background: #FFFFFF;
+  color: #5F6368;
+  border-radius: 28px;
+  padding: 0 var(--espaco-md);
+  min-height: 52px;
+}
+
+.ajuda-busca input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  font-size: 16px;
+  min-height: 48px;
+  background: transparent;
+  color: var(--cor-texto);
+}
+
+.ajuda-perfis {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espaco-sm);
+  margin-top: var(--espaco-md);
+}
+
+.ajuda-perfis span {
+  color: #C9D6EA;
+  font-size: 14px;
+}
+
+.ajuda-perfil {
+  min-height: 40px;
+  padding: 0 var(--espaco-md);
+  border-radius: 20px;
+  border: 1px solid #4A5D7E;
+  background: transparent;
+  color: #FFFFFF;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ajuda-perfil.ativo {
+  background: #FFFFFF;
+  color: #0B1D3A;
+  font-weight: 700;
+}
+
+.ajuda-conteudo {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--espaco-lg) var(--espaco-md) var(--espaco-xl);
+}
+
+.ajuda-indice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-sm);
+  margin-bottom: var(--espaco-lg);
+}
+
+.ajuda-indice a {
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  background: var(--cor-superficie-variante);
+  color: var(--cor-texto);
+  text-decoration: none;
+}
+
+.ajuda-nada {
+  background: var(--cor-alerta-fundo);
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-md);
+}
+
+.topico {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  padding: var(--espaco-lg);
+  margin-bottom: var(--espaco-lg);
+  scroll-margin-top: var(--espaco-md);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espaco-lg);
+}
+
+@media (min-width: 900px) {
+  .topico:has(> figure) {
+    grid-template-columns: 1fr 240px;
+  }
+}
+
+.topico h2 {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 22px;
+}
+
+.topico h3 {
+  font-size: 17px;
+  margin: var(--espaco-lg) 0 var(--espaco-sm);
+}
+
+.topico h3:first-child {
+  margin-top: 0;
+}
+
+.topico-texto {
+  line-height: 1.6;
+}
+
+.topico-texto li {
+  margin-bottom: 6px;
+}
+
+.perfis-aviso {
+  background: var(--cor-primaria-clara);
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-sm) var(--espaco-md);
+  font-size: 14px;
+}
+
+.dica {
+  border-left: 4px solid var(--cor-primaria);
+  padding-left: var(--espaco-md);
+  color: #3C4043;
+}
+
+.topico figure {
+  margin: 0;
+  text-align: center;
+}
+
+.topico figure img {
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid var(--cor-borda);
+  box-shadow: 0 4px 16px rgba(11, 29, 58, 0.12);
+}
+
+.topico figcaption {
+  font-size: 13px;
+  color: #5F6368;
+  margin-top: var(--espaco-xs);
+}
+
+/* Várias telas lado a lado: no celular viram uma faixa que rola para o lado
+   (uma tela e meia à vista, para indicar que tem mais). */
+.figuras-lado {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 62%;
+  gap: var(--espaco-md);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: var(--espaco-sm);
+}
+
+.figuras-lado figure {
+  scroll-snap-align: start;
+}
+
+@media (min-width: 700px) {
+  .figuras-lado {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    overflow-x: visible;
+  }
+}
+
+/* Uma tela só, no celular: não ocupa a largura toda. */
+.topico > figure img {
+  max-width: 220px;
+}
+
+.tabela-rolavel {
+  overflow-x: auto;
+}
+
+.topico table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+
+.topico th,
+.topico td {
+  border-bottom: 1px solid var(--cor-borda);
+  padding: 8px;
+  text-align: center;
+}
+
+.topico th:first-child,
+.topico td:first-child {
+  text-align: left;
+}
+
+.perguntas details {
+  border-bottom: 1px solid var(--cor-borda);
+  padding: var(--espaco-sm) 0;
+}
+
+.perguntas summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.glossario dt {
+  font-weight: 700;
+  margin-top: var(--espaco-sm);
+}
+
+.glossario dd {
+  margin: 0 0 var(--espaco-xs);
+  color: #3C4043;
+}
+
+.ajuda-rodape {
+  text-align: center;
+  font-size: 14px;
+  color: #5F6368;
+  padding: var(--espaco-lg) var(--espaco-md) var(--espaco-xl);
+}

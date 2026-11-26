@@ -28,5 +28,9 @@
 		<intent>
 			<action android:name="android.media.action.IMAGE_CAPTURE" />
 		</intent>
+		<!-- Central de Ajuda: abrir a página no navegador (Custom Tabs) no Android 11+. -->
+		<intent>
+			<action android:name="android.support.customtabs.action.CustomTabsService" />
+		</intent>
 	</queries>
 </manifest>

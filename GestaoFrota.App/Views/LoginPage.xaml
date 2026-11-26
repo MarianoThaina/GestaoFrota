@@ -49,6 +49,18 @@
 
         </VerticalStackLayout>
 
+        <!-- Central de Ajuda: página pública, abre antes do login. -->
+        <Button Grid.Row="2"
+                Text="Precisa de ajuda?"
+                Clicked="OnAjudaClicked"
+                BackgroundColor="Transparent"
+                TextColor="#C9D6EA"
+                FontSize="15"
+                HeightRequest="48"
+                VerticalOptions="End"
+                HorizontalOptions="Center"
+                SemanticProperties.Hint="Abre a Central de Ajuda no navegador" />
+
     </Grid>
 
 </ContentPage>

@@ -54,7 +54,16 @@ const ICONES = {
   viagens: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5"/>',
   usuarios: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
   ajustes: '<circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
-  sair: '<path d="M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8M17 8l4 4-4 4M21 12H10"/>'
+  sair: '<path d="M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8M17 8l4 4-4 4M21 12H10"/>',
+  ajuda: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.5h.01"/>'
+};
+
+// Central de Ajuda já filtrada para o perfil (mesma página que o app abre).
+const AJUDA_POR_PERFIL = {
+  [PERFIL.ADMINISTRADOR]: 'admin',
+  [PERFIL.GESTOR_DE_FROTA]: 'gestor',
+  [PERFIL.FINANCEIRO]: 'financeiro',
+  [PERFIL.OPERADOR_MOTORISTA]: 'motorista'
 };
 
 function svg(nome) {
@@ -125,6 +134,7 @@ function montarLateral(arquivoAtual) {
           '<div class="usuario-perfil">' + NOME_PERFIL[usuario.perfil] + '</div>' +
         '</div>' +
       '</div>' +
+      '<a class="botao botao-texto" href="ajuda.html?perfil=' + (AJUDA_POR_PERFIL[usuario.perfil] || 'todos') + '" target="_blank" rel="noopener">' + svg('ajuda') + 'Ajuda</a>' +
       '<button class="botao botao-texto" id="botao-sair">' + svg('sair') + 'Sair</button>' +
     '</div>'
   );

@@ -9,7 +9,10 @@ namespace GestaoFrota.App.Services;
 public static class AppConfig
 {
     /// <summary>Endereço da API hospedada (MonsterASP.NET), usado pelo .apk de Release.</summary>
-    public const string ApiPublica = "https://gestaofrota.runasp.net/api/";
+    public const string ApiPublica = SitePublico + "api/";
+
+    /// <summary>Site publicado junto com a API (painel web e Central de Ajuda).</summary>
+    public const string SitePublico = "https://gestaofrota.runasp.net/";
 
     public static string ApiBaseUrl { get; set; } =
 #if ANDROID && DEBUG

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Central de Ajuda — Gestão de Frota</title>
+  <meta name="description" content="Como usar o Gestão de Frota: movimentações, viagens, frota, relatórios e perfis.">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/ajuda.css">
+</head>
+<body class="pagina-ajuda">
+
+  <header class="ajuda-topo">
+    <div class="ajuda-topo-conteudo">
+      <a class="ajuda-marca" href="index.html">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 16V7h11v9M14 10h4l3 3v3h-7"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
+        </svg>
+        Gestão de Frota
+      </a>
+      <h1>Central de Ajuda</h1>
+      <p>Tudo o que dá para fazer no aplicativo, passo a passo, com as telas de verdade.</p>
+
+      <label class="ajuda-busca">
+        <span class="sr-only">Buscar na ajuda</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="busca" placeholder="Buscar: comprovante, offline, PDF, placa…" autocomplete="off">
+      </label>
+
+      <div class="ajuda-perfis" role="group" aria-label="Mostrar a ajuda de um perfil">
+        <span>Sou:</span>
+        <button class="ajuda-perfil ativo" data-perfil="todos">Todos</button>
+        <button class="ajuda-perfil" data-perfil="admin">Administrador</button>
+        <button class="ajuda-perfil" data-perfil="gestor">Gestor de Frota</button>
+        <button class="ajuda-perfil" data-perfil="financeiro">Financeiro</button>
+        <button class="ajuda-perfil" data-perfil="motorista">Motorista</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="ajuda-conteudo">
+
+    <nav class="ajuda-indice" aria-label="Assuntos">
+      <a href="#comecar">Começar</a>
+      <a href="#perfis">Perfis</a>
+      <a href="#inicio">Início</a>
+      <a href="#movimentacoes">Movimentações</a>
+      <a href="#dividas">Dívidas</a>
+      <a href="#cadastros">Categorias e pagamentos</a>
+      <a href="#frota">Frota</a>
+      <a href="#rotas">Rotas</a>
+      <a href="#viagens">Viagens</a>
+      <a href="#relatorios">Relatórios</a>
+      <a href="#usuarios">Usuários</a>
+      <a href="#problemas">Problemas comuns</a>
+      <a href="#glossario">Glossário</a>
+    </nav>
+
+    <p class="ajuda-nada" id="nada" hidden>
+      Nenhum assunto encontrado. Tente outra palavra ou veja os <a href="#problemas">problemas comuns</a>.
+    </p>
+
+    <!-- data-perfis: quem usa o assunto (admin, gestor, financeiro, motorista). Sem o atributo = todos. -->
+
+    <section class="topico" id="comecar">
+      <h2>Começar</h2>
+      <div class="topico-texto">
+        <h3>Antes de começar</h3>
+        <ul>
+          <li>Um celular <strong>Android 6.0 ou mais novo</strong> com o aplicativo instalado, ou qualquer navegador para o site.</li>
+          <li>Uma <strong>conta Google</strong> (Gmail). O sistema não tem senha própria.</li>
+          <li><strong>Internet</strong> para quase tudo. A exceção é abrir e encerrar viagens, que funciona sem sinal.</li>
+        </ul>
+        <h3>Entrar e sair</h3>
+        <ol>
+          <li>Abra o aplicativo <strong>Gestão de Frota</strong>.</li>
+          <li>Toque em <strong>Entrar com Google</strong> e escolha a sua conta.</li>
+          <li>Nas próximas vezes ele já abre com você conectado. Enquanto confere a sessão, aparece <em>"Verificando sessão…"</em>.</li>
+        </ol>
+        <p><strong>Primeira vez?</strong> Toda conta nova entra como <strong>Motorista</strong>. Se o seu trabalho é outro, peça ao administrador para mudar o seu perfil.</p>
+        <p><strong>Para sair:</strong> abra o menu (☰) e toque em <strong>Sair</strong>.</p>
+        <p><strong>Sem instalar nada:</strong> o painel web em <a href="index.html">gestaofrota.runasp.net</a> mostra relatórios, movimentações, viagens e os cadastros.</p>
+      </div>
+      <figure><img src="ajuda/img/login.webp" alt="Tela de login com o botão Entrar com Google" loading="lazy" width="480" height="1024"><figcaption>Tela de entrada</figcaption></figure>
+    </section>
+
+    <section class="topico" id="perfis">
+      <h2>O que cada perfil vê</h2>
+      <div class="topico-texto">
+        <p>O menu mostra só o que o seu perfil pode usar. Seu nome e seu perfil aparecem no topo do menu. Botões que o seu perfil não pode usar nem aparecem.</p>
+        <div class="tabela-rolavel">
+        <table>
+          <thead><tr><th>Tela</th><th>Administrador</th><th>Gestor de Frota</th><th>Financeiro</th><th>Motorista</th></tr></thead>
+          <tbody>
+            <tr><td>Início</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+            <tr><td>Viagens</td><td>✓</td><td>✓</td><td>—</td><td>✓ só as suas</td></tr>
+            <tr><td>Frota</td><td>✓</td><td>✓ sem desativar</td><td>—</td><td>✓ só consulta</td></tr>
+            <tr><td>Rotas</td><td>✓</td><td>✓ sem desativar</td><td>—</td><td>—</td></tr>
+            <tr><td>Movimentações</td><td>✓</td><td>✓ só consulta</td><td>✓</td><td>—</td></tr>
+            <tr><td>Dívidas e Financiamentos</td><td>✓</td><td>✓ só consulta</td><td>✓</td><td>—</td></tr>
+            <tr><td>Relatórios</td><td>✓</td><td>✓</td><td>✓</td><td>—</td></tr>
+            <tr><td>Categorias e Formas de Pagamento</td><td>✓</td><td>✓ só consulta</td><td>✓ sem desativar</td><td>—</td></tr>
+            <tr><td>Usuários</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>O <strong>Motorista</strong> abre o aplicativo direto em <strong>Viagens</strong>.</p>
+      </div>
+      <div class="figuras-lado">
+        <figure><img src="ajuda/img/menu-administrador.webp" alt="Menu do Administrador com todas as telas" loading="lazy" width="480" height="1024"><figcaption>Menu do Administrador</figcaption></figure>
+        <figure><img src="ajuda/img/menu-gestor.webp" alt="Menu do Gestor de Frota, sem Usuários" loading="lazy" width="480" height="1024"><figcaption>Menu do Gestor de Frota</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="topico" id="inicio">
+      <h2>Início</h2>
+      <div class="topico-texto">
+        <p>É o resumo do caixa e da frota:</p>
+        <ul>
+          <li><strong>Saldo atual (pago/recebido):</strong> o que de fato entrou menos o que de fato saiu. Contas ainda não pagas não entram aqui.</li>
+          <li><strong>Entradas pagas, Saídas pagas, A receber e A pagar.</strong></li>
+          <li><strong>Projeção de caixa por mês:</strong> quanto vai sobrar em cada mês se o que está pendente for pago no vencimento.</li>
+          <li><strong>Veículos em viagem:</strong> quantos caminhões estão rodando agora.</li>
+        </ul>
+        <p class="dica">Para atualizar qualquer lista, <strong>puxe a tela para baixo</strong>.</p>
+      </div>
+      <figure><img src="ajuda/img/inicio.webp" alt="Tela Início com saldo, entradas, saídas e projeção de caixa" loading="lazy" width="480" height="1024"><figcaption>Tela Início</figcaption></figure>
+    </section>
+
+    <section class="topico" id="movimentacoes" data-perfis="admin gestor financeiro">
+      <h2>Movimentações (entradas e saídas)</h2>
+      <div class="topico-texto">
+        <p class="perfis-aviso">Lançar, pagar e estornar: <strong>Administrador e Financeiro</strong>. O Gestor de Frota consulta.</p>
+        <h3>Lançar uma entrada ou saída</h3>
+        <ol>
+          <li>Menu › <strong>Movimentações</strong> › <strong>+ Nova movimentação</strong>.</li>
+          <li>Escolha o <strong>Tipo</strong>: Receita (entrou dinheiro) ou Despesa (saiu dinheiro).</li>
+          <li>Preencha o <strong>Valor (R$)</strong> — com vírgula, como <em>350,50</em> —, a <strong>Descrição</strong>, a <strong>Categoria</strong> e a <strong>Forma de pagamento</strong>.</li>
+          <li>Informe a <strong>Data de vencimento</strong>. Se já foi pago, ligue <strong>Já pago</strong> e informe a data.</li>
+          <li>Se for combustível, preencha os <strong>Litros abastecidos</strong>.</li>
+          <li>Se o gasto ou a receita for de uma viagem, use <strong>Vincular à viagem</strong>. É isso que permite calcular o custo por km.</li>
+          <li>Toque em <strong>Salvar movimentação</strong>.</li>
+        </ol>
+        <h3>Anexar o comprovante</h3>
+        <p>Em <strong>Comprovante (opcional)</strong>: <strong>Câmera</strong> tira a foto na hora; <strong>Galeria</strong> escolhe uma foto do celular. Até 5 MB. Para ver depois, toque em <strong>Comprovante</strong> na lista.</p>
+        <p>Na primeira vez o celular pede permissão para a câmera. Se você negar, a <strong>Galeria</strong> continua funcionando; se bloquear de vez, o app oferece <strong>Abrir configurações</strong> para liberar.</p>
+        <h3>Marcar como pago e estornar</h3>
+        <p><strong>Marcar como pago</strong> faz o lançamento entrar no saldo. <strong>Estornar</strong> cancela um lançamento feito por engano sem apagá-lo: ele continua no histórico, mas sai do saldo, da projeção e dos relatórios.</p>
+        <p>Use os filtros no alto da lista para achar um lançamento.</p>
+      </div>
+      <div class="figuras-lado">
+        <figure><img src="ajuda/img/movimentacao-formulario.webp" alt="Formulário de nova movimentação com os botões Câmera e Galeria" loading="lazy" width="480" height="1024"><figcaption>Nova movimentação</figcaption></figure>
+        <figure><img src="ajuda/img/comprovante-anexado.webp" alt="Recibo escolhido na galeria aparecendo como comprovante" loading="lazy" width="480" height="1024"><figcaption>Comprovante anexado</figcaption></figure>
+        <figure><img src="ajuda/img/movimentacoes-lista.webp" alt="Lista de movimentações com os botões Marcar como pago e Estornar" loading="lazy" width="480" height="1024"><figcaption>Lista com as ações</figcaption></figure>
+        <figure><img src="ajuda/img/camera-bloqueada.webp" alt="Aviso de câmera bloqueada com o botão Abrir configurações" loading="lazy" width="480" height="1024"><figcaption>Câmera bloqueada</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="topico" id="dividas" data-perfis="admin gestor financeiro">
+      <h2>Dívidas e Financiamentos</h2>
+      <div class="topico-texto">
+        <p class="perfis-aviso">Cadastrar e pagar parcelas: <strong>Administrador e Financeiro</strong>. O Gestor de Frota consulta.</p>
+        <p>Para financiamentos e compras parceladas: o aplicativo cria todas as parcelas de uma vez.</p>
+        <ol>
+          <li>Menu › <strong>Dívidas e Financiamentos</strong> › <strong>+ Novo financiamento</strong>.</li>
+          <li>Preencha a <strong>Descrição</strong>, o <strong>Valor da parcela</strong>, a <strong>Quantidade de parcelas</strong> e o <strong>Vencimento da 1ª parcela</strong>. O total aparece antes de salvar.</li>
+          <li>Escolha a <strong>Categoria das parcelas</strong> e a <strong>Forma de pagamento</strong>.</li>
+          <li>Toque em <strong>Salvar e gerar parcelas</strong>.</li>
+        </ol>
+        <p>Uma parcela pendente por mês aparece em <strong>Movimentações</strong> e na projeção do Início. Para pagar, abra a dívida e toque em <strong>Marcar parcela como paga</strong>.</p>
+      </div>
+      <div class="figuras-lado">
+        <figure><img src="ajuda/img/novo-financiamento.webp" alt="Formulário de financiamento mostrando o total e as parcelas" loading="lazy" width="480" height="1024"><figcaption>Novo financiamento</figcaption></figure>
+        <figure><img src="ajuda/img/dividas.webp" alt="Lista de dívidas com o financiamento em aberto" loading="lazy" width="480" height="1024"><figcaption>Dívida em aberto</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="topico" id="cadastros" data-perfis="admin gestor financeiro">
+      <h2>Categorias e Formas de Pagamento</h2>
+      <div class="topico-texto">
+        <p>Já vêm prontas as categorias <em>Frete, Combustível, Pedágio, Manutenção, Salários e Financiamento</em> e as formas <em>Pix, Boleto, Transferência TED e Cartão Corporativo</em>.</p>
+        <ul>
+          <li><strong>Nova categoria:</strong> digite o nome, escolha o tipo e toque em <strong>Adicionar categoria</strong>. Arraste para o lado para <strong>Editar</strong>.</li>
+          <li><strong>Desativar</strong> (só o Administrador) tira a categoria das opções novas sem apagar os lançamentos antigos.</li>
+          <li><strong>Nova forma de pagamento:</strong> digite o nome e toque em <strong>Adicionar forma de pagamento</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="topico" id="frota" data-perfis="admin gestor motorista">
+      <h2>Frota</h2>
+      <div class="topico-texto">
+        <p class="perfis-aviso">Cadastrar, editar e manutenção: <strong>Administrador e Gestor</strong>. Desativar: só o <strong>Administrador</strong>. O Motorista consulta.</p>
+        <h3>Cadastrar um veículo</h3>
+        <ol>
+          <li>Menu › <strong>Frota</strong> › <strong>+ Novo veículo</strong>.</li>
+          <li><strong>Placa</strong> no formato antigo (ABC-1234) ou Mercosul (ABC1D23). Não aceita placa repetida.</li>
+          <li>Preencha <strong>Marca</strong>, <strong>Modelo</strong>, <strong>Ano</strong>, <strong>Capacidade (t)</strong> e <strong>Hodômetro atual (km)</strong> e toque em <strong>Salvar veículo</strong>.</li>
+        </ol>
+        <p>Cada veículo mostra a situação: <strong>Disponível</strong>, <strong>Em viagem</strong> ou <strong>Em manutenção</strong>. O hodômetro se atualiza sozinho a cada viagem encerrada.</p>
+        <h3>Registrar uma manutenção</h3>
+        <p>Toque em <strong>Registrar manutenção</strong> no veículo, preencha data, serviço, valor e forma de pagamento e salve. O app lança a despesa no caixa e coloca o veículo <strong>Em manutenção</strong>. Ao terminar, toque em <strong>Concluir manutenção</strong>.</p>
+      </div>
+      <div class="figuras-lado">
+        <figure><img src="ajuda/img/novo-veiculo.webp" alt="Formulário de novo veículo" loading="lazy" width="480" height="1024"><figcaption>Novo veículo</figcaption></figure>
+        <figure><img src="ajuda/img/frota.webp" alt="Lista da frota com veículo disponível e veículo desativado" loading="lazy" width="480" height="1024"><figcaption>Frota</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="topico" id="rotas" data-perfis="admin gestor">
+      <h2>Rotas</h2>
+      <div class="topico-texto">
+        <p>Menu › <strong>Rotas</strong>: preencha o <strong>Nome da rota</strong>, a <strong>Origem</strong>, o <strong>Destino</strong> e a <strong>Distância estimada (km)</strong> e toque em <strong>Adicionar rota</strong>. Arraste a rota para o lado para <strong>Editar</strong> ou, se for Administrador, <strong>Desativar</strong>.</p>
+      </div>
+      <figure><img src="ajuda/img/rotas.webp" alt="Tela de rotas com o formulário e a lista" loading="lazy" width="480" height="1024"><figcaption>Rotas</figcaption></figure>
+    </section>
+
+    <section class="topico" id="viagens" data-perfis="admin gestor motorista">
+      <h2>Viagens</h2>
+      <div class="topico-texto">
+        <h3>Abrir uma viagem</h3>
+        <ol>
+          <li>Menu › <strong>Viagens</strong> › <strong>+ Abrir viagem</strong>.</li>
+          <li>Escolha o <strong>Veículo</strong> (só aparecem os disponíveis) e a <strong>Rota</strong>. O hodômetro inicial já vem preenchido com o do veículo; confira no painel.</li>
+          <li>Administrador e Gestor escolhem o <strong>Motorista</strong>. Quem é Motorista abre sempre para si.</li>
+          <li>Toque em <strong>Abrir viagem</strong>. O veículo passa a <strong>Em viagem</strong>.</li>
+        </ol>
+        <h3>Encerrar</h3>
+        <p>Toque em <strong>Encerrar viagem</strong>, informe o <strong>Hodômetro final</strong> (maior que o inicial) e confirme. O app calcula os km rodados sozinho.</p>
+        <h3>Cancelar</h3>
+        <p>Administrador e Gestor podem <strong>Cancelar</strong> uma viagem aberta por engano. O veículo volta a ficar disponível e nada de quilometragem é contado.</p>
+        <h3 id="sem-internet">Sem internet</h3>
+        <ul>
+          <li>Abrir e encerrar <strong>funciona sem sinal</strong>: aparece <em>"Encerramento salvo no aparelho"</em>.</li>
+          <li>Na lista fica <strong>Encerrada · aguardando envio</strong>.</li>
+          <li>Quando o sinal voltar, abra <strong>Viagens</strong> e puxe a tela para baixo. Nada é registrado em dobro.</li>
+        </ul>
+      </div>
+      <div class="figuras-lado">
+        <figure><img src="ajuda/img/abrir-viagem.webp" alt="Formulário de abrir viagem com veículo, rota e motorista" loading="lazy" width="480" height="1024"><figcaption>Abrir viagem</figcaption></figure>
+        <figure><img src="ajuda/img/encerrar-viagem.webp" alt="Encerrar viagem mostrando 310 km rodados" loading="lazy" width="480" height="1024"><figcaption>Encerrar</figcaption></figure>
+        <figure><img src="ajuda/img/aguardando-envio.webp" alt="Viagem encerrada aguardando envio, sem conexão" loading="lazy" width="480" height="1024"><figcaption>Sem internet</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="topico" id="relatorios" data-perfis="admin gestor financeiro">
+      <h2>Relatórios</h2>
+      <div class="topico-texto">
+        <h3>Escolher o período</h3>
+        <p>No alto: <strong>3 m</strong>, <strong>6 m</strong>, <strong>1 ano</strong>, <strong>2 anos</strong> ou <strong>Tudo</strong> (inclui parcelas futuras). <strong>Personalizar</strong> escolhe um mês, um ano ou um intervalo livre.</p>
+        <h3>O que a tela mostra</h3>
+        <ul>
+          <li><strong>Resultado do período</strong>, entradas, saídas, a receber, a pagar, pendentes em atraso e a maior despesa.</li>
+          <li><strong>Entradas e saídas por mês</strong>: toque num mês para ver os valores.</li>
+          <li><strong>Despesas por categoria</strong> (gráfico de rosca).</li>
+          <li><strong>Frota no período</strong>, <strong>rotas mais lucrativas</strong> e <strong>veículos mais eficientes</strong> (custo por km e consumo).</li>
+        </ul>
+        <p class="dica">Os números da frota dependem de as despesas e receitas estarem <strong>vinculadas às viagens</strong>.</p>
+        <h3>Exportar</h3>
+        <p><strong>PDF</strong> gera um relatório pronto para imprimir; <strong>CSV (planilha)</strong> abre no Excel ou no Google Planilhas. O celular oferece salvar no Drive, enviar pelo WhatsApp ou por e-mail. No site, os mesmos botões baixam o arquivo.</p>
+      </div>
+      <div class="figuras-lado">
+        <figure><img src="ajuda/img/relatorios.webp" alt="Relatórios com o resultado do período e o gráfico por mês" loading="lazy" width="480" height="1024"><figcaption>Resultado do período</figcaption></figure>
+        <figure><img src="ajuda/img/relatorios-graficos.webp" alt="Tabela mensal e gráfico de rosca das despesas" loading="lazy" width="480" height="1024"><figcaption>Gráficos</figcaption></figure>
+        <figure><img src="ajuda/img/relatorios-ranking.webp" alt="Rotas mais lucrativas, veículos mais eficientes e botões de exportação" loading="lazy" width="480" height="1024"><figcaption>Ranking e exportação</figcaption></figure>
+        <figure><img src="ajuda/img/relatorio-pdf.webp" alt="Relatório em PDF gerado pelo aplicativo" loading="lazy" width="480" height="1024"><figcaption>PDF exportado</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="topico" id="usuarios" data-perfis="admin">
+      <h2>Usuários (só o Administrador)</h2>
+      <div class="topico-texto">
+        <ol>
+          <li>Menu › <strong>Usuários</strong> mostra todos que já entraram no sistema.</li>
+          <li>Em <strong>Perfil do usuário</strong>, escolha Administrador, Gestor de Frota, Financeiro ou Motorista / Operador.</li>
+          <li>Toque em <strong>Salvar perfil</strong>. Aparece a confirmação.</li>
+        </ol>
+        <p>A pessoa vê o menu novo depois de <strong>sair e entrar de novo</strong>: o perfil vai dentro da sessão, renovada a cada login.</p>
+      </div>
+      <figure><img src="ajuda/img/usuarios.webp" alt="Confirmação de perfil alterado na tela de usuários" loading="lazy" width="480" height="1024"><figcaption>Perfil alterado</figcaption></figure>
+    </section>
+
+    <section class="topico" id="problemas">
+      <h2>Problemas comuns</h2>
+      <div class="topico-texto perguntas">
+        <details><summary>Entrei, mas o menu só tem Início, Viagens e Frota</summary><p>Sua conta ainda é de Motorista. Peça ao administrador para mudar o seu perfil e entre de novo.</p></details>
+        <details><summary>O login abre o Google, mas não volta para o aplicativo</summary><p>Feche o aplicativo e tente de novo. Se continuar, avise o responsável pelo sistema.</p></details>
+        <details><summary>Aparece "Verificando sessão…" por alguns segundos</summary><p>É normal quando o servidor estava parado: ele acorda em até 20 segundos. Se a internet cair, o app abre com a sessão salva.</p></details>
+        <details><summary>"Sem conexão" ao salvar um lançamento</summary><p>Lançamentos precisam de internet. Espere o sinal voltar e salve de novo. Só as viagens funcionam sem sinal.</p></details>
+        <details><summary>A viagem continua "aguardando envio"</summary><p>Com internet, abra <strong>Viagens</strong> e puxe a tela para baixo.</p></details>
+        <details><summary>Não aceita o hodômetro final</summary><p>Ele precisa ser maior que o inicial. Confira o painel do caminhão.</p></details>
+        <details><summary>O veículo não aparece para abrir viagem</summary><p>Ele está em viagem, em manutenção ou desativado. Veja a situação em <strong>Frota</strong>.</p></details>
+        <details><summary>Não aceita a placa</summary><p>Use ABC-1234 (antiga) ou ABC1D23 (Mercosul) e confira se ela já não está cadastrada.</p></details>
+        <details><summary>A câmera não abre</summary><p>Libere a câmera para o app nas configurações do celular (o próprio app oferece o atalho) ou use a <strong>Galeria</strong>.</p></details>
+        <details><summary>A foto do comprovante não sobe</summary><p>A foto tem mais de 5 MB. Tire outra ou escolha uma imagem menor.</p></details>
+        <details><summary>Não vejo os botões de pagar, estornar ou desativar</summary><p>Eles só aparecem para o perfil que pode usá-los. Veja a tabela em <a href="#perfis">O que cada perfil vê</a>.</p></details>
+      </div>
+    </section>
+
+    <section class="topico" id="glossario">
+      <h2>Palavras usadas no aplicativo</h2>
+      <div class="topico-texto">
+        <dl class="glossario">
+          <dt>Receita</dt><dd>Dinheiro que entra (ex.: frete recebido).</dd>
+          <dt>Despesa</dt><dd>Dinheiro que sai (ex.: combustível, pedágio).</dd>
+          <dt>Pendente</dt><dd>Ainda não foi pago ou recebido.</dd>
+          <dt>Estornar</dt><dd>Cancelar um lançamento sem apagar o histórico.</dd>
+          <dt>Hodômetro</dt><dd>O contador de quilômetros do painel do caminhão.</dd>
+          <dt>Rentabilidade</dt><dd>Receitas da viagem menos despesas da viagem.</dd>
+          <dt>Custo por km</dt><dd>Despesas da viagem divididas pelos quilômetros rodados.</dd>
+          <dt>Consumo (km/l)</dt><dd>Quilômetros rodados divididos pelos litros abastecidos.</dd>
+        </dl>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="ajuda-rodape">
+    <p>Gestão de Frota · trabalho acadêmico · <a href="index.html">Entrar no sistema</a> · <a href="privacidade.html">Política de privacidade</a></p>
+  </footer>
+
+  <script src="js/ajuda.js"></script>
+</body>
+</html>
