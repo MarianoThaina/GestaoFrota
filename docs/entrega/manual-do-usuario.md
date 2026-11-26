@@ -48,16 +48,16 @@ do menu.
 
 | Tela do menu | Administrador | Gestor de Frota | Financeiro | Motorista |
 |---|:---:|:---:|:---:|:---:|
-| Início | ✔ | ✔ | ✔ | ✔ |
-| Viagens | ✔ | ✔ | — | ✔ (só as suas) |
-| Frota | ✔ | ✔ | — | ✔ (só consulta) |
-| Rotas | ✔ | ✔ | — | — |
-| Movimentações | ✔ | ✔ (só consulta) | ✔ | — |
-| Dívidas e Financiamentos | ✔ | ✔ (só consulta) | ✔ | — |
-| Relatórios | ✔ | ✔ | ✔ | — |
-| Categorias | ✔ | ✔ (só consulta) | ✔ | — |
-| Formas de Pagamento | ✔ | ✔ (só consulta) | ✔ | — |
-| Usuários | ✔ | — | — | — |
+| Início | ✓ | ✓ | ✓ | ✓ |
+| Viagens | ✓ | ✓ | — | ✓ (só as suas) |
+| Frota | ✓ | ✓ | — | ✓ (só consulta) |
+| Rotas | ✓ | ✓ | — | — |
+| Movimentações | ✓ | ✓ (só consulta) | ✓ | — |
+| Dívidas e Financiamentos | ✓ | ✓ (só consulta) | ✓ | — |
+| Relatórios | ✓ | ✓ | ✓ | — |
+| Categorias | ✓ | ✓ (só consulta) | ✓ | — |
+| Formas de Pagamento | ✓ | ✓ (só consulta) | ✓ | — |
+| Usuários | ✓ | — | — | — |
 
 O **Motorista** abre o aplicativo direto na tela **Viagens**.
 
@@ -100,8 +100,8 @@ O valor precisa ser maior que zero.
 
 Na mesma tela, em **Comprovante (opcional)**:
 
-- **📷 Câmera** tira a foto na hora;
-- **🖼 Galeria** escolhe uma foto que já está no celular.
+- **Câmera** tira a foto na hora;
+- **Galeria** escolhe uma foto que já está no celular.
 
 A foto pode ter até 5 MB. Para ver depois, toque em **Comprovante** no lançamento, na lista.
 

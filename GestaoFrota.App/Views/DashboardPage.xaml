@@ -11,7 +11,7 @@
         <ScrollView>
             <VerticalStackLayout Padding="24" Spacing="14">
 
-                <Label Text="{Binding Usuario.Nome, StringFormat='Bem-vindo(a), {0} 👋'}"
+                <Label Text="{Binding Usuario.Nome, StringFormat='Bem-vindo(a), {0}'}"
                        FontSize="22"
                        FontAttributes="Bold" />
 
@@ -27,7 +27,18 @@
                             <Label Text="{Binding VeiculosEmViagemTexto}" FontSize="26" FontAttributes="Bold" TextColor="#0B1D3A" />
                             <Label Text="{Binding VeiculosDetalheTexto}" FontSize="12" TextColor="#5F6368" />
                         </VerticalStackLayout>
-                        <Label Grid.Column="1" Text="🚚" FontSize="32" VerticalOptions="Center" />
+                        <!-- Caminhão desenhado em vetor (o mesmo ícone do site), no lugar do emoji. -->
+                        <Path Grid.Column="1"
+                              Data="M3,16 L3,7 L14,7 L14,16 M14,10 L18,10 L21,13 L21,16 L14,16 M5,17 A2,2 0 1 0 9,17 A2,2 0 1 0 5,17 M15,17 A2,2 0 1 0 19,17 A2,2 0 1 0 15,17"
+                              Stroke="#0B1D3A"
+                              StrokeThickness="1.8"
+                              StrokeLineJoin="Round"
+                              StrokeLineCap="Round"
+                              Aspect="Uniform"
+                              WidthRequest="44"
+                              HeightRequest="44"
+                              VerticalOptions="Center"
+                              SemanticProperties.Description="Caminhão" />
                     </Grid>
                 </Frame>
 

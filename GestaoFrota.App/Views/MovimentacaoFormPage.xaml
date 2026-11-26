@@ -77,12 +77,12 @@
             <Label Text="Comprovante (opcional)" FontSize="12" TextColor="#5F6368" />
             <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
                 <Button Grid.Column="0"
-                        Text="📷 Câmera"
+                        Text="Câmera"
                         Command="{Binding TirarFotoCommand}"
                         BackgroundColor="#2C6CE0"
                         TextColor="White" />
                 <Button Grid.Column="1"
-                        Text="🖼 Galeria"
+                        Text="Galeria"
                         Command="{Binding EscolherGaleriaCommand}"
                         BackgroundColor="#2C6CE0"
                         TextColor="White" />
