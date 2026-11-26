@@ -15,6 +15,7 @@
   const nada = document.getElementById('nada');
   const topicos = Array.from(document.querySelectorAll('.topico'));
   const botoesPerfil = Array.from(document.querySelectorAll('.ajuda-perfil'));
+  const atalhos = Array.from(document.querySelectorAll('.ajuda-indice a'));
 
   let perfil = 'todos';
 
@@ -47,6 +48,12 @@
         d.hidden = termos.length > 0 && !bate;
       });
     }
+
+    // Atalhos do topo seguem o filtro: sem atalho para assunto escondido.
+    atalhos.forEach(a => {
+      const alvo = document.getElementById(a.hash.slice(1));
+      a.hidden = !!alvo && alvo.hidden;
+    });
 
     nada.hidden = algum;
   }
