@@ -55,6 +55,10 @@ public partial class MovimentacoesViewModel : BaseViewModel
             PodeGerenciar = usuario?.Perfil is PerfilUsuario.Administrador or PerfilUsuario.Financeiro;
 
             _todas = await _movimentacaoService.ListarAsync();
+            foreach (var movimentacao in _todas)
+            {
+                movimentacao.GestaoPermitida = PodeGerenciar;
+            }
             AplicarFiltro();
         }
         catch (Exception ex)

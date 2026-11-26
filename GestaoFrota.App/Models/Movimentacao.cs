@@ -103,11 +103,18 @@ public class Movimentacao
             ViagemId.HasValue ? "vinculada a viagem" : null
         }.Where(s => !string.IsNullOrWhiteSpace(s)));
 
+    /// <summary>
+    /// Preenchido pela tela de Movimentações conforme o perfil: só Administrador
+    /// e Financeiro pagam e estornam (a API recusa o Gestor de Frota, que só consulta).
+    /// </summary>
     [Ignore]
-    public bool PodePagar => Status == StatusMovimentacao.Pendente && !Estornada;
+    public bool GestaoPermitida { get; set; }
 
     [Ignore]
-    public bool PodeEstornar => !Estornada;
+    public bool PodePagar => GestaoPermitida && Status == StatusMovimentacao.Pendente && !Estornada;
+
+    [Ignore]
+    public bool PodeEstornar => GestaoPermitida && !Estornada;
 
     [Ignore]
     public bool TemPagamento => DataPagamento.HasValue;

@@ -65,6 +65,7 @@ public partial class DividaDetalheViewModel : BaseViewModel, IQueryAttributable
             Parcelas.Clear();
             foreach (var parcela in detalhe.Parcelas)
             {
+                parcela.GestaoPermitida = PodeGerenciar;
                 Parcelas.Add(parcela);
             }
         }
