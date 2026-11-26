@@ -78,14 +78,7 @@ public partial class AppShell : Shell
         }
     }
 
-    private static string NomeDoPerfil(PerfilUsuario perfil) => perfil switch
-    {
-        PerfilUsuario.Administrador => "Administrador",
-        PerfilUsuario.GestorDeFrota => "Gestor de Frota",
-        PerfilUsuario.Financeiro => "Financeiro",
-        PerfilUsuario.OperadorMotorista => "Motorista / Operador",
-        _ => perfil.ToString()
-    };
+    private static string NomeDoPerfil(PerfilUsuario perfil) => Helpers.PerfilNomes.Nome(perfil);
 
     private async void OnSairClicked(object? sender, EventArgs e)
     {

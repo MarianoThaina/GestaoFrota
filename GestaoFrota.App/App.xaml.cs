@@ -27,23 +27,45 @@ public partial class App : Application
 
     private async Task VerificarSessaoAsync(Window window)
     {
-        var localDb = _serviceProvider.GetRequiredService<ILocalDatabaseService>();
-        await localDb.InicializarAsync();
-
-        var authService = _serviceProvider.GetRequiredService<IAuthService>();
-
-        // Documentação Técnica, seção 8, item 7: GET /api/auth/me valida a
-        // sessão salva (token + usuário ainda ativo) sem exigir novo login.
-        var sessaoValida = await authService.ValidarSessaoAsync();
-
-        if (sessaoValida)
+        var loginViewModel = (window.Page as LoginPage)?.BindingContext as ViewModels.LoginViewModel;
+        if (loginViewModel is not null)
         {
-            var usuario = await authService.ObterUsuarioLogadoAsync();
+            loginViewModel.VerificandoSessao = true;
+        }
 
-            var appShell = new AppShell();
-            appShell.ConfigurarMenuPorPerfil(usuario);
+        try
+        {
+            var localDb = _serviceProvider.GetRequiredService<ILocalDatabaseService>();
+            await localDb.InicializarAsync();
 
-            window.Page = appShell;
+            var authService = _serviceProvider.GetRequiredService<IAuthService>();
+
+            // Documentação Técnica, seção 8, item 7: GET /api/auth/me valida a
+            // sessão salva (token + usuário ainda ativo) sem exigir novo login.
+            var sessaoValida = await authService.ValidarSessaoAsync();
+
+            if (sessaoValida)
+            {
+                var usuario = await authService.ObterUsuarioLogadoAsync();
+
+                var appShell = new AppShell();
+                appShell.ConfigurarMenuPorPerfil(usuario);
+
+                window.Page = appShell;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Sem isto, um erro aqui sumia (método disparado sem await) e o app
+            // ficava parado no login sem explicação.
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+        finally
+        {
+            if (loginViewModel is not null)
+            {
+                loginViewModel.VerificandoSessao = false;
+            }
         }
     }
 }

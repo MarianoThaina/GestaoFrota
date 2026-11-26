@@ -112,7 +112,17 @@ public class GraficoRoscaDrawable : IDrawable
                 var esmaecida = _selecionado.HasValue && _selecionado.Value != i;
 
                 canvas.StrokeColor = esmaecida ? categoria.Cor.WithAlpha(0.3f) : categoria.Cor;
-                canvas.DrawArc(retangulo, anguloInicio, anguloFim, clockwise: true, closed: false);
+
+                // Uma categoria só (100%): o arco começaria e terminaria no mesmo
+                // ângulo e o Android não desenha nada. Círculo inteiro no lugar.
+                if (varredura >= 359.9f)
+                {
+                    canvas.DrawEllipse(retangulo);
+                }
+                else
+                {
+                    canvas.DrawArc(retangulo, anguloInicio, anguloFim, clockwise: true, closed: false);
+                }
 
                 anguloInicio = anguloFim;
             }

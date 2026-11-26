@@ -30,7 +30,13 @@
                     FontAttributes="Bold"
                     CornerRadius="24"
                     HeightRequest="52"
+                    IsVisible="{Binding MostrarBotaoEntrar}"
                     IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+
+            <VerticalStackLayout Spacing="8" IsVisible="{Binding VerificandoSessao}" HorizontalOptions="Center">
+                <ActivityIndicator IsRunning="{Binding VerificandoSessao}" Color="White" />
+                <Label Text="Verificando sessão…" TextColor="#9FB3D1" FontSize="14" HorizontalOptions="Center" />
+            </VerticalStackLayout>
 
             <ActivityIndicator IsRunning="{Binding Carregando}"
                                 IsVisible="{Binding Carregando}"
