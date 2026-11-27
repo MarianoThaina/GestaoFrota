@@ -23,10 +23,25 @@
 
     <div id="aviso" class="aviso aviso-erro" hidden></div>
 
+    <!-- Entrar com e-mail e senha (conta criada pelo Administrador) -->
+    <form class="form-login" id="form-senha" novalidate>
+      <label class="campo">
+        <span>E-mail</span>
+        <input type="email" id="campo-email" autocomplete="username" required>
+      </label>
+      <label class="campo">
+        <span>Senha</span>
+        <input type="password" id="campo-senha" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="botao botao-cheio botao-largo" id="botao-entrar">Entrar</button>
+    </form>
+
+    <div class="separador-login" id="separador-google"><span>ou</span></div>
+
     <div class="area-botao-google" id="botao-google"></div>
 
     <p class="nota-login" id="nota-google">
-      Usamos sua conta Google apenas para identificar você. Não temos acesso à sua senha.
+      Pelo Google, usamos sua conta apenas para identificar você. Não temos acesso à senha dela.
     </p>
 
     <div id="area-perfis"></div>

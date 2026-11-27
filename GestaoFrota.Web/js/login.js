@@ -88,6 +88,38 @@ function montarListaDePerfis() {
   area.appendChild(lista);
 }
 
+// Login por e-mail e senha (conta criada pelo Administrador em Usuários).
+const formSenha = document.getElementById('form-senha');
+
+formSenha.addEventListener('submit', async (evento) => {
+  evento.preventDefault();
+  aviso.hidden = true;
+
+  const email = document.getElementById('campo-email').value.trim();
+  const campoSenha = document.getElementById('campo-senha');
+  const botao = document.getElementById('botao-entrar');
+
+  if (!email || !campoSenha.value) {
+    mostrarErro('Informe o e-mail e a senha.');
+    return;
+  }
+
+  botao.disabled = true;
+  botao.textContent = 'Entrando...';
+
+  try {
+    const sessao = await Auth.entrarComSenha(email, campoSenha.value);
+    Sessao.salvar(sessao);
+    window.location.href = Sessao.telaInicial();
+  } catch (erro) {
+    campoSenha.value = '';
+    mostrarErro(erro.message);
+  } finally {
+    botao.disabled = false;
+    botao.textContent = 'Entrar';
+  }
+});
+
 function montarBotaoGoogle() {
   if (CONFIG.GOOGLE_CLIENT_ID.startsWith('SEU_GOOGLE_CLIENT_ID')) {
     mostrarErro('Falta configurar o Client ID do Google em js/config.js.');
@@ -115,6 +147,8 @@ if (!Sessao.expirada()) {
 
 if (CONFIG.MODO_DEMO) {
   document.getElementById('nota-google').hidden = true;
+  formSenha.hidden = true;
+  document.getElementById('separador-google').hidden = true;
   montarListaDePerfis();
 } else {
   // O script do Google carrega com `defer`, então esperamos a página terminar.

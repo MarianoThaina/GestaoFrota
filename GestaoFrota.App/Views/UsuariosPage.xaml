@@ -11,7 +11,7 @@
 
     <Grid
         Padding="16"
-        RowDefinitions="Auto,Auto,*"
+        RowDefinitions="Auto,Auto,Auto,*"
         RowSpacing="12">
 
         <VerticalStackLayout
@@ -30,14 +30,74 @@
 
         </VerticalStackLayout>
 
-        <Label
+        <!-- Novo usuário com e-mail e senha: a conta já nasce com o perfil escolhido. -->
+        <VerticalStackLayout
             Grid.Row="1"
+            Spacing="10"
+            IsVisible="{Binding PodeGerenciar}">
+
+            <Button
+                Text="+ Novo usuário"
+                Command="{Binding AlternarNovoUsuarioCommand}"
+                BackgroundColor="#0B1D3A"
+                TextColor="White"
+                CornerRadius="24"
+                HeightRequest="48" />
+
+            <Frame
+                Padding="14"
+                CornerRadius="12"
+                BorderColor="#DCE3EE"
+                HasShadow="False"
+                IsVisible="{Binding MostrarNovoUsuario}">
+
+                <VerticalStackLayout Spacing="8">
+
+                    <Label Text="Novo usuário" FontSize="16" FontAttributes="Bold" />
+
+                    <Entry Placeholder="Nome" Text="{Binding NovoNome}" />
+
+                    <Entry Placeholder="E-mail" Text="{Binding NovoEmail}" Keyboard="Email"
+                           IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" />
+
+                    <Picker
+                        Title="Perfil"
+                        ItemsSource="{x:Static vm:UsuariosViewModel.Perfis}"
+                        ItemDisplayBinding="{Binding ., Converter={StaticResource PerfilNomeConverter}}"
+                        SelectedItem="{Binding NovoPerfil}" />
+
+                    <Entry Placeholder="Senha inicial" Text="{Binding NovaSenha}" IsPassword="True" />
+
+                    <Label
+                        Text="Pelo menos 8 caracteres, com letras e números. Passe a senha à pessoa por um canal seguro."
+                        FontSize="12"
+                        TextColor="#5F6368" />
+
+                    <Label
+                        Text="{Binding ErroNovoUsuario}"
+                        TextColor="#C5221F"
+                        FontSize="13"
+                        IsVisible="{Binding ErroNovoUsuario, Converter={StaticResource StringNotEmptyConverter}}" />
+
+                    <Button
+                        Text="Criar usuário"
+                        Command="{Binding CriarUsuarioCommand}"
+                        HeightRequest="48" />
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+        </VerticalStackLayout>
+
+        <Label
+            Grid.Row="2"
             Text="{Binding MensagemErro}"
             TextColor="Red"
             FontSize="13" />
 
         <RefreshView
-            Grid.Row="2"
+            Grid.Row="3"
             IsRefreshing="{Binding Carregando}"
             Command="{Binding CarregarCommand}">
 
@@ -175,6 +235,20 @@
                                     </Button.Triggers>
 
                                 </Button>
+
+                                <Button
+                                    Text="Definir senha"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsuariosViewModel}}, Path=DefinirSenhaCommand}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="Transparent"
+                                    BorderColor="#0B1D3A"
+                                    BorderWidth="1"
+                                    TextColor="#0B1D3A" />
+
+                                <Label
+                                    Text="{Binding FormasDeEntrar}"
+                                    FontSize="12"
+                                    TextColor="#5F6368" />
 
                                 <Label
                                     Text="{Binding UltimoLogin, StringFormat='Último login: {0:dd/MM/yyyy HH:mm}'}"

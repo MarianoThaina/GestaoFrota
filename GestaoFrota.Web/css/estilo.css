@@ -738,6 +738,8 @@ a.botao {
 }
 
 .campo input[type="text"],
+.campo input[type="email"],
+.campo input[type="password"],
 .campo select {
   width: 100%;
   padding: 10px var(--espaco-md);
@@ -831,6 +833,21 @@ a.botao {
   display: grid;
   place-items: center;
   margin: 0 auto var(--espaco-md);
+}
+
+/* Login por e-mail e senha, acima do botão do Google. */
+.form-login {
+  text-align: left;
+}
+
+.form-login .campo input {
+  min-height: 44px;
+  font-size: 16px;
+}
+
+.botao-largo {
+  width: 100%;
+  min-height: 44px;
 }
 
 .cartao-login h1 {

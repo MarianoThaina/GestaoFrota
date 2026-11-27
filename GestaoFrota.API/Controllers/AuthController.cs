@@ -1,10 +1,12 @@
 using GestaoFrota.API.DTOs;
+using GestaoFrota.API.Security;
 using GestaoFrota.API.Services;
 using GestaoFrota.Domain.Entities;
 using GestaoFrota.Domain.Enums;
 using GestaoFrota.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestaoFrota.API.Controllers;
@@ -22,17 +24,20 @@ public class AuthController : ControllerBase
     private readonly IGoogleAuthService _googleAuthService;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IConfiguration _configuration;
+    private readonly ISenhaService _senhaService;
 
     public AuthController(
         AppDbContext context,
         IGoogleAuthService googleAuthService,
         IJwtTokenService jwtTokenService,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ISenhaService senhaService)
     {
         _context = context;
         _googleAuthService = googleAuthService;
         _jwtTokenService = jwtTokenService;
         _configuration = configuration;
+        _senhaService = senhaService;
     }
 
     /// <summary>
@@ -75,6 +80,19 @@ public class AuthController : ControllerBase
         var usuario = await _context.Usuarios
             .FirstOrDefaultAsync(u => u.GoogleId == googleUser.GoogleId);
 
+        // Conta criada pelo Administrador (com senha) e ainda sem Google: o
+        // primeiro login Google com o mesmo e-mail vincula as duas e mantém o perfil.
+        if (usuario is null)
+        {
+            var email = googleUser.Email.Trim().ToLowerInvariant();
+            usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.GoogleId == null && u.Email == email);
+            if (usuario is not null)
+            {
+                usuario.GoogleId = googleUser.GoogleId;
+            }
+        }
+
         if (usuario is null)
         {
             usuario = new Usuario
@@ -98,6 +116,77 @@ public class AuthController : ControllerBase
             usuario.FotoUrl = googleUser.FotoUrl;
             usuario.UltimoLogin = DateTime.UtcNow;
         }
+
+        if (EhAdministradorSeed(usuario.Email) && usuario.Perfil != PerfilUsuario.Administrador)
+        {
+            usuario.Perfil = PerfilUsuario.Administrador;
+        }
+
+        await _context.SaveChangesAsync();
+
+        var (token, expiraEm) = _jwtTokenService.GerarToken(usuario);
+
+        return Ok(new AuthResponse(
+            token, expiraEm, usuario.Id, usuario.Nome, usuario.Email, usuario.FotoUrl, usuario.Perfil));
+    }
+
+    private const string ErroLoginSenha = "E-mail ou senha incorretos.";
+
+    /// <summary>
+    /// Login por e-mail e senha, para contas criadas pelo Administrador em
+    /// POST /api/usuarios. Devolve o mesmo JWT do login Google.
+    /// Proteções: resposta igual para e-mail inexistente e senha errada (não
+    /// revela quem tem conta), bloqueio de 15 min depois de 5 erros seguidos e
+    /// limite de tentativas por endereço IP (política "login" no Program).
+    /// </summary>
+    [HttpPost("login")]
+    [EnableRateLimiting("login")]
+    public async Task<ActionResult<AuthResponse>> LoginSenha([FromBody] SenhaLoginRequest request)
+    {
+        var email = PoliticaSenha.NormalizarEmail(request.Email);
+        if (email is null || string.IsNullOrEmpty(request.Senha))
+        {
+            return Unauthorized(new { mensagem = ErroLoginSenha });
+        }
+
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+        if (usuario is null)
+        {
+            _senhaService.ConferirSemConta(request.Senha);
+            return Unauthorized(new { mensagem = ErroLoginSenha });
+        }
+
+        var agora = DateTime.UtcNow;
+        if (usuario.BloqueadoAte is { } bloqueadoAte && bloqueadoAte > agora)
+        {
+            var minutos = Math.Max(1, (int)Math.Ceiling((bloqueadoAte - agora).TotalMinutes));
+            return StatusCode(StatusCodes.Status429TooManyRequests, new
+            {
+                mensagem = $"Muitas tentativas erradas. Tente de novo em {minutos} minuto(s)."
+            });
+        }
+
+        if (!_senhaService.Conferir(usuario, request.Senha))
+        {
+            usuario.TentativasLoginFalhas++;
+            if (usuario.TentativasLoginFalhas >= PoliticaSenha.TentativasAteBloquear)
+            {
+                usuario.TentativasLoginFalhas = 0;
+                usuario.BloqueadoAte = agora + PoliticaSenha.TempoBloqueio;
+            }
+
+            await _context.SaveChangesAsync();
+            return Unauthorized(new { mensagem = ErroLoginSenha });
+        }
+
+        if (!usuario.Ativo)
+        {
+            return Unauthorized(new { mensagem = "Usuário desativado. Contate um administrador." });
+        }
+
+        usuario.TentativasLoginFalhas = 0;
+        usuario.BloqueadoAte = null;
+        usuario.UltimoLogin = agora;
 
         if (EhAdministradorSeed(usuario.Email) && usuario.Perfil != PerfilUsuario.Administrador)
         {

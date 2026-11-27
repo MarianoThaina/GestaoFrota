@@ -17,7 +17,7 @@
 
                 <Label Text="{Binding Usuario.Email}" FontSize="14" TextColor="#5F6368" />
 
-                <Label Text="{Binding Usuario.Perfil, StringFormat='Perfil: {0}'}" FontSize="14" TextColor="#5F6368" />
+                <Label Text="{Binding Usuario.Perfil, Converter={StaticResource PerfilNomeConverter}, StringFormat='Perfil: {0}'}" FontSize="14" TextColor="#5F6368" />
 
                 <!-- US11: veículos em viagem (Administrador, Gestor de Frota e Motorista; lê o cache, funciona offline) -->
                 <Frame Padding="16" CornerRadius="16" BorderColor="#DCE3EE" HasShadow="False" IsVisible="{Binding MostrarFrota}">

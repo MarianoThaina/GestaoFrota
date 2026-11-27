@@ -9,6 +9,9 @@ namespace GestaoFrota.App.Services;
 public interface IAuthService
 {
     Task<UsuarioLogado> LoginComGoogleAsync();
+
+    /// <summary>Login por e-mail e senha (conta criada pelo Administrador).</summary>
+    Task<UsuarioLogado> LoginComSenhaAsync(string email, string senha);
     Task<UsuarioLogado?> ObterUsuarioLogadoAsync();
     Task<bool> EstaAutenticadoAsync();
 
@@ -75,6 +78,24 @@ public class GoogleAuthService : IAuthService
         var response = await _httpClient.PostAsJsonAsync("auth/google", new { idToken });
         response.EnsureSuccessStatusCode();
 
+        return await SalvarSessaoAsync(response);
+    }
+
+    public async Task<UsuarioLogado> LoginComSenhaAsync(string email, string senha)
+    {
+        // A hospedagem gratuita pode estar "dormindo": espera até 30 s, não os 100 s padrão.
+        using var limite = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        var response = await _httpClient.PostAsJsonAsync("auth/login", new { email, senha }, limite.Token);
+
+        // 401/429 trazem a mensagem pronta da API ("E-mail ou senha incorretos.",
+        // "Muitas tentativas…"); GarantirSucessoAsync a repassa para a tela.
+        await response.GarantirSucessoAsync();
+
+        return await SalvarSessaoAsync(response);
+    }
+
+    private async Task<UsuarioLogado> SalvarSessaoAsync(HttpResponseMessage response)
+    {
         var auth = await response.Content.ReadFromJsonAsync<AuthResponse>()
             ?? throw new InvalidOperationException("Resposta de autenticação inválida da API.");
 

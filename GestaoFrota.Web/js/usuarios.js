@@ -4,14 +4,17 @@
    Responde ao item 10 do entregável: a tela onde o administrador gerencia
    os perfis de acesso.
 
-   A API expõe três coisas, todas restritas a Administrador:
+   A API expõe, tudo restrito a Administrador:
      GET  /api/usuarios              lista todo mundo
+     POST /api/usuarios              cria conta com perfil e senha inicial
      PUT  /api/usuarios/{id}/perfil  troca o perfil
+     PUT  /api/usuarios/{id}/senha   define ou redefine a senha
      PUT  /api/usuarios/{id}/status  ativa ou desativa o acesso
 
-   Não existe criar usuário: a conta nasce sozinha no primeiro login com
-   Google, dentro do AuthController. Por isso esta tela não tem botão de
-   adicionar — ela administra quem já entrou.
+   Duas formas de a conta nascer: o Administrador cria aqui (e-mail e senha,
+   já com o perfil certo) ou a pessoa entra pelo Google pela primeira vez
+   (nasce Motorista). Se a conta criada aqui entrar depois pelo Google com o
+   mesmo e-mail, a API vincula as duas.
 
    O estado "Aguardando aprovação" que aparece em
    docs/prototipo/imagens/14-usuarios-permissoes.png não foi implementado,
@@ -88,8 +91,20 @@ if (iniciarTela('usuarios.html')) {
     email.className = 'lista-nota';
     email.textContent = usuario.email;
 
+    const formas = document.createElement('div');
+    formas.className = 'lista-nota';
+    formas.textContent = formasDeEntrar(usuario);
+
+    const botaoSenha = document.createElement('button');
+    botaoSenha.type = 'button';
+    botaoSenha.className = 'botao botao-texto';
+    botaoSenha.textContent = usuario.temSenha ? 'Redefinir senha' : 'Definir senha';
+    botaoSenha.addEventListener('click', () => abrirDialogo(usuario));
+
     dados.appendChild(titulo);
     dados.appendChild(email);
+    dados.appendChild(formas);
+    dados.appendChild(botaoSenha);
 
     // Seletor de perfil.
     const perfil = document.createElement('select');
@@ -170,11 +185,104 @@ if (iniciarTela('usuarios.html')) {
   }
 
 
+  function formasDeEntrar(usuario) {
+    if (usuario.temSenha && usuario.temGoogle) return 'Entra com: e-mail e senha ou Google';
+    if (usuario.temSenha) return 'Entra com: e-mail e senha';
+    if (usuario.temGoogle) return 'Entra com: Google';
+    return 'Ainda sem forma de entrar';
+  }
+
+
+  /* --- Diálogo: novo usuário ou definir senha -------------------------- */
+
+  const dialogo = document.getElementById('dialogo');
+  const formUsuario = document.getElementById('form-usuario');
+  const dialogoAviso = document.getElementById('dialogo-aviso');
+  const camposNovo = document.getElementById('campos-novo');
+  const campoNome = document.getElementById('campo-nome');
+  const campoEmail = document.getElementById('campo-email');
+  const campoPerfil = document.getElementById('campo-perfil');
+  const campoSenha = document.getElementById('campo-senha');
+  const botaoSalvar = document.getElementById('botao-salvar');
+
+  // null = criando conta nova; um usuário = definindo a senha dele.
+  let usuarioDaSenha = null;
+
+  for (const valor of [1, 2, 3, 4]) {
+    const opcao = document.createElement('option');
+    opcao.value = valor;
+    opcao.textContent = NOME_PERFIL[valor];
+    opcao.selected = valor === PERFIL.OPERADOR_MOTORISTA;
+    campoPerfil.appendChild(opcao);
+  }
+
+  function abrirDialogo(usuario) {
+    usuarioDaSenha = usuario || null;
+    formUsuario.reset();
+    campoPerfil.value = PERFIL.OPERADOR_MOTORISTA;
+    dialogoAviso.hidden = true;
+
+    camposNovo.hidden = !!usuario;
+    document.getElementById('dialogo-titulo').textContent =
+      usuario ? (usuario.temSenha ? 'Redefinir senha' : 'Definir senha') : 'Novo usuário';
+    document.getElementById('dialogo-explicacao').textContent = usuario
+      ? 'Nova senha de ' + usuario.nome + ' (' + usuario.email + '). Ela passa a entrar também com e-mail e senha.'
+      : 'A conta já nasce com o perfil escolhido e entra com e-mail e senha. Se a pessoa entrar pelo Google com o mesmo e-mail, a conta é a mesma.';
+    document.getElementById('rotulo-senha').textContent = usuario ? 'Nova senha' : 'Senha inicial';
+    botaoSalvar.textContent = usuario ? 'Salvar senha' : 'Criar usuário';
+
+    dialogo.hidden = false;
+    (usuario ? campoSenha : campoNome).focus();
+  }
+
+  function fecharDialogo() {
+    dialogo.hidden = true;
+    formUsuario.reset();
+  }
+
+  document.getElementById('botao-novo').addEventListener('click', () => abrirDialogo(null));
+  document.getElementById('botao-cancelar').addEventListener('click', fecharDialogo);
+  dialogo.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharDialogo(); });
+
+  formUsuario.addEventListener('submit', async (evento) => {
+    evento.preventDefault();
+    dialogoAviso.hidden = true;
+    botaoSalvar.disabled = true;
+
+    try {
+      if (usuarioDaSenha) {
+        await Usuarios.definirSenha(usuarioDaSenha.id, campoSenha.value);
+        const nome = usuarioDaSenha.nome;
+        fecharDialogo();
+        await carregar();
+        avisar('Senha de ' + nome + ' definida. Ela já pode entrar com e-mail e senha.', 'sucesso');
+      } else {
+        const nome = campoNome.value.trim();
+        const email = campoEmail.value.trim();
+        const perfil = Number(campoPerfil.value);
+        if (!nome || !email || !campoSenha.value) {
+          throw new Error('Preencha nome, e-mail e senha.');
+        }
+        await Usuarios.criar(nome, email, perfil, campoSenha.value);
+        fecharDialogo();
+        await carregar();
+        avisar(nome + ' (' + NOME_PERFIL[perfil] + ') já pode entrar com ' + email + ' e a senha definida.', 'sucesso');
+      }
+    } catch (erro) {
+      dialogoAviso.textContent = erro.message;
+      dialogoAviso.hidden = false;
+    } finally {
+      botaoSalvar.disabled = false;
+    }
+  });
+
+
   /* --- Início ----------------------------------------------------------- */
 
   // A API responde 403 para quem não é Administrador. Aqui a tela avisa
   // antes, com uma mensagem que explica em vez de só recusar.
   if (Sessao.ehAdministrador()) {
+    document.getElementById('botao-novo').hidden = false;
     carregar();
   } else {
     areaLista.hidden = true;

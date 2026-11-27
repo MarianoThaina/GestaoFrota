@@ -20,7 +20,9 @@ class ErroApi extends Error {
 
 const Api = {
 
-  async requisitar(caminho, opcoes = {}) {
+  // `login: true` (só no login por senha): um 401 é "e-mail ou senha
+  // incorretos", não sessão vencida — não apaga a sessão nem recarrega a página.
+  async requisitar(caminho, { login = false, ...opcoes } = {}) {
     const cabecalhos = { 'Content-Type': 'application/json' };
     const token = Sessao.token();
 
@@ -39,7 +41,7 @@ const Api = {
       throw new ErroApi(0, 'Não foi possível falar com o servidor. Verifique se a API está rodando em ' + CONFIG.API + '.');
     }
 
-    if (resposta.status === 401) {
+    if (resposta.status === 401 && !login) {
       Sessao.encerrar();
       window.location.href = 'index.html';
       throw new ErroApi(401, 'Sua sessão expirou. Entre de novo.');
@@ -153,6 +155,12 @@ const Usuarios = {
   },
   alterarStatus(id, ativo) {
     return Api.put('/api/usuarios/' + id + '/status', { ativo });
+  },
+  criar(nome, email, perfil, senha) {
+    return Api.post('/api/usuarios', { nome, email, perfil, senha });
+  },
+  definirSenha(id, senha) {
+    return Api.put('/api/usuarios/' + id + '/senha', { senha });
   }
 };
 
@@ -212,6 +220,13 @@ const Viagens = {
 const Auth = {
   entrarComGoogle(idToken) {
     return Api.post('/api/auth/google', { idToken });
+  },
+  entrarComSenha(email, senha) {
+    return Api.requisitar('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, senha }),
+      login: true
+    });
   },
   meusDados() {
     return Api.get('/api/auth/me');

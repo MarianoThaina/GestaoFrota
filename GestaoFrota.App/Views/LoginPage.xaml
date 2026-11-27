@@ -7,60 +7,111 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#0B1D3A">
 
-    <Grid RowDefinitions="*, Auto, *" Padding="32">
+    <!-- ScrollView: com o teclado aberto, os campos e o botão continuam alcançáveis. -->
+    <ScrollView>
+        <Grid RowDefinitions="*, Auto, *, Auto" Padding="32" MinimumHeightRequest="640">
 
-        <VerticalStackLayout Grid.Row="1" Spacing="24" VerticalOptions="Center">
+            <VerticalStackLayout Grid.Row="1" Spacing="20" VerticalOptions="Center">
 
-            <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                <Label Text="Gestão de Frota"
-                       FontSize="28"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalOptions="Center" />
-                <Label Text="Gestão financeira e controle de frota"
-                       FontSize="14"
-                       TextColor="#9FB3D1"
-                       HorizontalOptions="Center" />
+                <VerticalStackLayout Spacing="4" HorizontalOptions="Center" Margin="0,0,0,8">
+                    <Label Text="Gestão de Frota"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center" />
+                    <Label Text="Gestão financeira e controle de frota"
+                           FontSize="14"
+                           TextColor="#9FB3D1"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <!-- Entrar com e-mail e senha (conta criada pelo Administrador) -->
+                <VerticalStackLayout Spacing="12" IsVisible="{Binding MostrarBotaoEntrar}">
+
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="16,2"
+                            StrokeShape="RoundRectangle 12">
+                        <Entry Text="{Binding Email}"
+                               Placeholder="E-mail"
+                               PlaceholderColor="#5F6368"
+                               TextColor="#0B1D3A"
+                               Keyboard="Email"
+                               IsSpellCheckEnabled="False"
+                               IsTextPredictionEnabled="False"
+                               ReturnType="Next"
+                               HeightRequest="48"
+                               SemanticProperties.Description="E-mail" />
+                    </Border>
+
+                    <Border BackgroundColor="White" StrokeThickness="0" Padding="16,2"
+                            StrokeShape="RoundRectangle 12">
+                        <Entry Text="{Binding Senha}"
+                               Placeholder="Senha"
+                               PlaceholderColor="#5F6368"
+                               TextColor="#0B1D3A"
+                               IsPassword="True"
+                               ReturnType="Go"
+                               ReturnCommand="{Binding EntrarComSenhaCommand}"
+                               HeightRequest="48"
+                               SemanticProperties.Description="Senha" />
+                    </Border>
+
+                    <Button Text="Entrar"
+                            Command="{Binding EntrarComSenhaCommand}"
+                            BackgroundColor="White"
+                            TextColor="#0B1D3A"
+                            FontAttributes="Bold"
+                            CornerRadius="24"
+                            HeightRequest="52"
+                            IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+
+                    <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="12" Margin="0,4">
+                        <BoxView Grid.Column="0" HeightRequest="1" Color="#4A5D7E" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="ou" TextColor="#C9D6EA" FontSize="14" />
+                        <BoxView Grid.Column="2" HeightRequest="1" Color="#4A5D7E" VerticalOptions="Center" />
+                    </Grid>
+
+                    <Button Text="Entrar com Google"
+                            Command="{Binding EntrarComGoogleCommand}"
+                            BackgroundColor="Transparent"
+                            BorderColor="White"
+                            BorderWidth="1.5"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="24"
+                            HeightRequest="52"
+                            IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding VerificandoSessao}" HorizontalOptions="Center">
+                    <ActivityIndicator IsRunning="{Binding VerificandoSessao}" Color="White" />
+                    <Label Text="Verificando sessão…" TextColor="#9FB3D1" FontSize="14" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <ActivityIndicator IsRunning="{Binding Carregando}"
+                                    IsVisible="{Binding Carregando}"
+                                    Color="White" />
+
+                <Label Text="{Binding MensagemErro}"
+                       TextColor="#FF8A80"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
+
             </VerticalStackLayout>
 
-            <Button Text="Entrar com Google"
-                    Command="{Binding EntrarComGoogleCommand}"
-                    BackgroundColor="White"
-                    TextColor="#0B1D3A"
-                    FontAttributes="Bold"
-                    CornerRadius="24"
-                    HeightRequest="52"
-                    IsVisible="{Binding MostrarBotaoEntrar}"
-                    IsEnabled="{Binding Carregando, Converter={StaticResource InverseBoolConverter}}" />
+            <!-- Central de Ajuda: página pública, abre antes do login. -->
+            <Button Grid.Row="3"
+                    Text="Precisa de ajuda?"
+                    Clicked="OnAjudaClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="#C9D6EA"
+                    FontSize="15"
+                    HeightRequest="48"
+                    Margin="0,24,0,0"
+                    HorizontalOptions="Center"
+                    SemanticProperties.Hint="Abre a Central de Ajuda no navegador" />
 
-            <VerticalStackLayout Spacing="8" IsVisible="{Binding VerificandoSessao}" HorizontalOptions="Center">
-                <ActivityIndicator IsRunning="{Binding VerificandoSessao}" Color="White" />
-                <Label Text="Verificando sessão…" TextColor="#9FB3D1" FontSize="14" HorizontalOptions="Center" />
-            </VerticalStackLayout>
-
-            <ActivityIndicator IsRunning="{Binding Carregando}"
-                                IsVisible="{Binding Carregando}"
-                                Color="White" />
-
-            <Label Text="{Binding MensagemErro}"
-                   TextColor="#FF8A80"
-                   HorizontalOptions="Center"
-                   IsVisible="{Binding MensagemErro, Converter={StaticResource StringNotEmptyConverter}}" />
-
-        </VerticalStackLayout>
-
-        <!-- Central de Ajuda: página pública, abre antes do login. -->
-        <Button Grid.Row="2"
-                Text="Precisa de ajuda?"
-                Clicked="OnAjudaClicked"
-                BackgroundColor="Transparent"
-                TextColor="#C9D6EA"
-                FontSize="15"
-                HeightRequest="48"
-                VerticalOptions="End"
-                HorizontalOptions="Center"
-                SemanticProperties.Hint="Abre a Central de Ajuda no navegador" />
-
-    </Grid>
+        </Grid>
+    </ScrollView>
 
 </ContentPage>

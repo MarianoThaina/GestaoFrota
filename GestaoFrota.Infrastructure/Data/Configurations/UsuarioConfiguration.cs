@@ -20,9 +20,13 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .IsRequired()
             .HasMaxLength(200);
 
+        // Opcional: conta só com senha não tem GoogleId. O índice único abaixo
+        // ignora os nulos (o SQL Server recebe o filtro [GoogleId] IS NOT NULL).
         builder.Property(u => u.GoogleId)
-            .IsRequired()
             .HasMaxLength(100);
+
+        builder.Property(u => u.SenhaHash)
+            .HasMaxLength(500);
 
         builder.Property(u => u.Perfil)
             .HasConversion<string>()

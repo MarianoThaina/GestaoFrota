@@ -70,16 +70,17 @@
         <h3>Antes de começar</h3>
         <ul>
           <li>Um celular <strong>Android 6.0 ou mais novo</strong> com o aplicativo instalado, ou qualquer navegador para o site.</li>
-          <li>Uma <strong>conta Google</strong> (Gmail). O sistema não tem senha própria.</li>
+          <li>Um <strong>e-mail e senha</strong> criados pelo administrador, ou uma <strong>conta Google</strong> (Gmail).</li>
           <li><strong>Internet</strong> para quase tudo. A exceção é abrir e encerrar viagens, que funciona sem sinal.</li>
         </ul>
         <h3>Entrar e sair</h3>
-        <ol>
-          <li>Abra o aplicativo <strong>Gestão de Frota</strong>.</li>
-          <li>Toque em <strong>Entrar com Google</strong> e escolha a sua conta.</li>
-          <li>Nas próximas vezes ele já abre com você conectado. Enquanto confere a sessão, aparece <em>"Verificando sessão…"</em>.</li>
-        </ol>
-        <p><strong>Primeira vez?</strong> Toda conta nova entra como <strong>Motorista</strong>. Se o seu trabalho é outro, peça ao administrador para mudar o seu perfil.</p>
+        <p>Há duas formas de entrar, e as duas levam ao mesmo lugar:</p>
+        <ul>
+          <li><strong>E-mail e senha:</strong> digite o e-mail e a senha que o administrador criou para você e toque em <strong>Entrar</strong>. A conta já vem com o seu perfil.</li>
+          <li><strong>Google:</strong> toque em <strong>Entrar com Google</strong> e escolha a sua conta.</li>
+        </ul>
+        <p>Nas próximas vezes o app já abre com você conectado. Enquanto confere a sessão, aparece <em>"Verificando sessão…"</em>.</p>
+        <p><strong>Primeira vez pelo Google?</strong> A conta nova entra como <strong>Motorista</strong>. Se o seu trabalho é outro, peça ao administrador para mudar o seu perfil. Se o administrador já criou uma conta com o seu e-mail, o Google entra nela, com o perfil que ela já tem.</p>
         <p><strong>Para sair:</strong> abra o menu (☰) e toque em <strong>Sair</strong>.</p>
         <p><strong>Sem instalar nada:</strong> o painel web em <a href="index.html">gestaofrota.runasp.net</a> mostra relatórios, movimentações, viagens e os cadastros.</p>
       </div>
@@ -272,12 +273,20 @@
     <section class="topico" id="usuarios" data-perfis="admin">
       <h2>Usuários (só o Administrador)</h2>
       <div class="topico-texto">
+        <h3>Criar uma conta com senha</h3>
         <ol>
-          <li>Menu › <strong>Usuários</strong> mostra todos que já entraram no sistema.</li>
+          <li>Menu › <strong>Usuários</strong> › <strong>+ Novo usuário</strong>.</li>
+          <li>Preencha <strong>Nome</strong>, <strong>E-mail</strong>, <strong>Perfil</strong> e <strong>Senha inicial</strong> (pelo menos 8 caracteres, com letras e números) e toque em <strong>Criar usuário</strong>.</li>
+          <li>Passe o e-mail e a senha à pessoa por um canal seguro. Ela já entra com o perfil certo.</li>
+        </ol>
+        <p><strong>Definir senha</strong>, em cada pessoa da lista, cria ou troca a senha, inclusive de quem só entrava pelo Google. Cada pessoa mostra por onde entra: e-mail e senha, Google ou os dois.</p>
+        <h3>Mudar o perfil</h3>
+        <ol>
           <li>Em <strong>Perfil do usuário</strong>, escolha Administrador, Gestor de Frota, Financeiro ou Motorista / Operador.</li>
           <li>Toque em <strong>Salvar perfil</strong>. Aparece a confirmação.</li>
         </ol>
         <p>A pessoa vê o menu novo depois de <strong>sair e entrar de novo</strong>: o perfil vai dentro da sessão, renovada a cada login.</p>
+        <p class="dica">Por segurança, depois de 5 senhas erradas seguidas o login por senha daquela conta fica bloqueado por 15 minutos. Definir uma senha nova desfaz o bloqueio.</p>
       </div>
       <figure><img src="ajuda/img/usuarios.webp" alt="Confirmação de perfil alterado na tela de usuários" loading="lazy" width="480" height="1024"><figcaption>Perfil alterado</figcaption></figure>
     </section>
@@ -287,6 +296,8 @@
       <div class="topico-texto perguntas">
         <details><summary>Entrei, mas o menu só tem Início, Viagens e Frota</summary><p>Sua conta ainda é de Motorista. Peça ao administrador para mudar o seu perfil e entre de novo.</p></details>
         <details><summary>O login abre o Google, mas não volta para o aplicativo</summary><p>Feche o aplicativo e tente de novo. Se continuar, avise o responsável pelo sistema.</p></details>
+        <details><summary>"E-mail ou senha incorretos"</summary><p>Confira o e-mail e a senha (maiúsculas contam na senha). Se esqueceu, peça ao administrador para definir uma senha nova em <strong>Usuários</strong>.</p></details>
+        <details><summary>"Muitas tentativas erradas"</summary><p>Depois de 5 senhas erradas seguidas, o login por senha fica bloqueado por 15 minutos. Espere ou peça ao administrador para definir uma senha nova, que desfaz o bloqueio.</p></details>
         <details><summary>Aparece "Verificando sessão…" por alguns segundos</summary><p>É normal quando o servidor estava parado: ele acorda em até 20 segundos. Se a internet cair, o app abre com a sessão salva.</p></details>
         <details><summary>"Sem conexão" ao salvar um lançamento</summary><p>Lançamentos precisam de internet. Espere o sinal voltar e salve de novo. Só as viagens funcionam sem sinal.</p></details>
         <details><summary>A viagem continua "aguardando envio"</summary><p>Com internet, abra <strong>Viagens</strong> e puxe a tela para baixo.</p></details>
