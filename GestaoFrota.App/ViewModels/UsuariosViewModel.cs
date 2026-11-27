@@ -66,15 +66,8 @@ public partial class UsuariosViewModel : BaseViewModel
                 return;
             }
 
-            var usuarios =
-                await _usuarioService.ListarAsync();
-
-            Usuarios.Clear();
-
-            foreach (var usuario in usuarios)
-            {
-                Usuarios.Add(usuario);
-            }
+            _todos = await _usuarioService.ListarAsync();
+            AplicarFiltro();
         }
         catch (HttpRequestException ex)
         {
@@ -130,6 +123,37 @@ public partial class UsuariosViewModel : BaseViewModel
 
             await CarregarAsync();
         }
+    }
+
+    // ---------- Contas inativas: escondidas por padrão ----------
+    // Usuário não é excluído (o histórico de viagens e lançamentos aponta para
+    // ele); quem foi desativado sai da lista e volta com "Mostrar inativos".
+
+    private List<Usuario> _todos = new();
+
+    [ObservableProperty]
+    private bool mostrarInativos;
+
+    [ObservableProperty]
+    private string resumoInativos = string.Empty;
+
+    partial void OnMostrarInativosChanged(bool value) => AplicarFiltro();
+
+    private void AplicarFiltro()
+    {
+        Usuarios.Clear();
+        foreach (var usuario in _todos.Where(u => MostrarInativos || u.Ativo))
+        {
+            Usuarios.Add(usuario);
+        }
+
+        var inativos = _todos.Count(u => !u.Ativo);
+        ResumoInativos = inativos switch
+        {
+            0 => "Nenhuma conta inativa",
+            1 => "Mostrar inativos (1 conta)",
+            _ => $"Mostrar inativos ({inativos} contas)"
+        };
     }
 
     // ---------- Novo usuário com senha (já nasce com o perfil escolhido) ----------
