@@ -9,8 +9,8 @@ namespace GestaoFrota.App.Controls;
 /// </summary>
 public class GraficoRoscaDrawable : IDrawable
 {
-    private static readonly Color CorVazio = Color.FromArgb("#DCE3EE");
-    private static readonly Color CorTexto = Color.FromArgb("#0B1D3A");
+    private static readonly Color CorVazio = Color.FromArgb("#D3E5E1");
+    private static readonly Color CorTexto = Color.FromArgb("#0B2545");
 
     private readonly IReadOnlyList<DespesaCategoria> _categorias;
     private readonly string _textoCentral;

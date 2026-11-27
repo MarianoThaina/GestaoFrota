@@ -14,7 +14,7 @@
                IsVisible="{Binding PodeGerenciar}"
                Padding="12"
                CornerRadius="12"
-               BorderColor="#DCE3EE">
+               BorderColor="#D3E5E1">
             <VerticalStackLayout Spacing="8">
                 <Entry Placeholder="Nome da rota (ex.: SP → Curitiba)" MaxLength="150" Text="{Binding NovoNome}" />
                 <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
@@ -31,8 +31,8 @@
                IsVisible="{Binding RotaEmEdicao, Converter={StaticResource NotNullToBoolConverter}}"
                Padding="12"
                CornerRadius="12"
-               BorderColor="#DCE3EE"
-               BackgroundColor="#F5F8FF">
+               BorderColor="#D3E5E1"
+               BackgroundColor="#EEF7F5">
             <VerticalStackLayout Spacing="8">
                 <Label Text="Editando rota" FontAttributes="Bold" FontSize="12" TextColor="#5F6368" />
                 <Entry Placeholder="Nome da rota" MaxLength="150" Text="{Binding EdicaoNome}" />
@@ -43,7 +43,7 @@
                 <Entry Placeholder="Distância estimada (km)" Keyboard="Numeric" Text="{Binding EdicaoDistanciaTexto}" />
                 <HorizontalStackLayout Spacing="8">
                     <Button Text="Salvar" Command="{Binding SalvarEdicaoCommand}" />
-                    <Button Text="Cancelar" Command="{Binding CancelarEdicaoCommand}" BackgroundColor="Gray" />
+                    <Button Text="Cancelar" Command="{Binding CancelarEdicaoCommand}" BackgroundColor="#5F6368" />
                 </HorizontalStackLayout>
             </VerticalStackLayout>
         </Frame>
@@ -70,7 +70,7 @@
                             <SwipeView.RightItems>
                                 <SwipeItems>
                                     <SwipeItem Text="Editar"
-                                               BackgroundColor="#2C6CE0"
+                                               BackgroundColor="#0E7C74"
                                                IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.PodeGerenciar}"
                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IniciarEdicaoCommand}"
                                                CommandParameter="{Binding .}" />

@@ -49,7 +49,7 @@
 
             <Button Text="Salvar veículo"
                     Command="{Binding SalvarCommand}"
-                    BackgroundColor="#0B1D3A"
+                    BackgroundColor="#0B2545"
                     TextColor="White"
                     CornerRadius="24"
                     HeightRequest="52"

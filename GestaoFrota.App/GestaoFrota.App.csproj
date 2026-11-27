@@ -17,7 +17,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <ApplicationTitle>Gestão de Frota</ApplicationTitle>
+    <!-- Nome da marca (kit FrotaFin no Figma). O pacote continua com.gestaofrota.app. -->
+    <ApplicationTitle>FrotaFin</ApplicationTitle>
     <ApplicationId>com.gestaofrota.app</ApplicationId>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
@@ -50,9 +51,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Ícone e splash (SVG simples, trocáveis) -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#0B1D3A" />
-    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0B1D3A" BaseSize="128,128" />
+    <!-- Identidade FrotaFin: ícone, abertura e logo em SVG, a partir do kit de marca do Figma -->
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#0B2545" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0B2545" BaseSize="128,128" />
+    <MauiImage Include="Resources\Images\*.svg" />
+    <!-- Inter (licença OFL, Inter-LICENSE.txt), fonte do kit de marca -->
+    <MauiFont Include="Resources\Fonts\*.ttf" />
   </ItemGroup>
 
   <ItemGroup>

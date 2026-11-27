@@ -12,7 +12,7 @@
         <Button Grid.Row="0"
                 Text="+ Abrir viagem"
                 Command="{Binding AbrirCommand}"
-                BackgroundColor="#0B1D3A"
+                BackgroundColor="#0B2545"
                 TextColor="White"
                 CornerRadius="24"
                 HeightRequest="48" />
@@ -53,7 +53,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Viagem">
-                        <Frame Padding="12" Margin="0,0,0,8" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False">
+                        <Frame Padding="12" Margin="0,0,0,8" CornerRadius="12" BorderColor="#D3E5E1" HasShadow="False">
                             <VerticalStackLayout Spacing="6">
 
                                 <Grid ColumnDefinitions="*, Auto" ColumnSpacing="8">
@@ -74,19 +74,19 @@
 
                                 <!-- Hodômetros: inicial, final e rodado -->
                                 <Grid ColumnDefinitions="*, *, *" ColumnSpacing="8" Margin="0,4,0,0">
-                                    <Frame Grid.Column="0" Padding="8" CornerRadius="8" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
+                                    <Frame Grid.Column="0" Padding="8" CornerRadius="8" BorderColor="#D3E5E1" HasShadow="False" BackgroundColor="#EEF7F5">
                                         <VerticalStackLayout>
                                             <Label Text="Inicial" FontSize="10" TextColor="#5F6368" />
                                             <Label Text="{Binding HodometroInicialTexto}" FontAttributes="Bold" FontSize="13" />
                                         </VerticalStackLayout>
                                     </Frame>
-                                    <Frame Grid.Column="1" Padding="8" CornerRadius="8" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
+                                    <Frame Grid.Column="1" Padding="8" CornerRadius="8" BorderColor="#D3E5E1" HasShadow="False" BackgroundColor="#EEF7F5">
                                         <VerticalStackLayout>
                                             <Label Text="Final" FontSize="10" TextColor="#5F6368" />
                                             <Label Text="{Binding HodometroFinalTexto}" FontAttributes="Bold" FontSize="13" />
                                         </VerticalStackLayout>
                                     </Frame>
-                                    <Frame Grid.Column="2" Padding="8" CornerRadius="8" BorderColor="#0B1D3A" HasShadow="False" BackgroundColor="#0B1D3A">
+                                    <Frame Grid.Column="2" Padding="8" CornerRadius="8" BorderColor="#0B2545" HasShadow="False" BackgroundColor="#0B2545">
                                         <VerticalStackLayout>
                                             <Label Text="Rodado" FontSize="10" TextColor="#9FB3D1" />
                                             <Label Text="{Binding RodadoTexto}" FontAttributes="Bold" FontSize="13" TextColor="White" />

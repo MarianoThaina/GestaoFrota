@@ -1,5 +1,5 @@
 ---
-title: "Gestão de Frota"
+title: "FrotaFin"
 subtitle: "Manual do Usuário"
 ---
 
@@ -10,7 +10,7 @@ subtitle: "Manual do Usuário"
 
 # Para que serve o aplicativo
 
-O **Gestão de Frota** organiza, no celular, o dinheiro da empresa e o uso dos caminhões:
+O **FrotaFin** organiza, no celular, o dinheiro da empresa e o uso dos caminhões:
 
 - o que entrou e o que saiu do caixa, com foto do comprovante;
 - os financiamentos e as parcelas que vão vencer;
@@ -27,7 +27,7 @@ O **Gestão de Frota** organiza, no celular, o dinheiro da empresa e o uso dos c
 
 # Entrar e sair
 
-Abra o aplicativo **Gestão de Frota**. Há duas formas de entrar, e as duas levam ao mesmo lugar:
+Abra o aplicativo **FrotaFin**. Há duas formas de entrar, e as duas levam ao mesmo lugar:
 
 - **E-mail e senha:** digite o e-mail e a senha que o administrador criou para você e toque em
   **Entrar**. A conta já vem com o seu perfil.

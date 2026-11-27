@@ -11,7 +11,14 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .UseMauiApp<App>();
+            .UseMauiApp<App>()
+            .ConfigureFonts(fontes =>
+            {
+                // Inter, fonte do kit de marca FrotaFin (App.xaml aplica em todo o app).
+                fontes.AddFont("Inter-Regular.ttf", "Inter");
+                fontes.AddFont("Inter-SemiBold.ttf", "InterSemiBold");
+                fontes.AddFont("Inter-Bold.ttf", "InterBold");
+            });
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -13,7 +13,7 @@
                 Text="+ Novo financiamento"
                 Command="{Binding NovaCommand}"
                 IsVisible="{Binding PodeGerenciar}"
-                BackgroundColor="#0B1D3A"
+                BackgroundColor="#0B2545"
                 TextColor="White"
                 CornerRadius="24"
                 HeightRequest="48" />
@@ -40,7 +40,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Divida">
-                        <Frame Padding="12" Margin="0,0,0,8" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False">
+                        <Frame Padding="12" Margin="0,0,0,8" CornerRadius="12" BorderColor="#D3E5E1" HasShadow="False">
                             <VerticalStackLayout Spacing="4">
                                 <Grid ColumnDefinitions="*, Auto">
                                     <Label Grid.Column="0" Text="{Binding Descricao}" FontAttributes="Bold" />

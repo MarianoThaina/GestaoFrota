@@ -68,7 +68,7 @@ public partial class AppShell : Shell
         MenuFormasPagamento.IsVisible = podeVerFinanceiro;
         MenuUsuarios.IsVisible = perfil == PerfilUsuario.Administrador;
 
-        LblNomeUsuario.Text = usuario?.Nome ?? "Gestão de Frota";
+        LblNomeUsuario.Text = usuario?.Nome ?? "FrotaFin";
         LblPerfilUsuario.Text = perfil.HasValue ? NomeDoPerfil(perfil.Value) : string.Empty;
 
         _perfil = perfil;

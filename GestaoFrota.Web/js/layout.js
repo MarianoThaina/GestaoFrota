@@ -87,8 +87,8 @@ function montarLateral(arquivoAtual) {
 
   partes.push(
     '<div class="marca">' +
-      '<div class="marca-icone">' + svg('frota') + '</div>' +
-      '<div class="marca-nome">Gestão de Frota<span>Financeiro e operação</span></div>' +
+      '<div class="marca-icone"><img src="img/logo-frotafin.svg" alt="" width="32" height="32"></div>' +
+      '<div class="marca-nome">Frota<b class="marca-fin">Fin</b><span>Financeiro e operação</span></div>' +
     '</div>'
   );
 

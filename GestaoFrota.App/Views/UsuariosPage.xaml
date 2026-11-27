@@ -39,7 +39,7 @@
             <Button
                 Text="+ Novo usuário"
                 Command="{Binding AlternarNovoUsuarioCommand}"
-                BackgroundColor="#0B1D3A"
+                BackgroundColor="#0B2545"
                 TextColor="White"
                 CornerRadius="24"
                 HeightRequest="48" />
@@ -47,7 +47,7 @@
             <Frame
                 Padding="14"
                 CornerRadius="12"
-                BorderColor="#DCE3EE"
+                BorderColor="#D3E5E1"
                 HasShadow="False"
                 IsVisible="{Binding MostrarNovoUsuario}">
 
@@ -128,7 +128,7 @@
                             Padding="14"
                             Margin="0,5"
                             CornerRadius="12"
-                            BorderColor="#DCE3EE">
+                            BorderColor="#D3E5E1">
 
                             <VerticalStackLayout
                                 Spacing="10">
@@ -241,9 +241,9 @@
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsuariosViewModel}}, Path=DefinirSenhaCommand}"
                                     CommandParameter="{Binding .}"
                                     BackgroundColor="Transparent"
-                                    BorderColor="#0B1D3A"
+                                    BorderColor="#0B2545"
                                     BorderWidth="1"
-                                    TextColor="#0B1D3A" />
+                                    TextColor="#0B2545" />
 
                                 <Label
                                     Text="{Binding FormasDeEntrar}"

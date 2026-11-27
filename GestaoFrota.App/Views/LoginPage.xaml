@@ -5,7 +5,7 @@
              x:Class="GestaoFrota.App.Views.LoginPage"
              x:DataType="vm:LoginViewModel"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#0B1D3A">
+             BackgroundColor="#0B2545">
 
     <!-- ScrollView: com o teclado aberto, os campos e o botão continuam alcançáveis. -->
     <ScrollView>
@@ -13,15 +13,28 @@
 
             <VerticalStackLayout Grid.Row="1" Spacing="20" VerticalOptions="Center">
 
-                <VerticalStackLayout Spacing="4" HorizontalOptions="Center" Margin="0,0,0,8">
-                    <Label Text="Gestão de Frota"
-                           FontSize="28"
-                           FontAttributes="Bold"
-                           TextColor="White"
-                           HorizontalOptions="Center" />
-                    <Label Text="Gestão financeira e controle de frota"
+                <!-- Marca FrotaFin (kit do Figma): símbolo + "Frota" branco e "Fin" verde-água -->
+                <VerticalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,0,0,8">
+                    <HorizontalStackLayout Spacing="14" HorizontalOptions="Center">
+                        <Image Source="logo_frotafin.png"
+                               WidthRequest="56"
+                               HeightRequest="56"
+                               VerticalOptions="Center"
+                               SemanticProperties.Description="Logo FrotaFin" />
+                        <Label FontFamily="InterBold" FontSize="36" VerticalOptions="Center"
+                               SemanticProperties.Description="FrotaFin">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Frota" TextColor="White" FontFamily="InterBold" />
+                                    <Span Text="Fin" TextColor="#13A89E" FontFamily="InterBold" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </HorizontalStackLayout>
+                    <Label Text="Sistema de gestão financeira e controle de frota"
                            FontSize="14"
-                           TextColor="#9FB3D1"
+                           TextColor="#B9CBE0"
+                           HorizontalTextAlignment="Center"
                            HorizontalOptions="Center" />
                 </VerticalStackLayout>
 
@@ -33,7 +46,7 @@
                         <Entry Text="{Binding Email}"
                                Placeholder="E-mail"
                                PlaceholderColor="#5F6368"
-                               TextColor="#0B1D3A"
+                               TextColor="#0B2545"
                                Keyboard="Email"
                                IsSpellCheckEnabled="False"
                                IsTextPredictionEnabled="False"
@@ -47,7 +60,7 @@
                         <Entry Text="{Binding Senha}"
                                Placeholder="Senha"
                                PlaceholderColor="#5F6368"
-                               TextColor="#0B1D3A"
+                               TextColor="#0B2545"
                                IsPassword="True"
                                ReturnType="Go"
                                ReturnCommand="{Binding EntrarComSenhaCommand}"
@@ -58,7 +71,7 @@
                     <Button Text="Entrar"
                             Command="{Binding EntrarComSenhaCommand}"
                             BackgroundColor="White"
-                            TextColor="#0B1D3A"
+                            TextColor="#0B2545"
                             FontAttributes="Bold"
                             CornerRadius="24"
                             HeightRequest="52"

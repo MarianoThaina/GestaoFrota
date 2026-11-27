@@ -14,7 +14,7 @@
                 Text="+ Novo veículo"
                 Command="{Binding NovoCommand}"
                 IsVisible="{Binding PodeGerenciar}"
-                BackgroundColor="#0B1D3A"
+                BackgroundColor="#0B2545"
                 TextColor="White"
                 CornerRadius="24"
                 HeightRequest="48" />
@@ -44,13 +44,13 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Veiculo">
-                        <Frame Padding="12" Margin="0,0,0,8" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False"
+                        <Frame Padding="12" Margin="0,0,0,8" CornerRadius="12" BorderColor="#D3E5E1" HasShadow="False"
                                Opacity="{Binding Ativo, Converter={StaticResource BoolToOpacityConverter}}">
                             <VerticalStackLayout Spacing="6">
 
                                 <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="8">
                                     <Border Grid.Column="0"
-                                            BackgroundColor="#0B1D3A"
+                                            BackgroundColor="#0B2545"
                                             Padding="8,3"
                                             StrokeThickness="0">
                                         <Border.StrokeShape>
@@ -90,7 +90,7 @@
                                             HeightRequest="48"
                                             Padding="12,0"
                                             Margin="0,0,8,8"
-                                            BackgroundColor="#2C6CE0"
+                                            BackgroundColor="#0E7C74"
                                             TextColor="White"
                                             CornerRadius="24"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditarCommand}"

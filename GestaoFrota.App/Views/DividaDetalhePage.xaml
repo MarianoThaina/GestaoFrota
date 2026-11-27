@@ -12,7 +12,7 @@
         <Frame Grid.Row="0"
                Padding="12"
                CornerRadius="12"
-               BorderColor="#DCE3EE"
+               BorderColor="#D3E5E1"
                HasShadow="False"
                IsVisible="{Binding Divida, Converter={StaticResource NotNullToBoolConverter}}">
             <VerticalStackLayout Spacing="4">
