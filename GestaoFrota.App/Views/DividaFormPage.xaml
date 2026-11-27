@@ -38,8 +38,8 @@
 
             <Frame Padding="12"
                    CornerRadius="12"
-                   BorderColor="#DCE3EE"
-                   BackgroundColor="#F5F8FF"
+                   BorderColor="#D3E5E1"
+                   BackgroundColor="#EEF7F5"
                    HasShadow="False"
                    IsVisible="{Binding Resumo, Converter={StaticResource StringNotEmptyConverter}}">
                 <Label Text="{Binding Resumo}" FontSize="13" />
@@ -52,7 +52,7 @@
 
             <Button Text="Salvar e gerar parcelas"
                     Command="{Binding SalvarCommand}"
-                    BackgroundColor="#0B1D3A"
+                    BackgroundColor="#0B2545"
                     TextColor="White"
                     CornerRadius="24"
                     HeightRequest="52"

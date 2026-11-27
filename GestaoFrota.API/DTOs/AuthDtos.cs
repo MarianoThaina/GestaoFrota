@@ -8,6 +8,9 @@ namespace GestaoFrota.API.DTOs;
 /// </summary>
 public record GoogleLoginRequest(string IdToken);
 
+/// <summary>Login por e-mail e senha (conta criada pelo Administrador).</summary>
+public record SenhaLoginRequest(string Email, string Senha);
+
 /// <summary>
 /// Resposta com o token JWT da própria API, usado nas chamadas subsequentes.
 /// </summary>

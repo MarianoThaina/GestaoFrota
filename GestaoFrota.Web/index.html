@@ -3,30 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Entrar — Gestão de Frota</title>
+  <title>Entrar — FrotaFin</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body class="pagina-login">
 
   <main class="cartao-login">
     <div class="login-marca">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 16V7h11v9M14 10h4l3 3v3h-7"/>
-        <circle cx="7" cy="17" r="2"/>
-        <circle cx="17" cy="17" r="2"/>
-      </svg>
+      <img src="img/logo-frotafin.svg" alt="" width="56" height="56">
     </div>
 
-    <h1>Gestão de Frota</h1>
-    <p id="texto-login">Controle financeiro e operacional da sua transportadora, em tempo real.</p>
+    <h1 class="wordmark">Frota<span class="marca-fin">Fin</span></h1>
+    <p id="texto-login">Sistema de gestão financeira e controle de frota.</p>
 
     <div id="aviso" class="aviso aviso-erro" hidden></div>
+
+    <!-- Entrar com e-mail e senha (conta criada pelo Administrador) -->
+    <form class="form-login" id="form-senha" novalidate>
+      <label class="campo">
+        <span>E-mail</span>
+        <input type="email" id="campo-email" autocomplete="username" required>
+      </label>
+      <label class="campo">
+        <span>Senha</span>
+        <input type="password" id="campo-senha" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="botao botao-cheio botao-largo" id="botao-entrar">Entrar</button>
+    </form>
+
+    <div class="separador-login" id="separador-google"><span>ou</span></div>
 
     <div class="area-botao-google" id="botao-google"></div>
 
     <p class="nota-login" id="nota-google">
-      Usamos sua conta Google apenas para identificar você. Não temos acesso à sua senha.
+      Pelo Google, usamos sua conta apenas para identificar você. Não temos acesso à senha dela.
     </p>
 
     <div id="area-perfis"></div>

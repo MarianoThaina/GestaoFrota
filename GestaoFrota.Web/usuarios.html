@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Usuários — Gestão de Frota</title>
+  <title>Usuários — FrotaFin</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
@@ -19,6 +20,7 @@
           <h1 class="titulo-pagina">Usuários</h1>
           <p class="subtitulo">Quem tem acesso ao sistema e o que cada um pode fazer.</p>
         </div>
+        <button class="botao botao-cheio" id="botao-novo" hidden>+ Novo usuário</button>
       </header>
 
       <div id="aviso" class="aviso" hidden></div>
@@ -28,6 +30,45 @@
       </section>
 
     </main>
+  </div>
+
+  <!-- Diálogo: novo usuário (com senha) ou definir senha de quem já existe -->
+  <div class="cobertura" id="dialogo" hidden>
+    <form class="dialogo" role="dialog" aria-modal="true" aria-labelledby="dialogo-titulo" id="form-usuario" novalidate>
+      <h2 id="dialogo-titulo">Novo usuário</h2>
+      <p class="lista-nota" id="dialogo-explicacao">
+        A conta já nasce com o perfil escolhido e entra com e-mail e senha.
+        Se a pessoa entrar pelo Google com o mesmo e-mail, a conta é a mesma.
+      </p>
+
+      <div id="dialogo-aviso" class="aviso aviso-erro" hidden></div>
+
+      <div id="campos-novo">
+        <label class="campo">
+          <span>Nome</span>
+          <input type="text" id="campo-nome" maxlength="150" autocomplete="off">
+        </label>
+        <label class="campo">
+          <span>E-mail</span>
+          <input type="email" id="campo-email" maxlength="200" autocomplete="off">
+        </label>
+        <label class="campo">
+          <span>Perfil</span>
+          <select id="campo-perfil"></select>
+        </label>
+      </div>
+
+      <label class="campo">
+        <span id="rotulo-senha">Senha inicial</span>
+        <input type="password" id="campo-senha" maxlength="100" autocomplete="new-password">
+        <small class="lista-nota">Pelo menos 8 caracteres, com letras e números. Passe a senha à pessoa por um canal seguro.</small>
+      </label>
+
+      <div class="dialogo-acoes">
+        <button type="button" class="botao botao-texto" id="botao-cancelar">Cancelar</button>
+        <button type="submit" class="botao botao-cheio" id="botao-salvar">Criar usuário</button>
+      </div>
+    </form>
   </div>
 
   <script src="js/config.js"></script>

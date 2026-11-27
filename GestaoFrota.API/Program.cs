@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using GestaoFrota.API.Services;
 using GestaoFrota.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -49,6 +50,29 @@ builder.Services.AddAuthorization();
 // para trocar o código do login do app pelo id_token.
 builder.Services.AddHttpClient<IGoogleAuthService, GoogleAuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddSingleton<ISenhaService, SenhaService>();
+
+// ---------- Limite de tentativas no login por senha ----------
+// 10 tentativas por minuto por endereço IP em POST /api/auth/login, somado ao
+// bloqueio por conta (5 erros = 15 min). Passou do limite: 429 com mensagem.
+builder.Services.AddRateLimiter(opcoes =>
+{
+    opcoes.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    opcoes.OnRejected = async (contexto, cancelamento) =>
+    {
+        await contexto.HttpContext.Response.WriteAsJsonAsync(
+            new { mensagem = "Muitas tentativas de login. Aguarde um minuto e tente de novo." },
+            cancelamento);
+    };
+    opcoes.AddPolicy("login", contexto => RateLimitPartition.GetFixedWindowLimiter(
+        contexto.Connection.RemoteIpAddress?.ToString() ?? "desconhecido",
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        }));
+});
 
 // ---------- Controllers e documentação ----------
 builder.Services.AddControllers()
@@ -141,6 +165,8 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseCors("AppMobile");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

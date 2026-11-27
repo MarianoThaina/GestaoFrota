@@ -16,7 +16,7 @@
 }
 
 .ajuda-topo {
-  background: #0B1D3A;
+  background: #0B2545;
   color: #FFFFFF;
   padding: var(--espaco-xl) var(--espaco-md) var(--espaco-lg);
 }
@@ -33,7 +33,7 @@
   color: #FFFFFF;
   text-decoration: none;
   font-weight: 700;
-  opacity: 0.9;
+  font-size: 18px;
 }
 
 .ajuda-topo h1 {
@@ -93,7 +93,7 @@
 
 .ajuda-perfil.ativo {
   background: #FFFFFF;
-  color: #0B1D3A;
+  color: #0B2545;
   font-weight: 700;
 }
 

@@ -9,7 +9,7 @@
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="12">
 
-            <Frame Padding="14" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False"
+            <Frame Padding="14" CornerRadius="12" BorderColor="#D3E5E1" HasShadow="False"
                    IsVisible="{Binding Veiculo, Converter={StaticResource NotNullToBoolConverter}}">
                 <VerticalStackLayout Spacing="2">
                     <Label Text="Veículo" FontSize="10" TextColor="#5F6368" />
@@ -57,7 +57,7 @@
 
             <Button Text="Salvar manutenção"
                     Command="{Binding SalvarCommand}"
-                    BackgroundColor="#0B1D3A"
+                    BackgroundColor="#0B2545"
                     TextColor="White"
                     CornerRadius="24"
                     HeightRequest="52"

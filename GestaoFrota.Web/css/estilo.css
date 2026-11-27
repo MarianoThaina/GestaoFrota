@@ -1,5 +1,5 @@
 /* =========================================================================
-   GESTÃO DE FROTA — FRONT-END WEB
+   FROTAFIN — FRONT-END WEB (identidade do kit de marca no Figma)
    Folha de estilo única, compartilhada por todas as telas.
 
    Os valores do bloco 1 vieram do protótipo (docs/prototipo/css/estilo.css).
@@ -20,14 +20,19 @@
    1. VARIÁVEIS
    ========================================================================= */
 
+/* Inter (licença OFL, fonts/Inter-LICENSE.txt), fonte do kit de marca FrotaFin. */
+@font-face { font-family: 'Inter'; font-weight: 400; font-style: normal; font-display: swap; src: url('../fonts/Inter-Regular.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 600; font-style: normal; font-display: swap; src: url('../fonts/Inter-SemiBold.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 700; font-style: normal; font-display: swap; src: url('../fonts/Inter-Bold.woff2') format('woff2'); }
+
 :root {
-  --cor-primaria: #0B5FA5;
+  --cor-primaria: #0E7C74;        /* verde-água escuro FrotaFin: 5:1 com texto branco */
   --cor-primaria-texto: #FFFFFF;
-  --cor-primaria-clara: #D3E4FF;
-  --cor-primaria-escura: #001C38;
+  --cor-primaria-clara: #E6F4F1;  /* menta */
+  --cor-primaria-escura: #0B2545; /* azul-marinho FrotaFin */
 
   --cor-secundaria: #535F70;
-  --cor-secundaria-clara: #D7E3F8;
+  --cor-secundaria-clara: #D3E5E1;
 
   --cor-positiva: #2E7D32;
   --cor-positiva-fundo: #C8E6C9;
@@ -36,12 +41,12 @@
   --cor-alerta: #EF6C00;
   --cor-alerta-fundo: #FFE0B2;
 
-  --cor-fundo: #FBFCFF;
+  --cor-fundo: #F7FBFA;
   --cor-superficie: #FFFFFF;
-  --cor-superficie-variante: #EEF1F6;
+  --cor-superficie-variante: #EEF7F5;
   --cor-texto: #1A1C1E;
   --cor-texto-suave: #5A6068;
-  --cor-borda: #DDE2EA;
+  --cor-borda: #D3E5E1;
 
   --espaco-xs: 4px;
   --espaco-sm: 8px;
@@ -57,7 +62,12 @@
   --sombra-1: 0 1px 2px rgba(16, 28, 43, .08), 0 1px 3px rgba(16, 28, 43, .06);
   --sombra-2: 0 2px 6px rgba(16, 28, 43, .10), 0 1px 2px rgba(16, 28, 43, .06);
 
-  --fonte: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --fonte: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Marca FrotaFin (kit no Figma) */
+  --marca-marinho: #0B2545;
+  --marca-verde-agua: #13A89E;
+  --marca-menta: #E6F4F1;
 
   --largura-lateral: 232px;
 }
@@ -146,8 +156,8 @@ a {
   width: 32px;
   height: 32px;
   border-radius: var(--raio-sm);
-  background-color: var(--cor-primaria);
-  color: var(--cor-primaria-texto);
+  background-color: transparent;
+  overflow: hidden;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -738,6 +748,8 @@ a.botao {
 }
 
 .campo input[type="text"],
+.campo input[type="email"],
+.campo input[type="password"],
 .campo select {
   width: 100%;
   padding: 10px var(--espaco-md);
@@ -826,11 +838,26 @@ a.botao {
   width: 56px;
   height: 56px;
   border-radius: var(--raio-md);
-  background-color: var(--cor-primaria);
-  color: var(--cor-primaria-texto);
+  background-color: transparent;
+  overflow: hidden;
   display: grid;
   place-items: center;
   margin: 0 auto var(--espaco-md);
+}
+
+/* Login por e-mail e senha, acima do botão do Google. */
+.form-login {
+  text-align: left;
+}
+
+.form-login .campo input {
+  min-height: 44px;
+  font-size: 16px;
+}
+
+.botao-largo {
+  width: 100%;
+  min-height: 44px;
 }
 
 .cartao-login h1 {
@@ -1113,3 +1140,28 @@ a.botao {
 
 .pagina-texto h1 { margin-bottom: var(--espaco-sm); }
 .pagina-texto h2 { margin-top: var(--espaco-lg); font-size: 18px; }
+
+
+/* =========================================================================
+   MARCA FROTAFIN (kit de marca no Figma)
+   "Frota" na cor do texto e "Fin" em verde-água. Logotipo: a cor do kit vale
+   mesmo sobre branco (marca não entra na regra de contraste de texto).
+   ========================================================================= */
+
+.marca-fin {
+  color: var(--marca-verde-agua);
+}
+
+.marca-icone img,
+.login-marca img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cartao-login h1.wordmark {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--marca-marinho);
+}

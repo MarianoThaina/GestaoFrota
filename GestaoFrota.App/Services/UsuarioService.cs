@@ -14,6 +14,12 @@ public interface IUsuarioService
     Task AlterarStatusAsync(
         Guid usuarioId,
         bool ativo);
+
+    /// <summary>Cria uma conta já com perfil e senha inicial (só Administrador).</summary>
+    Task CriarAsync(string nome, string email, PerfilUsuario perfil, string senha);
+
+    /// <summary>Define ou redefine a senha de uma conta (só Administrador).</summary>
+    Task DefinirSenhaAsync(Guid usuarioId, string senha);
 }
 
 public class UsuarioService : IUsuarioService
@@ -59,5 +65,17 @@ public class UsuarioService : IUsuarioService
             });
 
         response.EnsureSuccessStatusCode();
+    }
+
+    public async Task CriarAsync(string nome, string email, PerfilUsuario perfil, string senha)
+    {
+        var response = await _httpClient.PostAsJsonAsync("usuarios", new { nome, email, perfil, senha });
+        await response.GarantirSucessoAsync();
+    }
+
+    public async Task DefinirSenhaAsync(Guid usuarioId, string senha)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"usuarios/{usuarioId}/senha", new { senha });
+        await response.GarantirSucessoAsync();
     }
 }

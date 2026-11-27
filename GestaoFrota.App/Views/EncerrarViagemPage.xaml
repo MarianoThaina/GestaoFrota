@@ -21,13 +21,13 @@
             </Frame>
 
             <!-- Resumo da viagem -->
-            <Frame Padding="14" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False"
+            <Frame Padding="14" CornerRadius="12" BorderColor="#D3E5E1" HasShadow="False"
                    IsVisible="{Binding Viagem, Converter={StaticResource NotNullToBoolConverter}}">
                 <VerticalStackLayout Spacing="4">
                     <Label Text="{Binding Viagem.TrajetoTexto}" FontAttributes="Bold" FontSize="16" />
                     <Label Text="{Binding Viagem.VeiculoTexto}" FontSize="12" TextColor="#5F6368" />
                     <Label Text="{Binding Viagem.DataTexto}" FontSize="12" TextColor="#5F6368" />
-                    <Frame Padding="10" Margin="0,8,0,0" CornerRadius="8" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
+                    <Frame Padding="10" Margin="0,8,0,0" CornerRadius="8" BorderColor="#D3E5E1" HasShadow="False" BackgroundColor="#EEF7F5">
                         <VerticalStackLayout>
                             <Label Text="Hodômetro inicial registrado" FontSize="10" TextColor="#5F6368" />
                             <Label Text="{Binding Viagem.HodometroInicialTexto}" FontAttributes="Bold" FontSize="18" />
@@ -57,7 +57,7 @@
                     HeightRequest="80"
                     Text="{Binding Observacoes}" />
 
-            <Frame Padding="12" CornerRadius="12" BorderColor="#DCE3EE" HasShadow="False" BackgroundColor="#F5F8FF">
+            <Frame Padding="12" CornerRadius="12" BorderColor="#D3E5E1" HasShadow="False" BackgroundColor="#EEF7F5">
                 <Label Text="Ao confirmar, o sistema calcula e salva a quilometragem rodada sozinho. Você não precisa fazer a conta."
                        FontSize="12"
                        TextColor="#5F6368" />
@@ -70,7 +70,7 @@
 
             <Button Text="Confirmar encerramento"
                     Command="{Binding ConfirmarCommand}"
-                    BackgroundColor="#0B1D3A"
+                    BackgroundColor="#0B2545"
                     TextColor="White"
                     CornerRadius="24"
                     HeightRequest="52"
@@ -79,7 +79,7 @@
             <Button Text="Cancelar"
                     Command="{Binding VoltarCommand}"
                     BackgroundColor="Transparent"
-                    TextColor="#0B1D3A" />
+                    TextColor="#0B2545" />
 
             <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}" />
 

@@ -17,14 +17,14 @@ namespace GestaoFrota.App.ViewModels;
 /// </summary>
 public partial class RelatoriosViewModel : BaseViewModel
 {
-    /// <summary>Paleta da rosca, na ordem do protótipo (tons de azul, do mais forte ao mais claro).</summary>
+    /// <summary>Paleta da rosca, nas cores da marca FrotaFin (do azul-marinho ao verde-água claro).</summary>
     private static readonly Color[] PaletaCategorias =
     {
-        Color.FromArgb("#0B5FA5"),
-        Color.FromArgb("#4C8FD1"),
-        Color.FromArgb("#7FB2E4"),
-        Color.FromArgb("#B3D3F2"),
-        Color.FromArgb("#D9E7F8"),
+        Color.FromArgb("#0B2545"),
+        Color.FromArgb("#0E7C74"),
+        Color.FromArgb("#13A89E"),
+        Color.FromArgb("#7FD1C9"),
+        Color.FromArgb("#E6F4F1"),
         Color.FromArgb("#6B7A8F"),
     };
 

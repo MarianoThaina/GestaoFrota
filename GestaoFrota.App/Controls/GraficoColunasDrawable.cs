@@ -19,9 +19,9 @@ public class GraficoColunasDrawable : IDrawable
 
     private static readonly Color CorEntrada = Color.FromArgb("#137333");
     private static readonly Color CorSaida = Color.FromArgb("#D93025");
-    private static readonly Color CorGrade = Color.FromArgb("#DCE3EE");
+    private static readonly Color CorGrade = Color.FromArgb("#D3E5E1");
     private static readonly Color CorTexto = Color.FromArgb("#5F6B7A");
-    private static readonly Color CorDestaque = Color.FromArgb("#EEF2F8");
+    private static readonly Color CorDestaque = Color.FromArgb("#E6F4F1");
 
     private readonly IReadOnlyList<FluxoMensal> _meses;
     private readonly int? _selecionado;
@@ -110,7 +110,7 @@ public class GraficoColunasDrawable : IDrawable
 
             if (i % passoRotulo == 0 || _selecionado == i)
             {
-                canvas.FontColor = _selecionado == i ? Color.FromArgb("#0B1D3A") : CorTexto;
+                canvas.FontColor = _selecionado == i ? Color.FromArgb("#0B2545") : CorTexto;
                 canvas.DrawString(
                     _meses.Count > 12 ? mes.MesCurto : mes.MesCurto,
                     centroX - larguraMes / 2f, baseY + 4f, larguraMes, AlturaRotulos - 4f,
@@ -127,7 +127,7 @@ public class GraficoColunasDrawable : IDrawable
             var y = Math.Max(2f, topoMaisAlto - 20f);
 
             canvas.FontSize = 10f;
-            canvas.FontColor = Color.FromArgb("#0B1D3A");
+            canvas.FontColor = Color.FromArgb("#0B2545");
             canvas.DrawString(
                 $"+{Formatacao.Moeda(mes.Entradas)}  −{Formatacao.Moeda(mes.Saidas)}",
                 centroX - 120f, y, 240f, 16f,

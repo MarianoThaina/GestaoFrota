@@ -1,5 +1,5 @@
 ---
-title: "Gestão de Frota"
+title: "FrotaFin"
 subtitle: "Manual do Usuário"
 ---
 
@@ -10,7 +10,7 @@ subtitle: "Manual do Usuário"
 
 # Para que serve o aplicativo
 
-O **Gestão de Frota** organiza, no celular, o dinheiro da empresa e o uso dos caminhões:
+O **FrotaFin** organiza, no celular, o dinheiro da empresa e o uso dos caminhões:
 
 - o que entrou e o que saiu do caixa, com foto do comprovante;
 - os financiamentos e as parcelas que vão vencer;
@@ -21,18 +21,23 @@ O **Gestão de Frota** organiza, no celular, o dinheiro da empresa e o uso dos c
 
 - Um celular **Android 6.0 ou mais novo**, com o aplicativo instalado. Quem cuida do sistema na
   empresa envia o arquivo de instalação e explica como instalar.
-- Uma **conta Google** (Gmail). Você entra com ela; o aplicativo não tem senha própria.
+- Um **e-mail e senha** criados pelo administrador, ou uma **conta Google** (Gmail).
 - **Internet** para quase tudo. A exceção é o motorista abrindo e encerrando viagens, que funciona
   sem sinal (veja [Sem internet](#sem-internet)).
 
 # Entrar e sair
 
-1. Abra o aplicativo **Gestão de Frota**.
-2. Toque em **Entrar com Google** e escolha a sua conta.
-3. Pronto. Nas próximas vezes o aplicativo já abre com você conectado.
+Abra o aplicativo **FrotaFin**. Há duas formas de entrar, e as duas levam ao mesmo lugar:
 
-**Primeira vez?** Toda conta nova entra como **Motorista**. Se o seu trabalho é outro, peça ao
-administrador para mudar o seu perfil (veja [Usuários](#usuários)).
+- **E-mail e senha:** digite o e-mail e a senha que o administrador criou para você e toque em
+  **Entrar**. A conta já vem com o seu perfil.
+- **Google:** toque em **Entrar com Google** e escolha a sua conta.
+
+Nas próximas vezes o aplicativo já abre com você conectado.
+
+**Primeira vez pelo Google?** A conta nova entra como **Motorista**. Se o seu trabalho é outro, peça
+ao administrador para mudar o seu perfil (veja [Usuários](#usuários)). Se o administrador já criou uma
+conta com o seu e-mail, o Google entra nela, com o perfil que ela já tem.
 
 **Para sair:** abra o menu (o ícone ☰ no canto de cima) e toque em **Sair**, no fim da lista.
 
@@ -269,14 +274,29 @@ salvar no Drive, enviar pelo WhatsApp ou por e-mail.
 
 # Usuários (só o Administrador)
 
-Menu > **Usuários** mostra todos que já entraram no aplicativo.
+Menu > **Usuários** mostra todas as contas e por onde cada uma entra (e-mail e senha, Google ou os dois).
+
+**Criar uma conta com senha:**
+
+1. Toque em **+ Novo usuário**.
+2. Preencha **Nome**, **E-mail**, **Perfil** e **Senha inicial** (pelo menos 8 caracteres, com letras
+   e números) e toque em **Criar usuário**.
+3. Passe o e-mail e a senha à pessoa por um canal seguro. Ela já entra com o perfil certo.
+
+**Definir senha**, em cada pessoa da lista, cria ou troca a senha, inclusive de quem só entrava pelo
+Google.
+
+**Mudar o perfil:**
 
 1. Encontre a pessoa na lista.
 2. Em **Perfil do usuário**, escolha Administrador, Gestor de Frota, Financeiro ou Motorista.
 3. Toque em **Salvar perfil**.
 
-A pessoa vê o menu novo depois de tocar em **Sair** e entrar de novo com o Google: o perfil viaja
-dentro da sessão, que só é renovada num login novo.
+A pessoa vê o menu novo depois de tocar em **Sair** e entrar de novo: o perfil viaja dentro da
+sessão, que só é renovada num login novo.
+
+Por segurança, depois de 5 senhas erradas seguidas o login por senha daquela conta fica bloqueado por
+15 minutos. Definir uma senha nova desfaz o bloqueio.
 
 # Problemas comuns
 
@@ -284,6 +304,8 @@ dentro da sessão, que só é renovada num login novo.
 |---|---|
 | Entrei, mas o menu só tem Início, Viagens e Frota | A sua conta ainda é de Motorista. Peça ao administrador para mudar o seu perfil. |
 | O login abre o Google, mas não volta para o aplicativo | Feche o aplicativo e tente de novo. Se continuar, avise o responsável pelo sistema. |
+| "E-mail ou senha incorretos" | Confira o e-mail e a senha (maiúsculas contam na senha). Se esqueceu, peça ao administrador para definir uma senha nova em **Usuários**. |
+| "Muitas tentativas erradas" | Depois de 5 senhas erradas seguidas, o login por senha fica bloqueado por 15 minutos. Espere ou peça ao administrador uma senha nova. |
 | "Sem conexão" ao salvar um lançamento | Lançamentos precisam de internet. Espere o sinal voltar e salve de novo. |
 | Viagem continua "aguardando envio" | Com internet, abra **Viagens** e puxe a tela para baixo. |
 | Não aceita o hodômetro final | O número precisa ser maior que o inicial. Confira o painel do caminhão. |

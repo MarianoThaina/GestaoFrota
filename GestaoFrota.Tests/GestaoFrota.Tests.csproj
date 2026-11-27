@@ -14,6 +14,7 @@
     <ProjectReference Include="..\GestaoFrota.Domain\GestaoFrota.Domain.csproj" />
     <!-- PeriodoRelatorio mora na API mas também é função pura: entra só o arquivo, não a API. -->
     <Compile Include="..\GestaoFrota.API\Services\PeriodoRelatorio.cs" Link="Links\PeriodoRelatorio.cs" />
+    <Compile Include="..\GestaoFrota.API\Security\PoliticaSenha.cs" Link="Links\PoliticaSenha.cs" />
   </ItemGroup>
 
   <ItemGroup>

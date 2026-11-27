@@ -3,12 +3,12 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:GestaoFrota.App.Views"
        x:Class="GestaoFrota.App.AppShell"
-       Title="Gestão de Frota"
+       Title="FrotaFin"
        FlyoutBehavior="Flyout"
-       FlyoutBackgroundColor="#0B1D3A"
+       FlyoutBackgroundColor="#0B2545"
        Shell.ForegroundColor="White"
        Shell.TitleColor="White"
-       Shell.BackgroundColor="#0B1D3A">
+       Shell.BackgroundColor="#0B2545">
 
     <!--
         Navegação por menu lateral (Flyout/Drawer): comporta os módulos do
@@ -20,15 +20,29 @@
     <Shell.Resources>
         <!-- Texto dos itens do menu lateral: sem isto o Android usa preto sobre o fundo azul-escuro. -->
         <Style TargetType="Label" Class="FlyoutItemLabelStyle">
+            <Setter Property="FontFamily" Value="Inter" />
             <Setter Property="TextColor" Value="White" />
             <Setter Property="FontSize" Value="16" />
         </Style>
     </Shell.Resources>
 
     <Shell.FlyoutHeader>
-        <VerticalStackLayout Padding="20,36,20,16" Spacing="2" BackgroundColor="#0B1D3A">
-            <Label x:Name="LblNomeUsuario" Text="Gestão de Frota" TextColor="White" FontSize="18" FontAttributes="Bold" />
-            <Label x:Name="LblPerfilUsuario" Text="" TextColor="#9FB3D1" FontSize="13" />
+        <VerticalStackLayout Padding="20,36,20,16" Spacing="2" BackgroundColor="#0B2545">
+            <!-- Marca FrotaFin no topo do menu -->
+            <HorizontalStackLayout Spacing="10" Margin="0,0,0,16">
+                <Image Source="logo_frotafin.png" WidthRequest="32" HeightRequest="32" VerticalOptions="Center"
+                       SemanticProperties.Description="Logo FrotaFin" />
+                <Label FontFamily="InterBold" FontSize="20" VerticalOptions="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Frota" TextColor="White" FontFamily="InterBold" />
+                            <Span Text="Fin" TextColor="#13A89E" FontFamily="InterBold" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </HorizontalStackLayout>
+            <Label x:Name="LblNomeUsuario" Text="FrotaFin" TextColor="White" FontSize="18" FontFamily="InterBold" />
+            <Label x:Name="LblPerfilUsuario" Text="" TextColor="#B9CBE0" FontSize="13" />
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
 

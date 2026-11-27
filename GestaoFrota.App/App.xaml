@@ -12,6 +12,39 @@
             <local:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
             <local:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
             <helpers:PerfilNomeConverter x:Key="PerfilNomeConverter" />
+
+            <!--
+                Identidade FrotaFin (kit de marca no Figma): Inter em todo o app.
+                Cores da marca: azul-marinho #0B2545, verde-água #13A89E (destaque
+                sobre o marinho), verde-água escuro #0E7C74 (texto e botões sobre
+                branco, contraste 5:1) e menta #E6F4F1 (fundos claros).
+            -->
+            <Color x:Key="MarcaMarinho">#0B2545</Color>
+            <Color x:Key="MarcaVerdeAgua">#13A89E</Color>
+            <Color x:Key="MarcaVerdeAguaEscuro">#0E7C74</Color>
+            <Color x:Key="MarcaMenta">#E6F4F1</Color>
+
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="Inter" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="FontFamily" Value="InterSemiBold" />
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="FontFamily" Value="Inter" />
+            </Style>
+            <Style TargetType="Editor">
+                <Setter Property="FontFamily" Value="Inter" />
+            </Style>
+            <Style TargetType="Picker">
+                <Setter Property="FontFamily" Value="Inter" />
+            </Style>
+            <Style TargetType="DatePicker">
+                <Setter Property="FontFamily" Value="Inter" />
+            </Style>
+            <Style TargetType="SearchBar">
+                <Setter Property="FontFamily" Value="Inter" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 

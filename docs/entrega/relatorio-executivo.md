@@ -20,7 +20,7 @@ subtitle: "Relatório Executivo"
 
 # 1. Resumo executivo
 
-O **Gestão de Frota** é um sistema para pequenas transportadoras controlarem, num lugar só, o
+O **FrotaFin** (projeto GestaoFrota) é um sistema para pequenas transportadoras controlarem, num lugar só, o
 dinheiro da empresa e o uso dos veículos. É composto por um **aplicativo Android** (.NET MAUI),
 uma **API REST** (ASP.NET Core), um **banco SQL Server** (EF Core) e **páginas web** de cadastro.
 

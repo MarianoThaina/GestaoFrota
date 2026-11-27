@@ -13,7 +13,7 @@
                IsVisible="{Binding PodeGerenciar}"
                Padding="12"
                CornerRadius="12"
-               BorderColor="#DCE3EE">
+               BorderColor="#D3E5E1">
             <VerticalStackLayout Spacing="8">
                 <Entry Placeholder="Nome da forma de pagamento" Text="{Binding NovaFormaNome}" />
                 <Button Text="Adicionar forma de pagamento" Command="{Binding AdicionarCommand}" />
