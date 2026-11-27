@@ -3,7 +3,7 @@ title: "FrotaFin"
 subtitle: "Manual do Usuário"
 ---
 
-> **Versão de 26/11/2026.** Os nomes de botões e telas foram copiados do aplicativo, e as imagens
+> **Versão de 27/11/2026.** Os nomes de botões e telas foram copiados do aplicativo, e as imagens
 > são telas reais do app. A mesma ajuda está on-line, com busca e filtro por perfil, na
 > **Central de Ajuda**: <https://gestaofrota.runasp.net/ajuda.html> (menu > **Ajuda** no app, ou
 > **Precisa de ajuda?** na tela de entrada).
@@ -274,7 +274,9 @@ salvar no Drive, enviar pelo WhatsApp ou por e-mail.
 
 # Usuários (só o Administrador)
 
-Menu > **Usuários** mostra todas as contas e por onde cada uma entra (e-mail e senha, Google ou os dois).
+Menu > **Usuários** mostra as contas ativas e por onde cada uma entra (e-mail e senha, Google ou os dois).
+Contas desativadas saem da lista; para vê-las e reativar, ligue **Mostrar inativos**. Usuário não é
+excluído, porque viagens e lançamentos ficam ligados a ele.
 
 **Criar uma conta com senha:**
 
