@@ -17,7 +17,10 @@ public static class RelatorioPdf
 {
     private static readonly CultureInfo PtBr = new("pt-BR");
 
-    private const string AzulMarinho = "#0B1D3A";
+    private const string AzulMarinho = "#0B2545";
+
+    /// <summary>Verde-água da marca FrotaFin, só no "Fin" do logotipo.</summary>
+    private const string VerdeAgua = "#13A89E";
     private const string Verde = "#1B7F3B";
     private const string Vermelho = "#B3261E";
 
@@ -59,7 +62,7 @@ public static class RelatorioPdf
                 pagina.Footer().AlignCenter().Text(t =>
                 {
                     t.DefaultTextStyle(estilo => estilo.FontSize(8).FontColor(Colors.Grey.Darken1));
-                    t.Span("Gestão de Frota · Página ");
+                    t.Span("FrotaFin · Página ");
                     t.CurrentPageNumber();
                     t.Span(" de ");
                     t.TotalPages();
@@ -77,6 +80,11 @@ public static class RelatorioPdf
         {
             linha.RelativeItem().Column(coluna =>
             {
+                coluna.Item().Text(t =>
+                {
+                    t.Span("Frota").FontSize(11).Bold().FontColor(AzulMarinho);
+                    t.Span("Fin").FontSize(11).Bold().FontColor(VerdeAgua);
+                });
                 coluna.Item().Text("Relatório financeiro").FontSize(18).Bold().FontColor(AzulMarinho);
                 coluna.Item().Text(t =>
                 {
