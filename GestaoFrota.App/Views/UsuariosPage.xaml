@@ -88,6 +88,13 @@
 
             </Frame>
 
+            <!-- Contas desativadas ficam fora da lista até marcar esta opção. -->
+            <Grid ColumnDefinitions="*, Auto" MinimumHeightRequest="48">
+                <Label Text="{Binding ResumoInativos}" FontSize="14" TextColor="#5F6368" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding MostrarInativos}" OnColor="#0E7C74" ThumbColor="White"
+                        VerticalOptions="Center" SemanticProperties.Description="Mostrar contas inativas" />
+            </Grid>
+
         </VerticalStackLayout>
 
         <Label
@@ -251,7 +258,7 @@
                                     TextColor="#5F6368" />
 
                                 <Label
-                                    Text="{Binding UltimoLogin, StringFormat='Último login: {0:dd/MM/yyyy HH:mm}'}"
+                                    Text="{Binding UltimoLoginTexto}"
                                     FontSize="11"
                                     TextColor="#5F6368" />
 

@@ -22,6 +22,11 @@ public class Usuario
     /// <summary>A conta já entrou pelo Google pelo menos uma vez.</summary>
     public bool TemGoogle { get; set; }
 
+    /// <summary>"Último login: 27/11/2026 15:37", ou aviso de que a conta nunca entrou.</summary>
+    public string UltimoLoginTexto => UltimoLogin is { } quando
+        ? $"Último login: {quando.ToLocalTime():dd/MM/yyyy HH:mm}"
+        : "Ainda não entrou";
+
     /// <summary>Texto da tela de Usuários: por onde a pessoa entra.</summary>
     public string FormasDeEntrar => (TemSenha, TemGoogle) switch
     {

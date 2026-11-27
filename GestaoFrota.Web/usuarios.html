@@ -25,6 +25,15 @@
 
       <div id="aviso" class="aviso" hidden></div>
 
+      <!-- Contas desativadas ficam fora da lista até marcar esta opção. -->
+      <div class="linha-interruptor" id="linha-inativos" hidden>
+        <label class="interruptor">
+          <input type="checkbox" id="mostrar-inativos" aria-label="Mostrar contas inativas">
+          <span class="interruptor-trilho"></span>
+        </label>
+        <span id="resumo-inativos" class="lista-nota"></span>
+      </div>
+
       <section class="cartao" id="area-lista">
         <ul class="lista" id="lista"></ul>
       </section>

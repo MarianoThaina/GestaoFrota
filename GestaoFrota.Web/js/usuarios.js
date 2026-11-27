@@ -54,12 +54,25 @@ if (iniciarTela('usuarios.html')) {
     }
   }
 
+  // Usuário não é excluído (o histórico aponta para ele): quem foi
+  // desativado sai da lista e volta marcando "Mostrar inativos".
+  const caixaInativos = document.getElementById('mostrar-inativos');
+  caixaInativos.addEventListener('change', desenhar);
+
   function desenhar() {
     aviso.hidden = true;
     lista.innerHTML = '';
 
+    const inativos = usuarios.filter(u => !u.ativo).length;
+    document.getElementById('resumo-inativos').textContent =
+      inativos === 0 ? 'Nenhuma conta inativa'
+        : 'Mostrar inativos (' + inativos + (inativos === 1 ? ' conta)' : ' contas)');
+    caixaInativos.disabled = inativos === 0;
+
     for (const usuario of usuarios) {
-      lista.appendChild(criarItem(usuario));
+      if (usuario.ativo || caixaInativos.checked) {
+        lista.appendChild(criarItem(usuario));
+      }
     }
   }
 
@@ -283,6 +296,7 @@ if (iniciarTela('usuarios.html')) {
   // antes, com uma mensagem que explica em vez de só recusar.
   if (Sessao.ehAdministrador()) {
     document.getElementById('botao-novo').hidden = false;
+    document.getElementById('linha-inativos').hidden = false;
     carregar();
   } else {
     areaLista.hidden = true;
